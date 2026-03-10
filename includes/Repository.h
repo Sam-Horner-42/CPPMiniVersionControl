@@ -2,14 +2,18 @@
 #define STUDENT_H
 
 #include <iostream>
-
+#include <string>
+#include <vector>
 
 using namespace std;
 
 
-class Respository {
+class Repository {
 
-public:
+    public:
+    string repositoryName;
+    vector<TrackedFile> files;
+    vector<unique_ptr<Commit>> commits;
     void getCommitHistory();
 };
 

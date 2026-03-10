@@ -14,19 +14,19 @@
 
 
 #include "../includes/Repository.h"
+#include "../includes/TrackedFile.h"
+#include "../includes/Commit.h"
 
-
-
-void Respository::getCommitHistory() {
+void Repository::getCommitHistory() {
     for (auto& commit : commits){
         cout << "Commit ID: " << commit->getId() << endl;
         cout << "Date: " << commit->getDate() << endl;
         cout << "Files: " << endl;
         for (auto& file : commit->getFiles()) {
-            cout << ", " << file.getFileName() << endl;
+            cout << ", " << file->getFileName() << endl;
         }
         for (auto& message : commit->getMessages()) {
-            cout << "Commit: " << commit->getMessage() << endl;
+            cout << "Commit: " << commit->getMessages() << endl;
         }
     }
 }
