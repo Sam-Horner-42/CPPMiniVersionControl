@@ -12,10 +12,6 @@
 // • restoreFile()
 // • getCommitHistory()
 
-
-#include "../includes/Repository.h"
-#include "../includes/TrackedFile.h"
-#include "../includes/Commit.h"
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs
 // add to a vector of commit msgs, return vector to qt for use
 void Repository::getCommitHistory() {
