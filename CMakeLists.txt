@@ -1,21 +1,39 @@
-﻿# CMakeList.txt : CMake project for MiniVersionControl, include source and define
-# project specific logic here.
-#
-cmake_minimum_required (VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.16)
+project(MiniVersionControl LANGUAGES CXX)
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
+include(qt.cmake)
 
-project ("MiniVersionControl")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add source to this project's executable.
-add_executable (MiniVersionControl "MiniVersionControl.cpp" "MiniVersionControl.h")
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR}
+    COMPONENTS
+        Core
+        Gui
+        Widgets
+)
+qt_standard_project_setup()
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET MiniVersionControl PROPERTY CXX_STANDARD 20)
-endif()
+set(PROJECT_SOURCES
+    MiniVersionControl.cpp
+    MiniVersionControl.h
+    main.cpp
+    Test2.ui
+    Test2.h
+    Test2.cpp
+)
 
-# TODO: Add tests and install targets if needed.
+qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+        WIN32_EXECUTABLE TRUE
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+        Qt::Core
+        Qt::Gui
+        Qt::Widgets
+)
