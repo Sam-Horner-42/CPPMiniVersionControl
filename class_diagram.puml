@@ -1,0 +1,136 @@
+@startuml MiniVCS Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle Bold
+
+abstract class Commit {
+    # commitID : string
+    # message : string
+    # author : string
+    # timestamp : string
+    --
+    + {abstract} displayCommit() : void
+    + getSummary() : string
+    + getCommitID() : string
+    + getMessage() : string
+    + getAuthor() : string
+    + getTimestamp() : string
+    + operator==( other : Commit) : bool
+    + friend operator<<(os : ostream, c : Commit) : ostream
+}
+
+class StandardCommit {
+    - filesSnapshot : map<string, string>
+    --
+    + StandardCommit(id, msg, author, timestamp)
+    + displayCommit() : void
+    + getSummary() : string
+    + getFilesSnapshot() : map<string, string>
+    + addFileSnapshot(path, content : string) : void
+}
+
+class TrackedFile {
+    - filePath : string
+    - content : string
+    - status : string
+    --
+    + TrackedFile(path : string)
+    + ~TrackedFile()
+    + updateContent(newContent : string) : void
+    + displayFileInfo() : void
+    + getFilePath() : string
+    + getContent() : string
+    + getStatus() : string
+    + setStatus(status : string) : void
+    + operator==(other : TrackedFile) : bool
+}
+
+class Repository {
+    - repositoryName : string
+    - localPath : string
+    - files : vector<TrackedFile>
+    - commits : vector<unique_ptr<Commit>>
+    --
+    + Repository(name, path : string)
+    + ~Repository()
+    + initRepository() : void
+    + addFile(filePath : string) : void
+    + stageFile(filePath : string) : void
+    + commitChanges(message, author : string) : void
+    + restoreFile(filePath, commitID : string) : void
+    + getCommitHistory() : vector<Commit*>
+    + getFiles() : vector<TrackedFile>
+    + getRepositoryName() : string
+    + generateCommitID() : string
+}
+
+class DiffEngine {
+    --
+    + computeDiff(contentA, contentB : string) : vector<string>
+    + displayDiff(filePath, commitA, commitB : string) : void
+}
+
+class RepositoryManager {
+    - repository : Repository*
+    --
+    + RepositoryManager(repo : Repository*)
+    + loadRepository(filePath : string) : void
+    + saveRepository(filePath : string) : void
+    + searchCommits(keyword : string) : vector<Commit*>
+    + getFileStatus(filePath : string) : string
+}
+
+class AnalyticsEngine<T> {
+    - data : T
+    --
+    + computeTotalCommits() : int
+    + computeTrackedFilesCount() : int
+    + computeMostModifiedFiles() : map<string, int>
+}
+
+class DataManager {
+    - filePath : string
+    --
+    + DataManager(filePath : string)
+    + saveData(repo : Repository) : void
+    + loadData() : Repository
+}
+
+class MainWindow {
+    - repository : Repository
+    - repoManager : RepositoryManager
+    - diffEngine : DiffEngine
+    - dataManager : DataManager
+    --
+    + MainWindow()
+    + ~MainWindow()
+    + setupTabs() : void
+    + onAddFile() : void
+    + onStageFile() : void
+    + onCommit() : void
+    + onRestore() : void
+    + onViewDiff() : void
+    + onViewAnalytics() : void
+    + refreshFileTable() : void
+    + refreshCommitList() : void
+}
+
+' Inheritance
+Commit <|-- StandardCommit
+
+' Associations
+Repository "1" o-- "many" TrackedFile : contains
+Repository "1" o-- "many" Commit : stores
+
+RepositoryManager "1" --> "1" Repository : manages
+DataManager "1" --> "1" Repository : persists
+DiffEngine "1" ..> "many" Commit : compares
+AnalyticsEngine "1" ..> "1" Repository : analyzes
+
+MainWindow "1" --> "1" Repository : owns
+MainWindow "1" --> "1" RepositoryManager : uses
+MainWindow "1" --> "1" DiffEngine : uses
+MainWindow "1" --> "1" DataManager : uses
+
+@enduml
+

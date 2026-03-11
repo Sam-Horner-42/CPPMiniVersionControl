@@ -5,6 +5,7 @@
 
 class RepositoryManager {
   public:
+    void createRepository();
     void loadRepostiory();
     void saveRepository();
     void searchCommits();

@@ -8,8 +8,8 @@ class Repository {
   std::vector<TrackedFile> files;
   std::vector<std::unique_ptr<Commit>> commits;
 public:
-  bool initRepository();
-  bool addFile();
-  bool stageFile();
+  bool initRepository(std::string repoName);
+  void addFile(const std::string& filepath);
+  void stageFile(const std::string& filepath);
   bool commitChanges();
 };
