@@ -19,7 +19,7 @@ string Commit::getDate() {
     return timestamp;
 }
 
-vector<TrackedFile> getFiles() {
+vector<TrackedFile> Commit::getFiles() {
     return files;
 }
 

@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "TrackedFile.h"
+#include <Repository.h>
 
 using namespace std;
 
@@ -17,7 +18,6 @@ class Commit {
     public:
     string getId();
     string getDate();
-    vector<TrackedFile> getFiles();
     string getMessages();
     void displayCommit();
     void getSummary();

@@ -20,11 +20,12 @@ class Repository {
     string repositoryName;
     vector<TrackedFile> files;
     vector<unique_ptr<Commit>> commits;
+    enum class fileStatus {Modified, Staged, Committed};
     public:
-    bool initRepository(std::string repoName);
+    bool initRepository(const string& repoName);
     void addFile(const std::string& filepath);
     void stageFile(const std::string& filepath);
     bool commitChanges();
     void getCommitHistory();
-
+    string updateFileStatus(TrackedFile& file, enum fileStatus);
     };
