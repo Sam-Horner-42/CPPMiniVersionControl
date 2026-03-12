@@ -5,24 +5,22 @@
  *  Ethan Geary - 0411-----
  */
 
-#include <filesystem>
-#include <fstream>
-
-#include <../includes/TrackedFile.hpp>
+#include <../includes/Repository.h>
+#include <../includes/TrackedFile.h>
 
 using namespace std;
 
 #define REPOWRAPPER ".vcm"
 
-public Repository() {}
+Repository::Repository() {}
 
-bool initRepository(string repoName) {
+bool Repository::initRepository(string repoName) {
   
   // create snapshots , branches , config folders
   // & create the initial config file.
-  if(!filesystem::create_directory(REPOWRAPPER)
-     || !filesystem::create_directory(REPOWRAPPER + "/snapshots"
-     || !filesystem::create_directory(REPOWRAPPER + "/Branches"
+  if(!filesystem::create_directory(REPOWRAPPER))
+     || !filesystem::create_directory(REPOWRAPPER + "/snapshots")
+     || !filesystem::create_directory(REPOWRAPPER + "/Branches")
      || !filesystem::create_directory(REPOWRAPPER + "/config") {
     return false;
   }
@@ -32,7 +30,7 @@ bool initRepository(string repoName) {
   if(!configFile) return false;
 
   configFile << "# this file contains the configurations of your repo.\n";
-  configFile << "Repository Name: " + this->repoName;
+  configFile << "Repository Name: " + this->repositoryName;
 
   configFile.close();
 
@@ -47,9 +45,7 @@ void Repository::addFile(const string& filepath) {
   else {
     TrackedFile newFile;
 
-    newFile.setFilePath(filepath);
-    newFile.setFileName(extractFileName(filepath));
-    newFile.setContent(extractFileContent(filepath));
+    newFile.TrackedFile::updateContent(filepath); //based on filepath sets the filepath, filename, and file content within the trackedfile
 
     this->files.push_back(newFile);
   }
