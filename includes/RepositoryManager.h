@@ -2,6 +2,7 @@
  * definition of repo manager
  * Author: Jacob Dawes - 041169788
  */
+#include <fstream>
 
 class RepositoryManager {
   public:

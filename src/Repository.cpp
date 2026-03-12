@@ -8,13 +8,14 @@
 #include <filesystem>
 #include <fstream>
 
-#include <../includes/TrackedFile.hpp>
+#include "../includes/Repository.h"
+#include "../includes/TrackedFile.h"
 
 using namespace std;
 
 #define REPOWRAPPER ".vcm"
 
-public Repository() {}
+Repository() {};
 
 bool initRepository(string repoName) {
   

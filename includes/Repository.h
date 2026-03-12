@@ -17,6 +17,7 @@ class Repository {
     vector<TrackedFile> files;
     vector<unique_ptr<Commit>> commits;
     public:
+    Repository();
     bool initRepository(std::string repoName);
     void addFile(const std::string& filepath);
     void stageFile(const std::string& filepath);
