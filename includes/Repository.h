@@ -1,5 +1,5 @@
-#ifndef STUDENT_H 
-#define STUDENT_H
+#ifndef Repository_H 
+#define Repository_H
 
 #include <iostream>
 #include <string>
@@ -17,4 +17,4 @@ class Repository {
     void getCommitHistory();
 };
 
-#endif // STUDENT_H
+#endif
