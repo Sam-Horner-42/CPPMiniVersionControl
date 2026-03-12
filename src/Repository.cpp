@@ -16,7 +16,8 @@
 #include "../includes/Repository.h"
 #include "../includes/TrackedFile.h"
 #include "../includes/Commit.h"
-
+// TODO: Update so that it reads froma JSON/TXT file, read the commit logs
+// add to a vector of commit msgs, return vector to qt for use
 void Repository::getCommitHistory() {
     for (auto& commit : commits){
         cout << "Commit ID: " << commit->getId() << endl;
@@ -29,4 +30,4 @@ void Repository::getCommitHistory() {
             cout << "Commit: " << commit->getMessages() << endl;
         }
     }
-}
+}   
