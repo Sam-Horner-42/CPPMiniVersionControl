@@ -16,12 +16,24 @@ find_package(Qt${QT_VERSION_MAJOR}
 qt_standard_project_setup()
 
 set(PROJECT_SOURCES
-    MiniVersionControl.cpp
-    MiniVersionControl.h
-    main.cpp
-    Test2.ui
-    Test2.h
-    Test2.cpp
+    src/MiniVersionControl.cpp
+    includes/MiniVersionControl.h
+    src/main.cpp
+    gui/MainWindow.ui
+    gui/MainWindow.h
+    gui/MainWindow.cpp
+
+    gui/SelectRepo.ui
+    gui/SelectRepo.h
+    gui/SelectRepo.cpp
+
+    #src/Commit.cpp
+    #src/AnalyticsEngine.cpp
+    #src/DiffEngine.cpp
+    #src/Repository.cpp
+    #src/RepositoryManager.cpp
+    #src/StandardCommit.cpp
+    #src/TrackedFile.cpp
 )
 
 qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

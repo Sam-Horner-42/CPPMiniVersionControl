@@ -5,9 +5,12 @@
  */
 
 #include <vector>
-#include "../includes/Commit.hpp"
+#include <iostream>
 
-using namepsace std;
+#include "../includes/Commit.h"
+#include "../includes/DiffEngine.h"
+
+using namespace std;
 
 string DiffEngine::computeDiff(const vector<string>& currentContent, const vector<string>& oldContent) {
   // defensive checks
@@ -45,6 +48,11 @@ string DiffEngine::computeDiff(const vector<string>& currentContent, const vecto
   return diffString;
 }
 
-vector<string> DiffEngine::displayDiff() {
+// Commented out this method because it was not different from header function
+/*
+std::vector<std::string> DiffEngine::displayDiff() {
   // not sure how to structure this yet.
+    cout << "Diff";
 }
+*/
+

@@ -8,21 +8,21 @@
 #include <filesystem>
 #include <fstream>
 
-#include <../includes/TrackedFile.hpp>
+#include "../includes/TrackedFile.h"
 
 using namespace std;
 
 #define REPOWRAPPER ".vcm"
 
-public Repository() {}
+Repository() {};
 
 bool initRepository(string repoName) {
   
   // create snapshots , branches , config folders
   // & create the initial config file.
   if(!filesystem::create_directory(REPOWRAPPER)
-     || !filesystem::create_directory(REPOWRAPPER + "/snapshots"
-     || !filesystem::create_directory(REPOWRAPPER + "/Branches"
+     || !filesystem::create_directory(REPOWRAPPER + "/snapshots")
+     || !filesystem::create_directory(REPOWRAPPER + "/Branches")
      || !filesystem::create_directory(REPOWRAPPER + "/config") {
     return false;
   }

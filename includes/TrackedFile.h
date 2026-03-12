@@ -1,3 +1,5 @@
+#ifndef TRACKED_FILE_H
+#define TRACKED_FILE_H
 
 #include <string>
 #include <iostream>
@@ -18,3 +20,5 @@ class TrackedFile {
     string status;
 
 };
+
+#endif

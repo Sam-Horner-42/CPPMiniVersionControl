@@ -1,5 +1,6 @@
 #include "../includes/Commit.h"
 
+using namespace std;
 //functions
 void Commit::displayCommit() {
     //TODO: DISPLAY COMMIT

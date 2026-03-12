@@ -1,5 +1,7 @@
 #include "../includes/Commit.h"
 
+using namespace std;
+
 class StandardCommit : public Commit {
 
     //Attributes

@@ -1,24 +1,25 @@
-
+#ifndef COMMIT_H
+#define COMMIT_H
 
 #include <string>
 #include <map>
 
-using namespace std;
-
 class Commit {
 
     public:
-    string getId();
-    string getDate();
-    string getFiles();
-    string getMessages();
+    std::string getId();
+    std::string getDate();
+    std::string getFiles();
+    std::string getMessages();
     void displayCommit();
     void getSummary();
 
     private:
-    string commitID;
-    string message;
-    string author;
-    string timestamp;
+    std::string commitID;
+    std::string message;
+    std::string author;
+    std::string timestamp;
 
 };
+
+#endif
