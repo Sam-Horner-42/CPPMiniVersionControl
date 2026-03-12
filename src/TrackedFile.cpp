@@ -2,12 +2,6 @@
 #include "../includes/TrackedFile.h"
 
 
-//attributes
-string filePath;
-string fileName;
-string content;
-string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
-
 //functions
 void TrackedFile::updateContent(string filePath, string status) {
 

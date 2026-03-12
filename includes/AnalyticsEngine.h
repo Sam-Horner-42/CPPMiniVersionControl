@@ -3,6 +3,7 @@
  * Author: Jacob Dawes - 041169788
  */
 
+<<<<<<< HEAD
 #ifndef ANALYTICSENGINE_H
 #define ANALYTICSENGINE_H
 
@@ -22,3 +23,11 @@ public:
 #include "AnalyticsEngine.cpp" 
 
 #endif
+=======
+class AnalyticsEngine {
+public:
+  void computeTotalCommits();
+  int  computeTrackedFilesCount();
+  void computeMostModifiedFiles();
+};
+>>>>>>> 9fd035e (changed hpp to h, worked on repo and diffEngine classes - Jacob)
