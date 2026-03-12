@@ -3,9 +3,13 @@
  * Author: Jacob Dawes - 041169788, Spencer Scarlett 041151395, Ethan Geary 041032340
  */
 
-#include <iostream>
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
+
+#include <TrackedFile.h>
+#include <Commit.h>
 
 using namespace std;
 

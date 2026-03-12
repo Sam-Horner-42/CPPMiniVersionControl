@@ -18,7 +18,10 @@ void TrackedFile::updateContent(string filePath) {
     //This works by finding the last slash in the filepath and then going past that
     this->fileName = filePath.substr(filePath.find_last_of('/') + 1);
 
-    //TODO: using iostream to apply file content from the filePath into the content string variable
+    //TODO: using fstream to apply file content from the filePath into the content string variable
+    
+    ifstream file(filePath);
+
 
     //TODO: status
 
