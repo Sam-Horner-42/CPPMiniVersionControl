@@ -6,6 +6,10 @@
 
 #include <string>
 #include <map>
+#include <vector>
+
+#include "TrackedFile.h"
+#include <Repository.h>
 
 using namespace std;
 
@@ -14,7 +18,6 @@ class Commit {
     public:
     string getId();
     string getDate();
-    string getFiles();
     string getMessages();
     void displayCommit();
     void getSummary();
@@ -24,5 +27,5 @@ class Commit {
     string message;
     string author;
     string timestamp;
-
+    vector<TrackedFile> files;
 };

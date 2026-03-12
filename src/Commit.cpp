@@ -19,8 +19,8 @@ string Commit::getDate() {
     return timestamp;
 }
 
-string Commit::getFiles() {
-    return NULL;
+vector<TrackedFile> Commit::getFiles() {
+    return files;
 }
 
 string Commit::getMessages() {

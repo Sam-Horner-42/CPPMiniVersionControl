@@ -2,38 +2,48 @@
  * Implementation of the Repository class
  * Authors: 
  *  Jacob Dawes - 041169788
- *  Ethan Geary - 0411-----
+ *  Ethan Geary - 041032340
  */
 
+<<<<<<< HEAD
 #include <filesystem>
 #include <fstream>
 
 #include "../includes/Repository.h"
 #include "../includes/TrackedFile.h"
+=======
+#include <../includes/Repository.h>
+>>>>>>> origin/stage-and-commit
 
 using namespace std;
 
 #define REPOWRAPPER ".vcm"
 
+<<<<<<< HEAD
 Repository() {};
+=======
+Repository::Repository() {}
+>>>>>>> origin/stage-and-commit
 
-bool initRepository(string repoName) {
+Repository::~Repository() {}
+
+bool Repository::initRepository(const string& repoName) {
   
   // create snapshots , branches , config folders
   // & create the initial config file.
   if(!filesystem::create_directory(REPOWRAPPER)
-     || !filesystem::create_directory(REPOWRAPPER + "/snapshots"
-     || !filesystem::create_directory(REPOWRAPPER + "/Branches"
-     || !filesystem::create_directory(REPOWRAPPER + "/config") {
+     || !filesystem::create_directory(string(REPOWRAPPER) + "/snapshots")
+     || !filesystem::create_directory(string(REPOWRAPPER) + "/Branches")
+     || !filesystem::create_directory(string(REPOWRAPPER) + "/config")) {
     return false;
   }
 
-  ofstream configFile(REPOWRAPPER + "/config/repo_config",std::ios::out);
+  ofstream configFile(string(REPOWRAPPER) + "/config/repo_config",std::ios::out);
 
   if(!configFile) return false;
 
   configFile << "# this file contains the configurations of your repo.\n";
-  configFile << "Repository Name: " + this->repoName;
+  configFile << "Repository Name: " + this->repositoryName;
 
   configFile.close();
 
@@ -48,20 +58,18 @@ void Repository::addFile(const string& filepath) {
   else {
     TrackedFile newFile;
 
-    newFile.setFilePath(filepath);
-    newFile.setFileName(extractFileName(filepath));
-    newFile.setContent(extractFileContent(filepath));
+    newFile.updateContent(filepath);
 
     this->files.push_back(newFile);
   }
 }
 
 void Repository::stageFile(const string& filepath) {
-
+  
 }
 
 bool Repository::commitChanges() {
-
+  return false;
 }
 
 // helper functions
@@ -74,7 +82,7 @@ string extractFileName(const string& filepath) {
 // get the content from the file into memory
 vector<string> extractFileContent(const string& filepath) {
   ifstream inFile(filepath);
-  if(!inFile) return nullptr;
+  if(!inFile) return {};
 
   string input = "";
   vector<string> content;
@@ -84,6 +92,10 @@ vector<string> extractFileContent(const string& filepath) {
 
   inFile.close();
   return content;
+}
+
+bool fileIsTracked(const string& filepath) {
+  return false;
 }
 
 
@@ -100,18 +112,26 @@ vector<string> extractFileContent(const string& filepath) {
 // • restoreFile()
 // • getCommitHistory()
 
+String Repository::updateFileStatus(TrackedFile& file, enum fileStatus) {
+  string status;
+
+  
+
+  return status;
+}
+
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs
 // add to a vector of commit msgs, return vector to qt for use
 void Repository::getCommitHistory() {
-    for (auto& commit : commits){
-        cout << "Commit ID: " << commit->getId() << endl;
-        cout << "Date: " << commit->getDate() << endl;
-        cout << "Files: " << endl;
-        for (auto& file : commit->getFiles()) {
-            cout << ", " << file->getFileName() << endl;
-        }
-        for (auto& message : commit->getMessages()) {
-            cout << "Commit: " << commit->getMessages() << endl;
-        }
-    }
+    // for (auto& commit : commits){
+    //     cout << "Commit ID: " << commit->getId() << endl;
+    //     cout << "Date: " << commit->getDate() << endl;
+    //     cout << "Files: " << endl;
+    //     for (auto& file : commit->getFiles()) {
+    //         cout << ", " << file->getFileName() << endl;
+    //     }
+    //     for (auto& message : commit->getMessages()) {
+    //         cout << "Commit: " << commit->getMessages() << endl;
+    //     }
+    // }
 }   

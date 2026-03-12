@@ -3,9 +3,13 @@
  * Author: Jacob Dawes - 041169788, Spencer Scarlett 041151395, Ethan Geary 041032340
  */
 
-#include <iostream>
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
+
+#include <TrackedFile.h>
+#include <Commit.h>
 
 using namespace std;
 
@@ -16,12 +20,17 @@ class Repository {
     string repositoryName;
     vector<TrackedFile> files;
     vector<unique_ptr<Commit>> commits;
+    enum class fileStatus {Modified, Staged, Committed};
     public:
+<<<<<<< HEAD
     Repository();
     bool initRepository(std::string repoName);
+=======
+    bool initRepository(const string& repoName);
+>>>>>>> origin/stage-and-commit
     void addFile(const std::string& filepath);
     void stageFile(const std::string& filepath);
     bool commitChanges();
     void getCommitHistory();
-
+    string updateFileStatus(TrackedFile& file, enum fileStatus);
     };
