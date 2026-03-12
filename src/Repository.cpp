@@ -51,7 +51,7 @@ void Repository::addFile(const string& filepath) {
     newFile.setFileName(extractFileName(filepath));
     newFile.setContent(extractFileContent(filepath));
 
-    *(this)->files.push_back(newFile);
+    this->files.push_back(newFile);
   }
 }
 
@@ -86,6 +86,7 @@ vector<string> extractFileContent(const string& filepath) {
 }
 
 
+<<<<<<< HEAD
 // 4. Repository
 // Attributes:
 // • repositoryName : string
@@ -114,3 +115,5 @@ void Repository::getCommitHistory() {
         }
     }
 }   
+=======
+>>>>>>> jacobs_branch
