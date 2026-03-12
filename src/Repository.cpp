@@ -86,7 +86,6 @@ vector<string> extractFileContent(const string& filepath) {
 }
 
 
-<<<<<<< HEAD
 // 4. Repository
 // Attributes:
 // • repositoryName : string
@@ -115,5 +114,3 @@ void Repository::getCommitHistory() {
         }
     }
 }   
-=======
->>>>>>> jacobs_branch
