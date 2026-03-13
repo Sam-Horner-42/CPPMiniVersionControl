@@ -1,5 +1,8 @@
 #include "MainWindow.h"
 
+namespace Ui {
+    class MainWindow;
+}
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {

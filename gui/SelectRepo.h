@@ -12,5 +12,5 @@ public:
     ~SelectRepo();
 
 private:
-    Ui::Dialog ui;
+    Ui::SelectRepo ui;
 };
