@@ -22,12 +22,7 @@ class Repository {
     vector<unique_ptr<Commit>> commits;
     enum class fileStatus {Modified, Staged, Committed};
     public:
-<<<<<<< HEAD
-    Repository();
-    bool initRepository(std::string repoName);
-=======
     bool initRepository(const string& repoName);
->>>>>>> origin/stage-and-commit
     void addFile(const std::string& filepath);
     void stageFile(const std::string& filepath);
     bool commitChanges();

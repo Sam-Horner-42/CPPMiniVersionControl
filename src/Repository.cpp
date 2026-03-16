@@ -5,25 +5,19 @@
  *  Ethan Geary - 041032340
  */
 
-<<<<<<< HEAD
 #include <filesystem>
 #include <fstream>
 
 #include "../includes/Repository.h"
 #include "../includes/TrackedFile.h"
-=======
 #include <../includes/Repository.h>
->>>>>>> origin/stage-and-commit
 
 using namespace std;
 
 #define REPOWRAPPER ".vcm"
 
-<<<<<<< HEAD
 Repository() {};
-=======
 Repository::Repository() {}
->>>>>>> origin/stage-and-commit
 
 Repository::~Repository() {}
 
@@ -122,16 +116,17 @@ String Repository::updateFileStatus(TrackedFile& file, enum fileStatus) {
 
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs
 // add to a vector of commit msgs, return vector to qt for use
-void Repository::getCommitHistory() {
-    // for (auto& commit : commits){
-    //     cout << "Commit ID: " << commit->getId() << endl;
-    //     cout << "Date: " << commit->getDate() << endl;
-    //     cout << "Files: " << endl;
-    //     for (auto& file : commit->getFiles()) {
-    //         cout << ", " << file->getFileName() << endl;
-    //     }
-    //     for (auto& message : commit->getMessages()) {
-    //         cout << "Commit: " << commit->getMessages() << endl;
-    //     }
-    // }
+vector<string> Repository::getCommitHistory() {
+
+  // temp var, I assume it's already open so no need to reopen?
+    vector<string> commitHistoryVec;
+    for (auto& commit : commits) {
+      string logCommit = "Commit ID: " + commit->getId() + 
+       "Date: " + commit->getDate() + 
+       "Message: " + commit->getMessages();
+      // one commit pushed to vector
+        commitHistoryVec.push_back(logCommit);
+    }
+    // holds full history
+    return commitHistoryVec;
 }   
