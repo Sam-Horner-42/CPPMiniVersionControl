@@ -22,11 +22,12 @@ set(PROJECT_SOURCES
     gui/MainWindow.ui
     gui/MainWindow.h
     gui/MainWindow.cpp
-
     gui/SelectRepo.ui
     gui/SelectRepo.h
     gui/SelectRepo.cpp
-
+    gui/InitRepoDialog.ui
+    gui/InitRepoDialog.h
+    gui/InitRepoDialog.cpp
     #src/Commit.cpp
     #src/AnalyticsEngine.cpp
     #src/DiffEngine.cpp

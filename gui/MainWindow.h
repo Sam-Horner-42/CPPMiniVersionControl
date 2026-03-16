@@ -10,6 +10,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setRepoContext(const QString& name, const QString& path);
 
 private:
     Ui::MainWindow ui;

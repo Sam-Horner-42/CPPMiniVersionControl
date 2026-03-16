@@ -12,3 +12,9 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {}
 
+void MainWindow::setRepoContext(const QString& name, const QString& path)
+{
+    // This is where the call to backend logic, should go e.g.,
+    // repo = Repository(name.toStdString(), path.toStdString());
+    // repo.init();
+}

@@ -9,14 +9,16 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     SelectRepo select;
+    MainWindow* window = nullptr;
+
+    QObject::connect(&select, &SelectRepo::repoSelected,
+        [&](const QString& name, const QString& path) {
+            select.hide();
+            window = new MainWindow();
+            window->setRepoContext(name, path); // pass to your backend logic
+            window->show();
+        });
 
     select.show();
-
-    // Instance of the main window class
-    //MainWindow window;
-
-    // Display the main window
-    //window.show();
-
     return app.exec();
 }
