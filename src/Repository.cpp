@@ -43,16 +43,18 @@ bool Repository::initRepository(const string& repoName) {
   return true;
 }
 
-//this function is to check if the file is tracked and then get the file to pass into whatever has called it
-TrackedFile& Repository::getTrackedFile(const string& filepath) {
-  for(auto& file : files) {
-    //if file is tracked then get the file object
-    if(file.getFilePath() == filepath) {
-      return file;
-    }
-  }
-  //if no file tracked to return then do nothing since the next function will add it
-  throw runtime_error("getTrackedFile() found no tracked file");
+// access the files vector
+vector<TrackedFile> Repository::getFiles() const {
+  return this->files;
+}
+
+// get the number of commits in the repo
+int Repository::getNumOfCommits() {
+  return this->commits.size();
+}
+
+int Repository::getNumOfTrackedFiles() {
+  return this->files.size();
 }
 
 // begin tracking the file or staging if already tracked

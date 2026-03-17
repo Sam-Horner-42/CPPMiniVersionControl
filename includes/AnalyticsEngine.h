@@ -2,32 +2,39 @@
  * Definition for the Analytics Engine class
  * Author: Jacob Dawes - 041169788
  */
+#pragma once
 
-<<<<<<< HEAD
-#ifndef ANALYTICSENGINE_H
-#define ANALYTICSENGINE_H
+#ifndef ANALYTICSENGINE_H_
+#define ANALYTICSENGINE_H_
 
-#include <string>
-#include <iostream>
-#include <iomanip>
+#include "Repository.h"
 
-using namespace std;
-
-template <typename T>
 class AnalyticsEngine {
-public:
-    void computeTotalCommits(const T& repo);
-    int  computeTrackedFilesCount(const T& repo);
-    void computeMostModifiedFiles(const T& repo);
+  public:
+
+  template<typename T>
+  T computeTotalCommits(const Repository& repo) {
+    return static_cast<T>(repo.getNumOfCommits());
+  }
+  
+  template<typename T>
+  T computeTrackedFilesCount(const Repository& repo) {
+    return static_cast<T>(repo.getNumOfTrackedFiles());
+  }
+  
+  template<typename T>
+  T computeMostModifiedFiles(const Repository& repo) {
+    TrackedFile bufferFile;
+    vector<TrackedFile> repo_files = repo.getFiles();
+
+    bufferFile = repo_files[0];
+
+    for(const auto& file : (repo_files + 1)) {
+      if(bufferFile.modifiedCount() < file.modifiedCount()) {
+        bufferFile = file;
+      }
+    }
+  }
 };
-#include "AnalyticsEngine.cpp" 
 
 #endif
-=======
-class AnalyticsEngine {
-public:
-  void computeTotalCommits();
-  int  computeTrackedFilesCount();
-  void computeMostModifiedFiles();
-};
->>>>>>> 9fd035e (changed hpp to h, worked on repo and diffEngine classes - Jacob)
