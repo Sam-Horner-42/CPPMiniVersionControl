@@ -34,10 +34,18 @@ void TrackedFile::displayFileInfo() {
     //TODO: this function
 }
 
-string TrackedFile::getFileName() {
+string const TrackedFile::getFileName() {
     return fileName;
 }
 
-string TrackedFile::getFilePath() {
+string const TrackedFile::getFilePath() {
     return filePath;
+}
+
+vector<string> const TrackedFile::getFileContent() {
+    return content;
+}
+
+string const TrackedFile::getFileStatus() {
+    return status;
 }

@@ -16,7 +16,6 @@ using namespace std;
 
 #define REPOWRAPPER ".vcm"
 
-Repository() {};
 Repository::Repository() {}
 
 Repository::~Repository() {}
@@ -44,22 +43,65 @@ bool Repository::initRepository(const string& repoName) {
   return true;
 }
 
+//this function is to check if the file is tracked and then get the file to pass into whatever has called it
+TrackedFile& Repository::getTrackedFile(const string& filepath) {
+  for(auto& file : files) {
+    //if file is tracked then get the file object
+    if(file.getFilePath() == filepath) {
+      return file;
+    }
+  }
+  //if no file tracked to return then do nothing since the next function will add it
+  throw runtime_error("getTrackedFile() found no tracked file");
+}
+
 // begin tracking the file or staging if already tracked
+// use the above function to check if the file is tracked and to then get the file and pass it back into this function
 void Repository::addFile(const string& filepath) {
   if(fileIsTracked(filepath)) {
-    stageFile(filepath);
+    TrackedFile& file = getTrackedFile(filepath);
+    if (file.getFileStatus() == "Added") {
+      return;
+    }
+    updateFileStatus(file, fileStatus::Added);
   }
+  
   else {
     TrackedFile newFile;
-
-    newFile.updateContent(filepath);
-
-    this->files.push_back(newFile);
+    newFile.updateContent(filepath, "Added");
+    files.push_back(newFile);
   }
 }
 
+
+/**
+ * This function is to stage files
+ * what happens is it checks for different file status
+ * if the file status is Added (has been added to the tracker vector) then stage it
+ * if the file's content in the tracker vector differs from the local version of the file then set that file to modified rather than staging it
+ * if the file is the same in both the tracker vector and local then stage it
+ */
 void Repository::stageFile(const string& filepath) {
+  if(!fileIsTracked(filepath)) {
+    throw runtime_error("no file tracked with that name"); //checking to see if file is NOT in the tracker vector
+  }
+
+  TrackedFile& file = getTrackedFile(filepath);
+  vector<string> localContent = extractFileContent(filepath);
+  vector<string> trackedContent = file.getFileContent();
+  string status = file.getFileStatus();
   
+  if(status == "Added") {
+    updateFileStatus(file, fileStatus::Staged);
+    return;
+  }
+
+  if(localContent != trackedContent) {
+    updateFileStatus(file, fileStatus::Modified);
+    return;
+  }
+
+  updateFileStatus(file, fileStatus::Staged);
 }
 
 bool Repository::commitChanges() {
@@ -88,8 +130,20 @@ vector<string> extractFileContent(const string& filepath) {
   return content;
 }
 
-bool fileIsTracked(const string& filepath) {
-  return false;
+/**
+ * fileIsTracked iterates through the whole vector to return a true or false based on if the file already exists within the vector
+ * the boolean output is false by default but if it matches the filepath to one found in the files vector then it sets the foundFile bool to true
+ */
+bool Repository::fileIsTracked(const string& filepath) {
+  int vectorSize = files.size();
+  bool foundFile = false;
+
+  for(int i = 0; i < vectorSize; i++) {
+    if(files[i].getFilePath() == filepath) {
+      foundFile = true;
+    }
+  }
+  return foundFile;
 }
 
 
@@ -106,12 +160,24 @@ bool fileIsTracked(const string& filepath) {
 // • restoreFile()
 // • getCommitHistory()
 
-String Repository::updateFileStatus(TrackedFile& file, enum fileStatus) {
+void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
   string status;
+  switch(newStatus) {
+    case fileStatus::Added:
+      status = "Added";
+      break;
+    case fileStatus::Modified:
+      status = "Modified";
+      break;
+    case fileStatus::Staged:
+      status = "Staged";
+      break;
+    case fileStatus::Committed:
+      status = "Committed";
+      break;
+  }
 
-  
-
-  return status;
+  file.updateContent(file.getFilePath(), status);
 }
 
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs

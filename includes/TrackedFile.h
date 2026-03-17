@@ -1,3 +1,4 @@
+#pragma once;
 
 #include <string>
 #include <iostream>
@@ -11,8 +12,10 @@ class TrackedFile {
     public:
     void updateContent(string filePath, string status);
     void displayFileInfo();
-    string getFileName();
-    string getFilePath();
+    string const getFileName();
+    string const getFilePath();
+    vector<string> const getFileContent();
+    string const TrackedFile::getFileStatus();
 
     private:
     string filePath;
