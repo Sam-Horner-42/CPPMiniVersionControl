@@ -1,17 +1,17 @@
 #include "MainWindow.h"
-#include "SelectRepo.h"
+#include "StartingWindow.h"
 #include "InitRepoDialog.h"
 
-SelectRepo::SelectRepo(QWidget* parent)
+StartingWindow::StartingWindow(QWidget* parent)
     : QDialog(parent)
 {
     ui.setupUi(this);
 }
 
-SelectRepo::~SelectRepo(){}
+StartingWindow::~StartingWindow(){}
 
 // called automatically — no connect() required
-void SelectRepo::on_initRepo_clicked()
+void StartingWindow::on_initRepo_clicked()
 {
     InitRepoDialog dialog(this);
 

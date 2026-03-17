@@ -6,20 +6,97 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>794</width>
     <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>249</x>
+      <y>9</y>
+      <width>541</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Statistics (Recent Commits/Committed files)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>241</width>
+      <height>241</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Files (Modified)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>249</x>
+      <y>319</y>
+      <width>541</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Commit Message</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>280</y>
+      <width>221</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Files (Staged)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>794</width>
      <height>21</height>
     </rect>
    </property>
@@ -32,22 +109,25 @@
     <addaction name="separator"/>
     <addaction name="actionExit_2"/>
    </widget>
-   <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>View</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuRepository">
     <property name="title">
      <string>Repository</string>
     </property>
     <addaction name="actionInitialize_Local_Repository"/>
     <addaction name="actionManage_A_Repository"/>
+    <addaction name="actionClone_Repository_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionStage_Files"/>
+    <addaction name="actionCommit_Staged"/>
+    <addaction name="actionCompare_Files"/>
+    <addaction name="actionRestore_to_Prior_Commit"/>
    </widget>
    <widget class="QMenu" name="menuBranch">
     <property name="title">
      <string>Branch</string>
     </property>
+    <addaction name="actionNew_Branch"/>
+    <addaction name="actionManage_Branches"/>
    </widget>
    <widget class="QMenu" name="menuStatistics">
     <property name="title">
@@ -55,11 +135,16 @@
     </property>
     <addaction name="actionView_Commit_History"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuView"/>
    <addaction name="menuRepository"/>
    <addaction name="menuBranch"/>
    <addaction name="menuStatistics"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSettings">
@@ -94,7 +179,77 @@
   </action>
   <action name="actionManage_A_Repository">
    <property name="text">
-    <string>Manage A Repository</string>
+    <string>Open Repository</string>
+   </property>
+  </action>
+  <action name="actionChanges">
+   <property name="text">
+    <string>Changes</string>
+   </property>
+  </action>
+  <action name="actionHistory">
+   <property name="text">
+    <string>History</string>
+   </property>
+  </action>
+  <action name="actionStatistics">
+   <property name="text">
+    <string>Statistics</string>
+   </property>
+  </action>
+  <action name="actionInitialize_New_Repository">
+   <property name="text">
+    <string>Initialize New Repository</string>
+   </property>
+  </action>
+  <action name="actionOpen_Repository">
+   <property name="text">
+    <string>Open Repository</string>
+   </property>
+  </action>
+  <action name="actionClone_Repository">
+   <property name="text">
+    <string>Clone Repository</string>
+   </property>
+  </action>
+  <action name="actionNew_Branch">
+   <property name="text">
+    <string>New Branch</string>
+   </property>
+  </action>
+  <action name="actionManage_Branches">
+   <property name="text">
+    <string>Manage Branches</string>
+   </property>
+  </action>
+  <action name="actionClone_Repository_2">
+   <property name="text">
+    <string>Clone Repository</string>
+   </property>
+  </action>
+  <action name="actionStage_Files">
+   <property name="text">
+    <string>Stage Files</string>
+   </property>
+  </action>
+  <action name="actionCommit_Staged">
+   <property name="text">
+    <string>Commit Staged</string>
+   </property>
+  </action>
+  <action name="actionCompare_Files">
+   <property name="text">
+    <string>Compare Files</string>
+   </property>
+  </action>
+  <action name="actionRestore_to_Prior_Commit">
+   <property name="text">
+    <string>Restore to Prior Commit</string>
+   </property>
+  </action>
+  <action name="actionView_File_Status">
+   <property name="text">
+    <string>View File Status</string>
    </property>
   </action>
  </widget>

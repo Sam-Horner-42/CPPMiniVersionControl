@@ -22,9 +22,9 @@ set(PROJECT_SOURCES
     gui/MainWindow.ui
     gui/MainWindow.h
     gui/MainWindow.cpp
-    gui/SelectRepo.ui
-    gui/SelectRepo.h
-    gui/SelectRepo.cpp
+    gui/StartingWindow.ui
+    gui/StartingWindow.h
+    gui/StartingWindow.cpp
     gui/InitRepoDialog.ui
     gui/InitRepoDialog.h
     gui/InitRepoDialog.cpp

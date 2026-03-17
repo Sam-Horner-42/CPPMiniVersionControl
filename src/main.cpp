@@ -3,22 +3,22 @@
 #include <QWidget>
 
 #include "../gui/MainWindow.h"
-#include "../gui/SelectRepo.h"
+#include "../gui/StartingWindow.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
-    SelectRepo select;
+    StartingWindow start;
     MainWindow* window = nullptr;
 
-    QObject::connect(&select, &SelectRepo::repoSelected,
+    QObject::connect(&start, &StartingWindow::repoSelected,
         [&](const QString& name, const QString& path) {
-            select.hide();
+            start.hide();
             window = new MainWindow();
             window->setRepoContext(name, path); // pass to your backend logic
             window->show();
         });
 
-    select.show();
+    start.show();
     return app.exec();
 }

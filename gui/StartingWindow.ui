@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SelectRepo</class>
- <widget class="QDialog" name="SelectRepo">
+ <class>StartingWindow</class>
+ <widget class="QDialog" name="StartingWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -404,9 +404,9 @@ font-size:32px;
          <colorrole role="Base">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
+            <red>0</red>
+            <green>165</green>
+            <blue>207</blue>
            </color>
           </brush>
          </colorrole>
@@ -559,9 +559,9 @@ font-size:32px;
          <colorrole role="Base">
           <brush brushstyle="SolidPattern">
            <color alpha="255">
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
+            <red>0</red>
+            <green>165</green>
+            <blue>207</blue>
            </color>
           </brush>
          </colorrole>
@@ -834,7 +834,7 @@ font-size:40px;
   <connection>
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
-   <receiver>SelectRepo</receiver>
+   <receiver>StartingWindow</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
