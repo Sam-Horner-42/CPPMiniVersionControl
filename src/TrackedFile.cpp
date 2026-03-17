@@ -1,6 +1,13 @@
 
 #include "../includes/TrackedFile.h"
 
+TrackedFile::TrackedFile() {}
+
+TrackedFile::TrackedFile(const string& filePath, const string& status) {
+    updateContent(filePath, status);
+}
+
+TrackedFile::~TrackedFile() {}
 
 //functions
 void TrackedFile::updateContent(string filePath, string status) {

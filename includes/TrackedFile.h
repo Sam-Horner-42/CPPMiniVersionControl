@@ -10,6 +10,10 @@ using namespace std;
 class TrackedFile {
 
     public:
+    TrackedFile();
+    TrackedFile(const string& filePath, const string& status);
+    ~TrackedFile();
+
     void updateContent(string filePath, string status);
     void displayFileInfo();
     string const getFileName();
