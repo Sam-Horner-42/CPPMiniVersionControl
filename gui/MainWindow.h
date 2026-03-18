@@ -12,6 +12,10 @@ public:
     ~MainWindow();
     void setRepoContext(const QString& name, const QString& path);
 
+private slots:
+    //void on_initRepo_clicked(); // event handler, initializes a new repo
+    //void on_selectRepo_clicked(); // open an existing repository
+
 private:
     Ui::MainWindow ui;
 };

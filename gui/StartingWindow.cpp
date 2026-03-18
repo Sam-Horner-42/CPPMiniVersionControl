@@ -23,7 +23,7 @@ void StartingWindow::on_initRepo_clicked()
         QString path = initDialog.getRepoPath();
 
         if (!name.isEmpty() && !path.isEmpty())
-            emit repoSelected(name, path);
+            emit repoSelected(name, path); // emit passes values to main lambda function
     }
     
 }
@@ -32,8 +32,16 @@ void StartingWindow::on_selectRepo_clicked()
 {
     SelectRepoDialog selectDialog(this);
 
-    if (selectDialog.exec() == QDialog::Accepted) {
-        
+    if (selectDialog.exec() == QDialog::Accepted)
+    {
+        // Get the name and path from the selected item
+        QString name = selectDialog.getSelectedRepoName();
+        QString path = selectDialog.getSelectedRepoPath();
+
+        if (!name.isEmpty()) {
+            emit repoSelected(name, path);
+            accept();
+        }
     }
     
 }
