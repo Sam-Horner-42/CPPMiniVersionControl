@@ -8,10 +8,10 @@ SelectRepoDialog::SelectRepoDialog(QWidget* parent) :
 {
     ui.setupUi(this);
 
-    // 1. Set headers for the tree
+    // Set headers for the tree
     model->setHorizontalHeaderLabels({ "Repository Information" });
 
-    // 2. Mock Data
+    // Mock Data
     repoMap.insert("Repo 1", "C:/Users/Sam/Documents/Repo1");
     repoMap.insert("Repo 2", "C:/Users/Sam/Documents/Repo2");
     repoMap.insert("Repo 3", "C:/Users/Sam/Documents/Repo3");
@@ -22,14 +22,14 @@ SelectRepoDialog::SelectRepoDialog(QWidget* parent) :
 
         // Add child rows (the "down a level" data)
         parentItem->appendRow(new QStandardItem("Path: " + it.value()));
-        parentItem->appendRow(new QStandardItem("Last Commit: a7b2c3d"));
+        parentItem->appendRow(new QStandardItem("Last Commit: a7b2c3d")); // Last commit is all the same right now
         parentItem->appendRow(new QStandardItem("Date: 2023-10-27"));
 
         // Add the parent to the root of the model
         model->appendRow(parentItem);
     }
 
-    // 3. Bind to the TreeView
+    // Bind to the TreeView
     ui.repoList->setModel(model);
     ui.repoList->expandAll();
 }
