@@ -2,13 +2,15 @@
  * Implementation of the Repository class
  * Authors: 
  *  Jacob Dawes - 041169788
- *  Ethan Geary - 0411-----
+ *  Ethan Geary - 041032340
  */
 
 #include <filesystem>
 #include <fstream>
 
+#include "../includes/Repository.h"
 #include "../includes/TrackedFile.h"
+#include <../includes/Repository.h>
 
 using namespace std;
 
@@ -16,51 +18,94 @@ using namespace std;
 
 Repository() {};
 
-bool initRepository(string repoName) {
+Repository::~Repository() {}
+
+bool Repository::initRepository(const string& repoName) {
   
   // create snapshots , branches , config folders
   // & create the initial config file.
   if(!filesystem::create_directory(REPOWRAPPER)
-     || !filesystem::create_directory(REPOWRAPPER + "/snapshots")
-     || !filesystem::create_directory(REPOWRAPPER + "/Branches")
-     || !filesystem::create_directory(REPOWRAPPER + "/config") {
+     || !filesystem::create_directory(string(REPOWRAPPER) + "/snapshots")
+     || !filesystem::create_directory(string(REPOWRAPPER) + "/Branches")
+     || !filesystem::create_directory(string(REPOWRAPPER) + "/config")) {
     return false;
   }
 
-  ofstream configFile(REPOWRAPPER + "/config/repo_config",std::ios::out);
+  ofstream configFile(string(REPOWRAPPER) + "/config/repo_config",std::ios::out);
 
   if(!configFile) return false;
 
   configFile << "# this file contains the configurations of your repo.\n";
-  configFile << "Repository Name: " + this->repoName;
+  configFile << "Repository Name: " + this->repositoryName;
 
   configFile.close();
 
   return true;
 }
 
+//this function is to check if the file is tracked and then get the file to pass into whatever has called it
+TrackedFile& Repository::getTrackedFile(const string& filepath) {
+  for(auto& file : files) {
+    //if file is tracked then get the file object
+    if(file.getFilePath() == filepath) {
+      return file;
+    }
+  }
+  //if no file tracked to return then do nothing since the next function will add it
+  throw runtime_error("getTrackedFile() found no tracked file");
+}
+
 // begin tracking the file or staging if already tracked
+// use the above function to check if the file is tracked and to then get the file and pass it back into this function
 void Repository::addFile(const string& filepath) {
   if(fileIsTracked(filepath)) {
-    stageFile(filepath);
+    TrackedFile& file = getTrackedFile(filepath);
+    if (file.getFileStatus() == "Added") {
+      return;
+    }
+    updateFileStatus(file, fileStatus::Added);
   }
+  
   else {
     TrackedFile newFile;
-
-    newFile.setFilePath(filepath);
-    newFile.setFileName(extractFileName(filepath));
-    newFile.setContent(extractFileContent(filepath));
-
-    this->files.push_back(newFile);
+    newFile.updateContent(filepath, "Added");
+    files.push_back(newFile);
   }
 }
 
-void Repository::stageFile(const string& filepath) {
 
+/**
+ * This function is to stage files
+ * what happens is it checks for different file status
+ * if the file status is Added (has been added to the tracker vector) then stage it
+ * if the file's content in the tracker vector differs from the local version of the file then set that file to modified rather than staging it
+ * if the file is the same in both the tracker vector and local then stage it
+ */
+void Repository::stageFile(const string& filepath) {
+  if(!fileIsTracked(filepath)) {
+    throw runtime_error("no file tracked with that name"); //checking to see if file is NOT in the tracker vector
+  }
+
+  TrackedFile& file = getTrackedFile(filepath);
+  vector<string> localContent = extractFileContent(filepath);
+  vector<string> trackedContent = file.getFileContent();
+  string status = file.getFileStatus();
+  
+  if(status == "Added") {
+    updateFileStatus(file, fileStatus::Staged);
+    return;
+  }
+
+  if(localContent != trackedContent) {
+    updateFileStatus(file, fileStatus::Modified);
+    return;
+  }
+
+  updateFileStatus(file, fileStatus::Staged);
 }
 
 bool Repository::commitChanges() {
-
+  return false;
 }
 
 // helper functions
@@ -73,7 +118,7 @@ string extractFileName(const string& filepath) {
 // get the content from the file into memory
 vector<string> extractFileContent(const string& filepath) {
   ifstream inFile(filepath);
-  if(!inFile) return nullptr;
+  if(!inFile) return {};
 
   string input = "";
   vector<string> content;
@@ -85,8 +130,23 @@ vector<string> extractFileContent(const string& filepath) {
   return content;
 }
 
+/**
+ * fileIsTracked iterates through the whole vector to return a true or false based on if the file already exists within the vector
+ * the boolean output is false by default but if it matches the filepath to one found in the files vector then it sets the foundFile bool to true
+ */
+bool Repository::fileIsTracked(const string& filepath) {
+  int vectorSize = files.size();
+  bool foundFile = false;
 
-<<<<<<< HEAD
+  for(int i = 0; i < vectorSize; i++) {
+    if(files[i].getFilePath() == filepath) {
+      foundFile = true;
+    }
+  }
+  return foundFile;
+}
+
+
 // 4. Repository
 // Attributes:
 // • repositoryName : string
@@ -100,20 +160,39 @@ vector<string> extractFileContent(const string& filepath) {
 // • restoreFile()
 // • getCommitHistory()
 
+void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
+  string status;
+  switch(newStatus) {
+    case fileStatus::Added:
+      status = "Added";
+      break;
+    case fileStatus::Modified:
+      status = "Modified";
+      break;
+    case fileStatus::Staged:
+      status = "Staged";
+      break;
+    case fileStatus::Committed:
+      status = "Committed";
+      break;
+  }
+
+  file.updateContent(file.getFilePath(), status);
+}
+
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs
 // add to a vector of commit msgs, return vector to qt for use
-void Repository::getCommitHistory() {
-    for (auto& commit : commits){
-        cout << "Commit ID: " << commit->getId() << endl;
-        cout << "Date: " << commit->getDate() << endl;
-        cout << "Files: " << endl;
-        for (auto& file : commit->getFiles()) {
-            cout << ", " << file->getFileName() << endl;
-        }
-        for (auto& message : commit->getMessages()) {
-            cout << "Commit: " << commit->getMessages() << endl;
-        }
+vector<string> Repository::getCommitHistory() {
+
+  // temp var, I assume it's already open so no need to reopen?
+    vector<string> commitHistoryVec;
+    for (auto& commit : commits) {
+      string logCommit = "Commit ID: " + commit->getId() + 
+       "Date: " + commit->getDate() + 
+       "Message: " + commit->getMessages();
+      // one commit pushed to vector
+        commitHistoryVec.push_back(logCommit);
     }
+    // holds full history
+    return commitHistoryVec;
 }   
-=======
->>>>>>> jacobs_branch

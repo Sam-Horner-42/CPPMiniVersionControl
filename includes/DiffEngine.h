@@ -8,7 +8,7 @@
 
 class DiffEngine {
   public:
-    std::string computeDiff(const std::vector<std::string>& currentContent, const std::vector<std::string>& oldContent);
+    string computeDiff(const std::vector<std::string>& currentContent, const std::vector<std::string>& oldContent);
     void displayDiff();
 };
 

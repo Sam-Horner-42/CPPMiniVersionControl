@@ -1,15 +1,16 @@
 
 #include "../includes/TrackedFile.h"
 
+TrackedFile::TrackedFile() {}
 
-//attributes
-string filePath;
-string fileName;
-string content;
-string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
+TrackedFile::TrackedFile(const string& filePath, const string& status) {
+    updateContent(filePath, status);
+}
+
+TrackedFile::~TrackedFile() {}
 
 //functions
-void TrackedFile::updateContent(string filePath) {
+void TrackedFile::updateContent(string filePath, string status) {
 
     //class filePath variable is set to the passed in filePath parameter
     this->filePath = filePath; 
@@ -18,16 +19,40 @@ void TrackedFile::updateContent(string filePath) {
     //This works by finding the last slash in the filepath and then going past that
     this->fileName = filePath.substr(filePath.find_last_of('/') + 1);
 
-    //TODO: using iostream to apply file content from the filePath into the content string variable
+    //TODO: using fstream to apply file content from the filePath into the content string variable
+    ifstream file(filePath);
+    if (file.is_open()) {
+        content.clear();
+
+        string line;
+        while (getline(file, line)) {
+            content.push_back(line);
+        }
+
+        file.close();
+    }
 
     //TODO: status
+    this->status = status;
 
 }
 
 void TrackedFile::displayFileInfo() {
-    cout << content;
+    //TODO: this function
 }
 
-string TrackedFile::getFileName() {
+string const TrackedFile::getFileName() {
     return fileName;
+}
+
+string const TrackedFile::getFilePath() {
+    return filePath;
+}
+
+vector<string> const TrackedFile::getFileContent() {
+    return content;
+}
+
+string const TrackedFile::getFileStatus() {
+    return status;
 }

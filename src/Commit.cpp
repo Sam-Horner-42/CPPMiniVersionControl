@@ -12,18 +12,18 @@ void Commit::getSummary() {
 
 
 //functions to be used in Repository.cpp
-string Commit::getId() {
+string const Commit::getId() {
     return commitID;
 }
 
-string Commit::getDate() {
+string const Commit::getDate() {
     return timestamp;
 }
 
-string Commit::getFiles() {
-    return NULL;
+vector<TrackedFile> const Commit::getFiles() {
+    return files;
 }
 
-string Commit::getMessages() {
+string const Commit::getMessages() {
     return message;
 }
