@@ -45,7 +45,7 @@ bool Repository::initRepository(const string& repoName) {
 
 // access the files vector
 vector<TrackedFile> Repository::getFiles() const {
-  return this->files;
+  return *this.files;
 }
 
 // get the number of commits in the repo
