@@ -176,7 +176,7 @@ font-size:32px;
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="openRepo">
+       <widget class="QPushButton" name="selectRepo">
         <property name="palette">
          <palette>
           <active>

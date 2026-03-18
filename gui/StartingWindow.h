@@ -15,7 +15,7 @@ signals:
 
 private slots:
     void on_initRepo_clicked(); // event handler, initializes a new repo
-    //void onOpenRepoClicked(); // open an exist
+    void on_selectRepo_clicked(); // open an existing repository
 private:
     Ui::StartingWindow ui;
 };
