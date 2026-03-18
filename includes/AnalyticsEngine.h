@@ -3,14 +3,22 @@
  * Author: Jacob Dawes - 041169788
  */
 
-#ifndef ANALYTICS_ENGINE_H
-#define ANALYTICS_ENGINE_H
+#ifndef ANALYTICSENGINE_H
+#define ANALYTICSENGINE_H
 
+#include <string>
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+template <typename T>
 class AnalyticsEngine {
 public:
-  void computeTotalCommits();
-  int  computeTrackedFilesCount();
-  void computeMostModifiedFiles();
+    void computeTotalCommits(const T& repo);
+    int  computeTrackedFilesCount(const T& repo);
+    void computeMostModifiedFiles(const T& repo);
 };
+#include "AnalyticsEngine.cpp" 
 
 #endif
