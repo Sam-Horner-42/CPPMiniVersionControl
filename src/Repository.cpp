@@ -16,7 +16,7 @@ using namespace std;
 
 #define REPOWRAPPER ".vcm"
 
-Repository() {};
+Repository::Repository() {};
 
 Repository::~Repository() {}
 

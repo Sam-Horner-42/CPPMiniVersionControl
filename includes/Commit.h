@@ -32,3 +32,5 @@ class Commit {
     string timestamp;
     vector<TrackedFile> files;
 };
+
+#endif

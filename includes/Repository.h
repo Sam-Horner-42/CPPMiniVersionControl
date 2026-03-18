@@ -23,7 +23,12 @@ class Repository {
     vector<TrackedFile> files;
     vector<unique_ptr<Commit>> commits;
     enum class fileStatus {Added, Modified, Staged, Committed};
+    
     public:
+    
+    Repository::Repository();
+    Repository::~Repository();
+
     bool initRepository(const string& repoName);
     TrackedFile& Repository::getTrackedFile(const string& filepath); // helper class to get the tracked file used in addFile
     void addFile(const std::string& filepath);
