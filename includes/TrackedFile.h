@@ -27,4 +27,4 @@ class TrackedFile {
     vector<string> content;
     string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
 
-};
+}; //test change lol
