@@ -16,6 +16,17 @@
 #include <Repository.h>
 
 class Commit {
+private:
+    std::string commitID;
+    std::string message;
+    std::string author;
+    std::string timestamp;
+public:
+    // class getters
+    std::string getId() { return commitId; }
+    std::string getMessage() { return message; }
+    std::string getAuthor() { return author; }
+    std::string getTimestamp() { return timestamp; }
 
     public:
     string const getId();

@@ -18,7 +18,7 @@ using namespace std;
 
 class Repository {
   std::string repoName;
-  std::vector<TrackedFile> files;
+  std::vector<std::unique_ptr<TrackedFile>> files;
   std::vector<std::unique_ptr<Commit>> commits;
 public:
   Repository();
