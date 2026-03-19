@@ -17,11 +17,21 @@
 
 class Commit {
 private:
-    std::string commitID;
+    std::string commitId;
     std::string message;
     std::string author;
     std::string timestamp;
 public:
+    // default constructor
+    Commit(
+        const std::string& commitId,
+        const std::string& message,
+        const std::string& author,
+        const std::string& timestamp
+    ) 
+    : commitId(commitId),message(message),
+    author(author), timestamp(timestamp) {}
+
     // class getters
     std::string getId() { return commitId; }
     std::string getMessage() { return message; }

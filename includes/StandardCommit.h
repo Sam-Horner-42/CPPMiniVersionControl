@@ -2,11 +2,12 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include <map>
 
 #include "../includes/Commit.h"
 
-class StandardCommit : public Commit {
+class StandardCommit : public Commit::Commit {
 private:
     std::map<std::string, std::string> fileSnapshot;
 public:
@@ -17,8 +18,7 @@ public:
         const std::string& timestamp
     );
     ~StandardCommit();
-    std::vector<std::string> getAllAttributes();
-    std::vector<std::string> getContent() override;
+    std::vector<std::string> getAllAttributes() override;
     std::vector<std::string> displayCommit() override;
-    void getSummary() override;
+    std::string getSummary() override;
 };

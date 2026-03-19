@@ -5,39 +5,38 @@ class StandardCommit : public Commit {
 
 using namespace std;
 
-// default everything constructor
+// default constructor
 StandardCommit::StandardCommit(
         const std::string& commitId,
         const std::string& message,
         const std::string& author,
         const std::string& timestamp
-    ) : commitId(commitId),message(message),
-        author(author), timestamp(timestamp) {}
+    ) : Commit(commitId,message,author,timestamp) {}
 
 // default destructor
 StandardCommit::~StandardCommit() {}
 
 // combination of all getters into a predicable ordered
-// vector. ORDER: ID, MESSAGE, AUTHOR, TIMESTAMP
+// vector. ORDER: { ID, MESSAGE, AUTHOR, TIMESTAMP }
 // @return: vector of commit data in order.
-vector<string> StandardCommit::getAllAttributes() override {
+vector<string> StandardCommit::getAllAttributes() {
     vector<string> content;
 
-    content.push_back(commitId);
-    content.push_back(message);
-    content.push_back(author);
-    content.push_back(timestamp);
+    content.push_back(getId());
+    content.push_back(getMessage());
+    content.push_back(getAuthor());
+    content.push_back(getTimestamp());
 
     return content;
 }
 
 // returns a full vector containing all commit info
-vector<string> StandardCommit::displayCommit() override {
+vector<string> StandardCommit::displayCommit() {
     return this->getAllAttributes();
 }
 
 // returns a small summary commit id and message
-string StandardCommit::getSummary() override {
-    return "Commit ID: " + this->getId() +
-    "Commit Message:\n" + this->getMessage();
+string StandardCommit::getSummary() {
+    return "Commit ID: " + getId() +
+    "Commit Message:\n" + getMessage();
 }
