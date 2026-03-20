@@ -9,7 +9,7 @@ string content;
 string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
 
 //functions
-void TrackedFile::updateContent(string filePath) {
+void TrackedFile::updateContent(string filePath, string status) {
 
     //class filePath variable is set to the passed in filePath parameter
     this->filePath = filePath;
@@ -18,43 +18,46 @@ void TrackedFile::updateContent(string filePath) {
     //This works by finding the last slash in the filepath and then going past that
     this->fileName = filePath.substr(filePath.find_last_of('/') + 1);
 
-    //TODO: using iostream to apply file content from the filePath into the content string variable
+    //opens the file using the filePath parameter
     ifstream file(filePath);
-    if (file.is_open()) {
+    if (file.is_open()) { //checks if file is opened properly, if so then clear the content in the object
         content.clear();
-        string line;
-        while (getline(file, line)) {
-            content += line + "\n";
+        string line; 
+        while (getline(file, line)) { //use "line" string to get the whole file line by line passing it into the content vector
+            content.push_back(line);
         }
-        file.close();
+        file.close(); //close the file after the contents have been put into the content vector line by line
     }
     else {
-        content = "[Error: Could not read file content]";
+        content.push_back("UpdateContent() Could not read file content"); //if unable 
     }
 
-
-    //TODO: status
     this->status = status;
 }
 
+/**
+ * Mano-TODO: please fix to not use couts
+ * we are going to be passing this function to the GUI so rather than void or cout it should have a return with the string of all the file info
+ * do the exact same thing but use a single string rather than multiple cout lines and it will be good
+ */
 void TrackedFile::displayFileInfo() {
-    cout << "\n==========================================" << endl;
-    cout << "           TRACKED FILE STATUS            " << endl;
-    cout << "==========================================" << endl;
+    // cout << "\n==========================================" << endl;
+    // cout << "           TRACKED FILE STATUS            " << endl;
+    // cout << "==========================================" << endl;
 
-    cout << left << setw(18) << "File Name:" << fileName << endl;
-    cout << left << setw(18) << "System Path:" << filePath << endl;
-    cout << left << setw(18) << "VCS Status:" << "[" << status << "]" << endl;
+    // cout << left << setw(18) << "File Name:" << fileName << endl;
+    // cout << left << setw(18) << "System Path:" << filePath << endl;
+    // cout << left << setw(18) << "VCS Status:" << "[" << status << "]" << endl;
 
-    cout << left << setw(18) << "Content Size:" << content.length() << " bytes" << endl;
+    // cout << left << setw(18) << "Content Size:" << content.length() << " bytes" << endl;
 
-    cout << "==========================================\n" << endl;
+    // cout << "==========================================\n" << endl;
 }
 
-string TrackedFile::getFileName() {
+string const TrackedFile::getFileName() {
     return fileName;
 }
-string TrackedFile::getFilePath() {
+string const TrackedFile::getFilePath() {
     return filePath;
 }
 
