@@ -37,4 +37,5 @@ class Repository {
     vector<string> getCommitHistory();
     void updateFileStatus(TrackedFile& file, enum fileStatus);
     bool fileIsTracked(const string& filepath);
+    vector<TrackedFile> getFileVector();
     };

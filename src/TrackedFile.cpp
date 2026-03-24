@@ -41,17 +41,7 @@ void TrackedFile::updateContent(string filePath, string status) {
  * do the exact same thing but use a single string rather than multiple cout lines and it will be good
  */
 void TrackedFile::displayFileInfo() {
-    // cout << "\n==========================================" << endl;
-    // cout << "           TRACKED FILE STATUS            " << endl;
-    // cout << "==========================================" << endl;
-
-    // cout << left << setw(18) << "File Name:" << fileName << endl;
-    // cout << left << setw(18) << "System Path:" << filePath << endl;
-    // cout << left << setw(18) << "VCS Status:" << "[" << status << "]" << endl;
-
-    // cout << left << setw(18) << "Content Size:" << content.length() << " bytes" << endl;
-
-    // cout << "==========================================\n" << endl;
+    
 }
 
 string const TrackedFile::getFileName() {

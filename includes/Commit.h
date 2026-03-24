@@ -25,11 +25,11 @@ class Commit {
     void displayCommit();
     void getSummary();
 
-    bool checkStagedFiles(vector<TrackedFile> filesVector);
-    bool compareHashedFiles(TrackedFile comparingStagedFile);
-    void addToCommitVector(bool tf, TrackedFile addingStagedFile);
-    void clearCommitVector();
-    vector<TrackedFile> commitToRepo();
+    static bool checkStagedFiles(vector<TrackedFile> fileVector);
+    static bool compareHashedFiles(TrackedFile comparingStagedFile);
+    static void addToCommitVector(bool tf, TrackedFile addingStagedFile);
+    static void clearCommitVector();
+    vector<string> commitToRepo(vector<TrackedFile> commitFiles);
 
     private:
     string commitID;
@@ -37,7 +37,7 @@ class Commit {
     string author;
     string timestamp;
     vector<TrackedFile> files;
-    vector<TrackedFile> commitVector;
+    static vector<TrackedFile> commitVector;
 };
 
 #endif
