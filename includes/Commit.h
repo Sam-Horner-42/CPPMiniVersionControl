@@ -25,12 +25,19 @@ class Commit {
     void displayCommit();
     void getSummary();
 
+    bool checkStagedFiles(vector<TrackedFile> filesVector);
+    bool compareHashedFiles(TrackedFile comparingStagedFile);
+    void addToCommitVector(bool tf, TrackedFile addingStagedFile);
+    void clearCommitVector();
+    vector<TrackedFile> commitToRepo();
+
     private:
     string commitID;
     string message;
     string author;
     string timestamp;
     vector<TrackedFile> files;
+    vector<TrackedFile> commitVector;
 };
 
 #endif
