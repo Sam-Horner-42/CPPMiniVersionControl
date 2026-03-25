@@ -19,10 +19,10 @@ void RepositoryManager::saveRepository() {
 
 }
 
-void RepositoryManager::searchCommits() {
-
+Commit::Commit searchCommits(const std::string& searchString) {
+    
 }
 
-void RepositoryManager::getFileStatus() {
-
+void RepositoryManager::getFileStatus(const TrackedFile& file) {
+    return file.getFileStatus();
 }
