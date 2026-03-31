@@ -80,6 +80,7 @@ bool Commit::checkStagedFiles(std::vector<TrackedFile> fileVector) {
     }
 }
 
+<<<<<<< HEAD
 bool Commit::compareHashedFiles(TrackedFile comparingStagedFile) {
     //Mano-TODO: 
     //please make this function to compare the file hash of each file in the TrackedFiles vector
@@ -128,4 +129,11 @@ std::string Commit::getDate() const {
 
 std::string Commit::getMessage() const {
     return message;
+=======
+// returns a small summary commit id and message
+string StandardCommit::getSummary() {
+    return "Commit ID: " + getId() +
+    " Parent ID: " + getParentId() +
+    " Commit Message:\n" + getMessage();
+>>>>>>> c2a26a5 (added parent commit ids)
 }

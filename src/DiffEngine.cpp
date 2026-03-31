@@ -48,16 +48,7 @@ void DiffEngine::computeDiff(const vector<string>& currentContent, const vector<
   this->diffString = diffString;
 }
 
-<<<<<<< HEAD
-// Commented out this method because it was not different from header function
-/*
-std::vector<std::string> DiffEngine::displayDiff() {
-  // not sure how to structure this yet.
-    cout << "Diff";
-=======
 string DiffEngine::displayDiff() {
   return this->diffString;
->>>>>>> 9fd035e (changed hpp to h, worked on repo and diffEngine classes - Jacob)
 }
-*/
 
