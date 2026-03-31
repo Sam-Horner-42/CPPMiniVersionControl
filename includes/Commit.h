@@ -16,6 +16,30 @@
 #include <Repository.h>
 
 class Commit {
+private:
+    std::string commitId;
+    std::string parentId;
+    std::string message;
+    std::string author;
+    std::string timestamp;
+public:
+    // default constructor
+    Commit(
+        const std::string& commitId,
+        const std::string& parentId,
+        const std::string& message,
+        const std::string& author,
+        const std::string& timestamp
+    ) 
+    : commitId(commitId),message(message),
+    author(author), timestamp(timestamp) {}
+
+    // class getters
+    std::string getId() { return commitId; }
+    std::string getParentCommit() { return parentId; }
+    std::string getMessage() { return message; }
+    std::string getAuthor() { return author; }
+    std::string getTimestamp() { return timestamp; }
 
     public:
     string const getId();
@@ -30,14 +54,6 @@ class Commit {
     static void addToCommitVector(bool tf, TrackedFile addingStagedFile);
     static void clearCommitVector();
     vector<string> commitToRepo(vector<TrackedFile> commitFiles);
-
-    private:
-    string commitID;
-    string message;
-    string author;
-    string timestamp;
-    vector<TrackedFile> files;
-    static vector<TrackedFile> commitVector;
 };
 
 #endif

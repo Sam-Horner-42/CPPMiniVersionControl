@@ -6,10 +6,11 @@
 string filePath;
 string fileName;
 string content;
-string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
+string status; 
+//The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
 
 //functions
-void TrackedFile::updateContent(string filePath, string status) {
+void TrackedFile::updateContent(string filePath) {
 
     //class filePath variable is set to the passed in filePath parameter
     this->filePath = filePath;
@@ -31,6 +32,10 @@ void TrackedFile::updateContent(string filePath, string status) {
     else {
         content.push_back("UpdateContent() Could not read file content"); //if unable 
     }
+    else {
+        content = "[Error: Could not read file content]";
+    }
+
 
     this->status = status;
 }
@@ -41,13 +46,23 @@ void TrackedFile::updateContent(string filePath, string status) {
  * do the exact same thing but use a single string rather than multiple cout lines and it will be good
  */
 void TrackedFile::displayFileInfo() {
-    
+    cout << "\n==========================================" << endl;
+    cout << "           TRACKED FILE STATUS            " << endl;
+    cout << "==========================================" << endl;
+
+    cout << left << setw(18) << "File Name:" << fileName << endl;
+    cout << left << setw(18) << "System Path:" << filePath << endl;
+    cout << left << setw(18) << "VCS Status:" << "[" << status << "]" << endl;
+
+    cout << left << setw(18) << "Content Size:" << content.length() << " bytes" << endl;
+
+    cout << "==========================================\n" << endl;
 }
 
 string const TrackedFile::getFileName() {
     return fileName;
 }
-string const TrackedFile::getFilePath() {
+string TrackedFile::getFilePath() {
     return filePath;
 }
 

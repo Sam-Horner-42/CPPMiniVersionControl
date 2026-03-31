@@ -20,7 +20,9 @@ Repository::Repository() {};
 
 Repository::~Repository() {}
 
-bool Repository::initRepository(const string& repoName) {
+bool Repository::initRepository(const string& repoName,const string& repoPath) {
+
+  this->repoPath = repoPath;
   
   // create snapshots , branches , config folders
   // & create the initial config file.

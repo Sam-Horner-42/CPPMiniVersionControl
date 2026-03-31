@@ -1,0 +1,31 @@
+// example JSON file of how we could store the
+// data for commits within the project.
+
+{
+  "commits": [
+    {
+      "id": "a3f9c12",
+      "message": "Initial commit",
+      "timestamp": "2026-03-24T10:30:00",
+      "author": "John Doe",
+      "files_changed": ["Main.java", "README.md"],
+      "parent_id": null
+    },
+    {
+      "id": "b7e2d45",
+      "message": "Added login functionality",
+      "timestamp": "2026-03-24T12:45:00",
+      "author": "John Doe",
+      "files_changed": ["LoginFrame.java", "UserAuth.java"],
+      "parent_id": "a3f9c12"
+    },
+    {
+      "id": "c1d8f67",
+      "message": "Fixed null pointer bug in UserAuth",
+      "timestamp": "2026-03-24T14:20:00",
+      "author": "John Doe",
+      "files_changed": ["UserAuth.java"],
+      "parent_id": "b7e2d45"
+    }
+  ]
+}
