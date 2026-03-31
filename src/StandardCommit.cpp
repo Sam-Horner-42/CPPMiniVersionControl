@@ -8,10 +8,11 @@ using namespace std;
 // default constructor
 StandardCommit::StandardCommit(
         const std::string& commitId,
+        const std::string& parentId,
         const std::string& message,
         const std::string& author,
         const std::string& timestamp
-    ) : Commit(commitId,message,author,timestamp) {}
+    ) : Commit(commitId,parentId,message,author,timestamp) {}
 
 // default destructor
 StandardCommit::~StandardCommit() {}
@@ -38,5 +39,6 @@ vector<string> StandardCommit::displayCommit() {
 // returns a small summary commit id and message
 string StandardCommit::getSummary() {
     return "Commit ID: " + getId() +
-    "Commit Message:\n" + getMessage();
+    " Parent ID: " + getParentId() +
+    " Commit Message:\n" + getMessage();
 }
