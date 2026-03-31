@@ -15,7 +15,7 @@ using namespace std;
 template <typename T>
 class AnalyticsEngine {
 public:
-    void computeTotalCommits(const T& repo);
+    int computeTotalCommits(const T& repo);
     int  computeTrackedFilesCount(const T& repo);
     void computeMostModifiedFiles(const T& repo);
 };

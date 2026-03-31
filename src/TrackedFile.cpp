@@ -7,7 +7,7 @@ string filePath;
 string fileName;
 string content;
 string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
-
+int editCount;
 //functions
 void TrackedFile::updateContent(string filePath) {
 
@@ -21,34 +21,31 @@ void TrackedFile::updateContent(string filePath) {
     //TODO: using iostream to apply file content from the filePath into the content string variable
     ifstream file(filePath);
     if (file.is_open()) {
-        content.clear();
+        vector<string> newContent;
         string line;
         while (getline(file, line)) {
-            content += line + "\n";
+            newContent.push_back(line);
         }
         file.close();
     }
-    else {
-        content = "[Error: Could not read file content]";
+    //counter for my compute most modified files 
+    if (newContent != this->content) {
+        this->editCount++;
+        this->content = newContent;
     }
-
-
+    else {
+        this->content.clear();
     //TODO: status
     this->status = status;
 }
 
 void TrackedFile::displayFileInfo() {
-    cout << "\n==========================================" << endl;
-    cout << "           TRACKED FILE STATUS            " << endl;
-    cout << "==========================================" << endl;
-
-    cout << left << setw(18) << "File Name:" << fileName << endl;
-    cout << left << setw(18) << "System Path:" << filePath << endl;
-    cout << left << setw(18) << "VCS Status:" << "[" << status << "]" << endl;
-
-    cout << left << setw(18) << "Content Size:" << content.length() << " bytes" << endl;
-
-    cout << "==========================================\n" << endl;
+    vector<string> info;
+    info.push_back("File: " + fileName);
+    info.push_back("Path: " + filePath);
+    info.push_back("Status: " + status);
+    info.push_back("Total Edits: " + to_string(editCount));
+    return info;
 }
 
 string TrackedFile::getFileName() {
@@ -65,3 +62,4 @@ vector<string> const TrackedFile::getFileContent() {
 string const TrackedFile::getFileStatus() {
     return status;
 }
+int TrackedFile::getEditCount() const { return editCount; }

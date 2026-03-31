@@ -22,13 +22,13 @@ class TrackedFile {
     string const getFilePath();
     vector<string> const getFileContent();
     string const TrackedFile::getFileStatus();
-
+    int const getEditCount();
     private:
     string filePath;
     string fileName;
     vector<string> content;
     string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
-
+    int editCount;
 };
 
 #endif
