@@ -18,12 +18,13 @@ using namespace std;
 
 class Repository {
   std::string repoName;
+  std::string repoPath;
   std::vector<std::unique_ptr<TrackedFile>> files;
   std::vector<std::unique_ptr<Commit>> commits;
 public:
   Repository();
   ~Repository();
-  bool initRepository(const std::string& repoName);
+  bool initRepository(const std::string& repoName,const std::string& repoPath);
   void addFile(const std::string& filepath);
   void stageFile(const std::string& filepath);
   bool commitChanges();
