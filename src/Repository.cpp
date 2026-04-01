@@ -20,7 +20,9 @@ Repository::Repository() {};
 
 Repository::~Repository() {}
 
-bool Repository::initRepository(const string& repoName) {
+bool Repository::initRepository(const string& repoName,const string& repoPath) {
+
+  this->repoPath = repoPath;
   
   // create snapshots , branches , config folders
   // & create the initial config file.
@@ -104,8 +106,12 @@ void Repository::stageFile(const string& filepath) {
   updateFileStatus(file, fileStatus::Staged);
 }
 
+// for Sam, this is the initial startingpoint for the commit button to call
+// its just true for success, false for somethings gone wrong
 bool Repository::commitChanges() {
-  return false;
+  vector<TrackedFile> fileVector = getFileVector();
+  bool returnvar = Commit::checkStagedFiles(fileVector);
+  return returnvar;
 }
 
 // helper functions
@@ -196,3 +202,7 @@ vector<string> Repository::getCommitHistory() {
     // holds full history
     return commitHistoryVec;
 }   
+
+vector<TrackedFile> Repository::getFileVector() {
+  return files;
+}
