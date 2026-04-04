@@ -191,3 +191,13 @@ vector<string> Repository::getCommitHistory() {
 vector<TrackedFile> Repository::getFileVector() {
   return files;
 }
+
+Commit* Repository::findCommit(const std::string& commitId) {
+  if(commitId.empty()) return nullptr;
+
+  for (auto i = 0; i < commits.size(); i++) {
+    if(commits[i].getId() == commitId) return commits[i].get();
+  }
+
+  return nullptr;
+}

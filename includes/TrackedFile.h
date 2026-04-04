@@ -11,8 +11,11 @@
 class TrackedFile {
 
     public:
-    enum class status {Added, Modified, Staged, Committed};
-    
+    void updateContent(std::string filePath);
+    void displayFileInfo();
+    std::string getFileName() const;
+    std::string getFilePath() const;
+
     private:
     std::string filePath;
     std::string fileName;

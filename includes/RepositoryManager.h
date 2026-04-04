@@ -20,13 +20,15 @@ class RepositoryManager {
     Repository::Repository repo;
     DataManager::DataManager data;
   public:
-    RepositoryManager ();
+    RepositoryManager (Repository& repo);
     ~RepositoryManager();
     Repository::Repository RepositoryManager::createRepository(const std::string& repoName);
     void loadRepostiory();
     bool saveRepository();
     Commit::Commit searchCommits(const std::string& searchString);
     void getFileStatus(const TrackedFile::TrackedFile& file);
+
+    void restore(const std::string& commitId);
 };
 
 #endif
