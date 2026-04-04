@@ -192,7 +192,6 @@ vector<TrackedFile> Repository::getFileVector() {
   return files;
 }
 
-/* find commits within the repostiroy's commits vector. */
 Commit* Repository::findCommit(const std::string& commitId) {
   if(commitId.empty()) return nullptr;
 

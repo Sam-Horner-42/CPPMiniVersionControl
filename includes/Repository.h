@@ -42,4 +42,5 @@ public:
   void updateFileStatus(TrackedFile& file, TrackedFile::status newStatus);
   
   std::vector<TrackedFile> getFileVector();
+  Commit* findCommit(const std::string& commitId);
 };

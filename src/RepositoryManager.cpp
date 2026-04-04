@@ -4,6 +4,9 @@
 RepositoryManager::RepositoryManager(Repository& repo) :
 repo(repo) {}
 
+RepositoryManager::RepositoryManager(Repository& repo) :
+repo(repo) {}
+
 RepositoryManager::~RepositoryManager() {}
 
 Repository RepositoryManager::createRepository(const string& repoName) {
@@ -32,8 +35,33 @@ bool RepositoryManager::saveRepository() {
     return true;    
 }
 
-Commit* RepositoryManager::searchCommits(const string& searchString) {
+Commit* RepositoryManager::searchCommits(const std::string& searchString) {
     return repo.findCommit(searchString);
+}
+
+Commit* RepositoryManager::getParentCommit(const string& commitId) {
+    auto c = searchCommits(commitId);
+    auto parent = searchCommits(c->getParentId());
+
+    return parent.get();
+}
+
+void RepositoryManager::restoreToParent(const string& commitId) {
+    auto parent = getParentCommit(commitId);
+    auto current = searchCommit(commitId);
+
+    for (auto file& : parent->commits) {
+        current->updateSnapshot(file->getFileName(),file->getFileContent());
+    }
+}
+
+void RepositoryManager::restore(const string& commitId,const string& restoreCommitId) {
+    auto current = searchCommit(commitId);
+    auto restore = searchCommit(restoreCommitId);
+
+    for (auto file& : restore->commits) {
+        current->updateSnapshot(file->getFileName(),file->getFileContent());
+    }
 }
 
 Commit* RepositoryManager::getParentCommit(const string& commitId) {
