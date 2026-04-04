@@ -45,7 +45,7 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
     json filesMetadata = json::array();
     time_t timestamp;
     time(&timestamp);
-    for (const auto& file : files) {
+    for (auto& file : files) {
         json tempObject;
         tempObject["fileName"] = file.getFileName();
         tempObject["filePath"] = file.getFilePath();
@@ -56,7 +56,7 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
 
     // commits
     json commitsData = json::array();
-    for (const auto& commit : commits){
+    for (auto& commit : commits){
         json TempObj;
         TempObj["id"] = commit.getId();
         TempObj["date"] = commit.getDate();
@@ -71,6 +71,20 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
         metadataOut.close();
     }
     // datahandler.json
+    json dataHandler;
+    string pathDataHandler = "dataHandler.json";
+
+    ifstream dataHandlerIn(pathDataHandler);
+    if(dataHandlerIn.is_open()) {
+        metadataIn >> dataHandler;
+        metadataIn.close();
+    }
+
+    json projectItem;
+    projectItem["name"] = repositoryName;
+    projectItem["id"] = 12345; // generateId(repositoryName); i need to back something for ids
+    projectItem["path"] = "projects/" + repositoryName;
+    
 }
 
 bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
