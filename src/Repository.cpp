@@ -38,7 +38,7 @@ bool Repository::initRepository(const string& repoName,const string& repoPath) {
   if(!configFile) return false;
 
   configFile << "# this file contains the configurations of your repo.\n";
-  configFile << "Repository Name: " + this->repositoryName;
+  configFile << "Repository Name: " + this->repoName;
 
   configFile.close();
 
@@ -155,7 +155,7 @@ bool Repository::fileIsTracked(const string& filepath) {
 
 // 4. Repository
 // Attributes:
-// • repositoryName : string
+// • repoName : string
 // • files : vector<TrackedFile>
 // • commits : vector<unique_ptr<Commit>>
 // Behaviors:

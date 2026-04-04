@@ -3,8 +3,6 @@ using namespace std;
 
 class StandardCommit : public Commit {
 
-using namespace std;
-
 // default constructor
 StandardCommit::StandardCommit(
         const std::string& commitId,

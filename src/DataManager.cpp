@@ -6,9 +6,9 @@
 
 using namespace std;
 
-void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
+void DataManager::saveData(string repoName,  vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
     json object;
-    object["repositoryName"] = repositoryName;
+    object["repoName"] = repoName;
     // TODO: Add ways to dump ALL values related to both vectors into the json objects
     json filesJson = json::array();
     for (const auto& file : files) {

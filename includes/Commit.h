@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "TrackedFile.h"
-#include <Repository.h>
+#include "Repository.h"
 
 class Commit {
 private:
@@ -30,7 +30,7 @@ public:
         const std::string& message,
         const std::string& author,
         const std::string& timestamp
-    ) 
+    )
     : commitId(commitId),message(message),
     author(author), timestamp(timestamp) {}
 

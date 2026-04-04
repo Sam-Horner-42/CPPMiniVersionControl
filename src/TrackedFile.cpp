@@ -1,21 +1,8 @@
 
 #include "../includes/TrackedFile.h"
 
-
-//attributes
-string filePath;
-string fileName;
-string content;
-<<<<<<< HEAD
-string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
-int editCount;
-=======
-string status; 
-//The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
-
->>>>>>> da4c519a7f5ece25b0c3812917dd3bebfb6608a0
 //functions
-void TrackedFile::updateContent(string filePath) {
+void TrackedFile::updateContent(string filePath, string status) {
 
     //class filePath variable is set to the passed in filePath parameter
     this->filePath = filePath;
@@ -26,19 +13,11 @@ void TrackedFile::updateContent(string filePath) {
 
     //opens the file using the filePath parameter
     ifstream file(filePath);
-<<<<<<< HEAD
-    if (file.is_open()) {
-        vector<string> newContent;
-        string line;
-        while (getline(file, line)) {
-            newContent.push_back(line);
-=======
-    if (file.is_open()) { //checks if file is opened properly, if so then clear the content in the object
+    if (file.is_open()) { //checks if file is opened properly, if so then clear the content in the object to get a blank slate
         content.clear();
-        string line; 
+        string line;
         while (getline(file, line)) { //use "line" string to get the whole file line by line passing it into the content vector
             content.push_back(line);
->>>>>>> da4c519a7f5ece25b0c3812917dd3bebfb6608a0
         }
         file.close(); //close the file after the contents have been put into the content vector line by line
     }
@@ -46,18 +25,14 @@ void TrackedFile::updateContent(string filePath) {
         content.push_back("UpdateContent() Could not read file content"); //if unable 
     }
     //counter for my compute most modified files 
-    if (newContent != this->content) {
+    if (content != this->content) {
         this->editCount++;
-        this->content = newContent;
+        this->content = content;
     }
-<<<<<<< HEAD
     else {
         this->content.clear();
-    //TODO: status
-=======
+    }
 
-
->>>>>>> da4c519a7f5ece25b0c3812917dd3bebfb6608a0
     this->status = status;
 }
 
@@ -66,7 +41,7 @@ void TrackedFile::updateContent(string filePath) {
  * we are going to be passing this function to the GUI so rather than void or cout it should have a return with the string of all the file info
  * do the exact same thing but use a single string rather than multiple cout lines and it will be good
  */
-void TrackedFile::displayFileInfo() {
+vector<string> TrackedFile::displayFileInfo() {  //fixed to be a vector<string> return since it was set to void which cant return anything
     vector<string> info;
     info.push_back("File: " + fileName);
     info.push_back("Path: " + filePath);
@@ -78,7 +53,7 @@ void TrackedFile::displayFileInfo() {
 string const TrackedFile::getFileName() {
     return fileName;
 }
-string TrackedFile::getFilePath() {
+string const TrackedFile::getFilePath() { // readded const to have it work
     return filePath;
 }
 
@@ -89,4 +64,7 @@ vector<string> const TrackedFile::getFileContent() {
 string const TrackedFile::getFileStatus() {
     return status;
 }
-int TrackedFile::getEditCount() const { return editCount; }
+
+int const TrackedFile::getEditCount() { //fixed to have const in the correct spot
+    return editCount; 
+}
