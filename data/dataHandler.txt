@@ -1,5 +1,0 @@
-Big Momma Handler for files(line ignored)
-FitnessTracker, 0x1234, Term4/C++/Assignments/FitnessTracker
-ProjectA, 0x4324, Term4/C++/Assignments/FitnessTracker
-ProjectB, 0x4324, Term4/C++/Assignments/FitnessTracker
-ProjectC, 0x4324, Term4/C++/Assignments/FitnessTracker

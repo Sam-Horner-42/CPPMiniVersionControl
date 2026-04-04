@@ -13,7 +13,6 @@
 class TrackedFile {
 
     public:
-<<<<<<< HEAD
     TrackedFile();
     TrackedFile(const string& filePath, const string& status);
     ~TrackedFile();
@@ -34,19 +33,3 @@ class TrackedFile {
 };
 
 #endif
-=======
-    void updateContent(std::string filePath);
-    void displayFileInfo();
-    std::string getFileName() const;
-    std::string getFilePath() const;
-
-    private:
-    std::string filePath;
-    std::string fileName;
-    std::string content;
-    std::string status;
-
-};
-
-#endif
->>>>>>> 9fd035e (changed hpp to h, worked on repo and diffEngine classes - Jacob)

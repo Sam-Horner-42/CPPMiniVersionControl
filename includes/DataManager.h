@@ -4,5 +4,5 @@
 class DataManager {
     public:
     void saveData(string repositoryName,  vector<TrackedFile> files, vector<unique_ptr<Commit>> commits);
-    bool loadData();
+    bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits);
 };
