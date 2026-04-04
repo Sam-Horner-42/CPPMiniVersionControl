@@ -18,37 +18,29 @@
 class Repository {
   std::string repoName;
   std::string repoPath;
-  std::vector<std::unique_ptr<TrackedFile>> files;
+  std::vector<TrackedFile> files;
   std::vector<std::unique_ptr<Commit>> commits;
 public:
   Repository();
   ~Repository();
-  bool initRepository(const std::string& repoName,const std::string& repoPath);
+
+  bool initRepository(const std::string& repoName, const std::string& repoPath);
   void addFile(const std::string& filepath);
   void stageFile(const std::string& filepath);
   bool commitChanges();
-  void getCommitHistory();
+
+  std::vector<std::string> getCommitHistory();
   int  getNumOfCommits();
+
+  TrackedFile& Repository::getTrackedFile(const std::string& filepath); // helper class to get the tracked file used in addFile
   int  getNumOfTrackedFiles();
+
   std::vector<TrackedFile> getFiles() const;
   bool fileIsTracked(const std::string& filepath);
-};
-    std::vector<TrackedFile> files;
-    std::vector<std::unique_ptr<Commit>> commits;
-    enum class fileStatus {Added, Modified, Staged, Committed};
-    
-    public:
-    
-    Repository::Repository();
-    Repository::~Repository();
 
-    bool initRepository(const std::string& repoName);
-    TrackedFile& Repository::getTrackedFile(const std::string& filepath); // helper class to get the tracked file used in addFile
-    void addFile(const std::string& filepath);
-    void stageFile(const std::string& filepath);
-    bool commitChanges();
-    std::vector<std::string> getCommitHistory();
-    void updateFileStatus(TrackedFile& file, enum fileStatus);
-    bool fileIsTracked(const std::string& filepath);
-    std::vector<TrackedFile> getFileVector();
-    };
+  //enum class fileStatus {Added, Modified, Staged, Committed};
+
+  void updateFileStatus(TrackedFile& file, TrackedFile::status newStatus);
+  
+  std::vector<TrackedFile> getFileVector();
+};

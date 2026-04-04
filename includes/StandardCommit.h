@@ -18,7 +18,9 @@ public:
         const std::string& timestamp
     );
     ~StandardCommit();
-    std::vector<std::string> getAllAttributes() override;
-    std::vector<std::string> displayCommit() override;
-    std::string getSummary() override;
+
+    // commented out the overrides because they dont override anything from commit.cpp or commit.h
+    std::vector<std::string> getAllAttributes(); //override;
+    std::vector<std::string> displayCommit(); //override;
+    std::string getSummary(); //override;
 };

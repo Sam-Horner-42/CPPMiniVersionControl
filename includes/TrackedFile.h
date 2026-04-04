@@ -1,7 +1,7 @@
 #ifndef TRACKED_FILE_H
 #define TRACKED_FILE_H
 
-#pragma once;
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -11,23 +11,29 @@
 class TrackedFile {
 
     public:
-    TrackedFile();
-    TrackedFile(const std::string& filePath, const std::string& status);
-    ~TrackedFile();
-
-    void updateContent(std::string filePath, std::string status);
-    std::vector<std::string> displayFileInfo();
-    std::string const getFileName();
-    std::string const getFilePath();
-    std::vector<std::string> const getFileContent();
-    std::string const TrackedFile::getFileStatus();
-    int const getEditCount();
+    enum class status {Added, Modified, Staged, Committed};
+    
     private:
     std::string filePath;
     std::string fileName;
     std::vector<std::string> content;
-    enum status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
     int editCount;
+    status currentStatus;
+
+    public:
+    TrackedFile();
+    TrackedFile(const std::string& filePath, const std::string& status);
+    ~TrackedFile();
+
+    void updateContent(std::string filePath, status fileStatus);
+
+    std::vector<std::string> displayFileInfo();
+    std::string getFileName() const;
+    std::string getFilePath() const;
+    std::vector<std::string> getFileContent() const;
+    status getFileStatus() const;
+
+    int const getEditCount();
 };
 
 #endif

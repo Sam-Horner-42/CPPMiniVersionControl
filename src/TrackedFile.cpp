@@ -2,7 +2,7 @@
 #include "../includes/TrackedFile.h"
 
 //functions
-void TrackedFile::updateContent(string filePath, string status) {
+void TrackedFile::updateContent(std::string filePath, status fileStatus) {
 
     //class filePath variable is set to the passed in filePath parameter
     this->filePath = filePath;
@@ -12,10 +12,10 @@ void TrackedFile::updateContent(string filePath, string status) {
     this->fileName = filePath.substr(filePath.find_last_of('/') + 1);
 
     //opens the file using the filePath parameter
-    ifstream file(filePath);
+    std::ifstream file(filePath);
     if (file.is_open()) { //checks if file is opened properly, if so then clear the content in the object to get a blank slate
         content.clear();
-        string line;
+        std::string line;
         while (getline(file, line)) { //use "line" string to get the whole file line by line passing it into the content vector
             content.push_back(line);
         }
@@ -33,7 +33,7 @@ void TrackedFile::updateContent(string filePath, string status) {
         this->content.clear();
     }
 
-    this->status = status;
+    this->currentStatus = fileStatus;
 }
 
 /**
@@ -41,28 +41,45 @@ void TrackedFile::updateContent(string filePath, string status) {
  * we are going to be passing this function to the GUI so rather than void or cout it should have a return with the string of all the file info
  * do the exact same thing but use a single string rather than multiple cout lines and it will be good
  */
-vector<string> TrackedFile::displayFileInfo() {  //fixed to be a vector<string> return since it was set to void which cant return anything
-    vector<string> info;
+std::vector<std::string> TrackedFile::displayFileInfo() {  //fixed to be a vector<string> return since it was set to void which cant return anything
+    std::vector<std::string> info;
     info.push_back("File: " + fileName);
     info.push_back("Path: " + filePath);
-    info.push_back("Status: " + status);
-    info.push_back("Total Edits: " + to_string(editCount));
+
+    std::string statusStr;
+    switch (currentStatus) {
+        case status::Added:
+            statusStr = "Added";
+            break;
+        case status::Modified:
+            statusStr = "Modified";
+            break;
+        case status::Staged:
+            statusStr = "Staged";
+            break;
+        case status::Committed:
+            statusStr = "Committed";
+            break;
+    }
+
+    info.push_back("Status: " + statusStr);
+    info.push_back("Total Edits: " + std::to_string(editCount));
     return info;
 }
 
-string const TrackedFile::getFileName() {
+std::string TrackedFile::getFileName() const {
     return fileName;
 }
-string const TrackedFile::getFilePath() { // readded const to have it work
+std::string TrackedFile::getFilePath() const { // readded const to have it work
     return filePath;
 }
 
-vector<string> const TrackedFile::getFileContent() {
+std::vector<std::string> TrackedFile::getFileContent() const {
     return content;
 }
 
-string const TrackedFile::getFileStatus() {
-    return status;
+TrackedFile::status TrackedFile::getFileStatus() const {
+    return currentStatus;
 }
 
 int const TrackedFile::getEditCount() { //fixed to have const in the correct spot

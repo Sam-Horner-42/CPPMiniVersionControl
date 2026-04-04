@@ -16,13 +16,8 @@
 #include "Repository.h"
 
 class Commit {
-private:
-    std::string commitId;
-    std::string parentId;
-    std::string message;
-    std::string author;
-    std::string timestamp;
-public:
+
+    public:
     // default constructor
     Commit(
         const std::string& commitId,
@@ -35,25 +30,30 @@ public:
     author(author), timestamp(timestamp) {}
 
     // class getters
-    std::string getId() { return commitId; }
-    std::string getParentCommit() { return parentId; }
-    std::string getMessage() { return message; }
-    std::string getAuthor() { return author; }
-    std::string getTimestamp() { return timestamp; }
+    std::string getParentId() const { return parentId; }
+    std::string getAuthor() const { return author; }
+    std::string getTimestamp() const { return timestamp; }
 
-    public:
-    string const getId();
-    string const getDate();
-    string const getMessages();
-    vector<TrackedFile> const getFiles();
+    std::string getId() const;
+    std::string getDate() const;
+    std::string getMessage() const;
+
     void displayCommit();
     void getSummary();
 
-    static bool checkStagedFiles(vector<TrackedFile> fileVector);
+    static bool checkStagedFiles(std::vector<TrackedFile> fileVector);
     static bool compareHashedFiles(TrackedFile comparingStagedFile);
     static void addToCommitVector(bool tf, TrackedFile addingStagedFile);
     static void clearCommitVector();
-    vector<string> commitToRepo(vector<TrackedFile> commitFiles);
+    std::vector<TrackedFile> getCommitVector() const;
+
+    private:
+    std::string commitId;
+    std::string parentId;
+    std::string message;
+    std::string author;
+    std::string timestamp;
+    static std::vector<TrackedFile> commitVector;
 };
 
 #endif

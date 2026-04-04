@@ -7,10 +7,10 @@
 
 #include <filesystem>
 #include <fstream>
+#include <stdexcept>
 
 #include "../includes/Repository.h"
 #include "../includes/TrackedFile.h"
-#include <../includes/Repository.h>
 
 using namespace std;
 
@@ -62,15 +62,15 @@ TrackedFile& Repository::getTrackedFile(const string& filepath) {
 void Repository::addFile(const string& filepath) {
   if(fileIsTracked(filepath)) {
     TrackedFile& file = getTrackedFile(filepath);
-    if (file.getFileStatus() == "Added") {
+    if (file.getFileStatus() == TrackedFile::status::Added) {
       return;
     }
-    updateFileStatus(file, fileStatus::Added);
+    updateFileStatus(file, TrackedFile::status::Added);
   }
   
   else {
     TrackedFile newFile;
-    newFile.updateContent(filepath, "Added");
+    newFile.updateContent(filepath, TrackedFile::status::Added);
     files.push_back(newFile);
   }
 }
@@ -91,19 +91,19 @@ void Repository::stageFile(const string& filepath) {
   TrackedFile& file = getTrackedFile(filepath);
   vector<string> localContent = extractFileContent(filepath);
   vector<string> trackedContent = file.getFileContent();
-  string status = file.getFileStatus();
+  TrackedFile::status status = file.getFileStatus();
   
-  if(status == "Added") {
-    updateFileStatus(file, fileStatus::Staged);
+  if(status == TrackedFile::status::Added) {
+    updateFileStatus(file, TrackedFile::status::Staged);
     return;
   }
 
   if(localContent != trackedContent) {
-    updateFileStatus(file, fileStatus::Modified);
+    updateFileStatus(file, TrackedFile::status::Modified);
     return;
   }
 
-  updateFileStatus(file, fileStatus::Staged);
+  updateFileStatus(file, TrackedFile::status::Staged);
 }
 
 // for Sam, this is the initial startingpoint for the commit button to call
@@ -166,24 +166,8 @@ bool Repository::fileIsTracked(const string& filepath) {
 // • restoreFile()
 // • getCommitHistory()
 
-void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
-  string status;
-  switch(newStatus) {
-    case fileStatus::Added:
-      status = "Added";
-      break;
-    case fileStatus::Modified:
-      status = "Modified";
-      break;
-    case fileStatus::Staged:
-      status = "Staged";
-      break;
-    case fileStatus::Committed:
-      status = "Committed";
-      break;
-  }
-
-  file.updateContent(file.getFilePath(), status);
+void Repository::updateFileStatus(TrackedFile& file, TrackedFile::status newStatus) {
+  file.updateContent(file.getFilePath(), newStatus);
 }
 
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs
@@ -195,7 +179,7 @@ vector<string> Repository::getCommitHistory() {
     for (auto& commit : commits) {
       string logCommit = "Commit ID: " + commit->getId() + 
        "Date: " + commit->getDate() + 
-       "Message: " + commit->getMessages();
+       "Message: " + commit->getMessage();
       // one commit pushed to vector
         commitHistoryVec.push_back(logCommit);
     }
