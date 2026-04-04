@@ -53,13 +53,6 @@ class Commit {
     std::string author;
     std::string timestamp;
     static std::vector<TrackedFile> commitVector;
-
-    std::vector<std::string> getAllAttributes();
-    Commit* getParentCommit();
-
-    vector<TrackedFile> const getFiles();
-    void displayCommit();
-    void getSummary();
 };
 
 #endif

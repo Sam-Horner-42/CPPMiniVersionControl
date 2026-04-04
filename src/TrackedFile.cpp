@@ -33,8 +33,8 @@ void TrackedFile::updateContent(std::string filePath, status fileStatus) {
         this->content.clear();
     }
 
-    this->status = status;
-    }
+    this->currentStatus = fileStatus;
+}
 
 /**
  * Mano-TODO: please fix to not use couts

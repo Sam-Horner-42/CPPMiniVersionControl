@@ -24,11 +24,12 @@ class TrackedFile {
     vector<string> getFileContent() const;
     Status::Status getFileStatus();
     int const getEditCount();
+    enum class status {Added, Modified, Staged, Committed};
+    
     private:
     std::string filePath;
     std::string fileName;
     std::vector<std::string> content;
-    std::string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
     int editCount;
     status currentStatus;
 

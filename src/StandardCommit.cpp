@@ -155,19 +155,19 @@ string StandardCommit::getSummary() {
     // combination of all getters into a predicable ordered
     // vector. ORDER: { ID, MESSAGE, AUTHOR, TIMESTAMP }
     // @return: vector of commit data in order.
-    vector<string> StandardCommit::getAllAttributes() {
-        vector<string> content;
+    std::vector<std::string> StandardCommit::getAllAttributes() {
+        std::vector<std::string> content;
 
-        content.push_back(getId() + "\n");
-        content.push_back(getMessage() + "\n");
-        content.push_back(getAuthor() + "\n");
-        content.push_back(getTimestamp() + "\n");
+        content.push_back(getId());
+        content.push_back(getMessage());
+        content.push_back(getAuthor());
+        content.push_back(getTimestamp());
 
         return content;
     }
 
     // returns a full vector containing all commit info
-    vector<string> StandardCommit::displayCommit() {
+    std::vector<std::string> StandardCommit::displayCommit() {
         return this->getAllAttributes();
     }
 
@@ -178,11 +178,37 @@ string StandardCommit::getSummary() {
         " Commit Message:\n" + getMessage();
     }
 
-    void StandardCommit::createSnapshot(const string& filename, const vector<string>& content) {
-        string contentstring;
+};
 
-        for (const auto& line : content) {
-            contentstring += line + "\n";
+/**
+ * under this header will be all the functions from the commit class
+ */
+
+ //unsure who is supposed to do displayCommit() and getSummary()
+ void Commit::displayCommit() {
+    //TODO: DISPLAY COMMIT
+}
+void Commit::getSummary() {
+    //TODO: GET COMMIT SUMMARY
+}
+
+bool Commit::checkStagedFiles(std::vector<TrackedFile> fileVector) {
+    //TODO: Check TrackedFile vector for which files are staged
+    // it should iterate through the whole vector to make sure everything is staged
+    // if a file is not staged then we return a false value
+
+    //get vector size for the looping
+    int vectorSize = fileVector.size();
+
+    //for loop to iterate through vector
+    for (int i = 0; i < vectorSize; i++) {
+        // check each file in the vector for if it is staged
+        // if not every file is staged then return false and abort the current commit
+        // the false return will cause the popup for listing every file that isnt staged and give the user the prompt for if they wish to try and stage those files, if that succeeds it will try to do a new commit
+        if (fileVector[i].getFileStatus() != TrackedFile::status::Staged) {
+            Commit::clearCommitVector();
+            return false;
+            break;
         }
 
         filesnapshot.insert({filename,contentstring});
