@@ -14,9 +14,9 @@ Repository RepositoryManager::createRepository(const string& repoName) {
     return repo;
 }
 
-    // this will load from persistant storage (files)
-    // have full path as the function input param
-    // return a fully filled repo object containing the repo contents
+// this will load from persistant storage (files)
+// have full path as the function input param
+// return a fully filled repo object containing the repo contents
 void RepositoryManager::loadRepostiory() {
     data.loadData(repo.getRepoName(),repo.getFileVector(),repo.getCommitVector());
 }

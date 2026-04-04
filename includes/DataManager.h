@@ -16,10 +16,7 @@
 using namespace std;
 
 class DataManager {
-public:
-    void saveData(string repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits);
-    bool loadData(const string& repositoryName, vector<TrackedFile>& files, vector<unique_ptr<Commit>>& commits);
-    string generateId(string repositoryName, vector<TrackedFile> files);
+    public:
+    void saveData(string repositoryName,  vector<TrackedFile> files, vector<unique_ptr<Commit>> commits);
+    bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits);
 };
-
-#endif
