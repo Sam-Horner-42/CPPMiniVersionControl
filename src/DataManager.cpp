@@ -6,7 +6,8 @@
 #include <iomanip>
 #include <filesystem>
 #include <sstream>
-
+#include <filesystem>
+#include <ctime>
 
 using json = nlohmann::json;
 
@@ -14,29 +15,62 @@ using namespace std;
 namespace fs = std::filesystem;
 
 
-string DataManager::generateId(string repositoryName, vector<TrackedFile> files){
+void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
 
-    /*
-    using the FNV-1a hasing algorithm without extras
-    FowlerNollVo hash function, we need two magic large numbers(given I didn't make them), offset and prime
-    use them based off contents of the files, convert the hash to a string and take the first 10
-    https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-    */
-    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
-    unsigned long long prime = 1099511628211ULL; // fnv-1a prime
-    for (auto& file : files){
-            string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
-            std::ifstream fileContentRead(txtFilePath, std::ios::binary);
-        char c;
-        while (fileContentRead.get(c)) {
-            hash = (hash ^ c) * prime;  
-        }
-        
+    if (!fs::exists("projects/" + repositoryName)){
+        fs::create_directories("projects/" + repositoryName);
     }
-    // Convert hash to string and take first 10 characters
-    string result = to_string(hash);
-    result = result.substr(0, 10);
-    return result;  
+    // files
+    for (auto& file : files){
+        string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
+        ofstream txtFileWrite(txtFilePath);
+            if (txtFileWrite.is_open()){
+                txtFileWrite << file.getFileContent();
+                txtFileWrite.close();
+            }
+    }
+    
+    // json
+    std::ofstream metadataJson("metadata.json");
+    json projectMetadata;
+    string metaDataPath = "projects/"+repositoryName+"/" + "metadata.json";
+
+    ifstream metadataIn(metaDataPath);
+    if (metadataIn.is_open()) {
+        metadataIn >> projectMetadata;
+        metadataIn.close();
+    }
+    // write files
+    projectMetadata["repositoryName"] = repositoryName;
+    json filesMetadata = json::array();
+    time_t timestamp;
+    time(&timestamp);
+    for (const auto& file : files) {
+        json tempObject;
+        tempObject["fileName"] = file.getFileName();
+        tempObject["filePath"] = file.getFilePath();
+        tempObject["lastModified"] = ctime(&timestamp);
+        filesMetadata.push_back(std::move(tempObject));
+    }
+    projectMetadata["files"] = filesMetadata;
+
+    // commits
+    json commitsData = json::array();
+    for (const auto& commit : commits){
+        json TempObj;
+        TempObj["id"] = commit.getId();
+        TempObj["date"] = commit.getDate();
+        TempObj["message"] = commit.getMessage();
+        commitsData.push_back(std::move(TempObj));
+    }
+       projectMetadata["commits"] = commitsData;
+    // metadata saving
+    ofstream metadataOut(metaDataPath);
+    if (metadataOut.is_open()) {
+        metadataOut << setw(4) << projectMetadata << endl;
+        metadataOut.close();
+    }
+    // datahandler.json
 }
 
 bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
