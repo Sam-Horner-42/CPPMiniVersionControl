@@ -11,16 +11,20 @@
 #include "../includes/TrackedFile.h"
 #include "../includes/Commit.h"
 #include "../includes/StandardCommit.h"
+#include "../includes/DataManager.h"
+
+#include <string>
 
 class RepositoryManager {
   private:
     Repository::Repository repo;
+    DataManager::DataManager data;
   public:
     RepositoryManager ();
     ~RepositoryManager();
     Repository::Repository RepositoryManager::createRepository(const std::string& repoName);
     void loadRepostiory();
-    void saveRepository();
+    bool saveRepository();
     Commit::Commit searchCommits(const std::string& searchString);
     void getFileStatus(const TrackedFile::TrackedFile& file);
 };
