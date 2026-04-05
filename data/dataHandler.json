@@ -1,0 +1,17 @@
+
+{
+    "_comment": "Test format, ids are fake and need to be hash based but you get the idea",
+    "projects": [
+        {
+            "name": "FitnessTracker",
+            "id": "3f2a1b4c",
+            "path": "projects/FitnessTracker"
+        }
+        ,
+        {
+            "name": "ProjectA",
+            "id": "abc4321",
+            "path": "projects/ProjectA"
+        }
+    ]
+}

@@ -11,6 +11,9 @@ Repository::Repository RepositoryManager::createRepository(const string& repoNam
     return repo;
 }
 
+// this will load from persistant storage (files)
+// have full path as the function input param
+// return a fully filled repo object containing the repo contents
 void RepositoryManager::loadRepostiory() {
 
 }
