@@ -33,8 +33,8 @@ void TrackedFile::updateContent(std::string filePath, status fileStatus) {
         this->content.clear();
     }
 
-    this->currentStatus = fileStatus;
-}
+    this->status = status;
+    }
 
 /**
  * Mano-TODO: please fix to not use couts
@@ -74,9 +74,9 @@ std::string TrackedFile::getFilePath() const { // readded const to have it work
     return filePath;
 }
 
-std::vector<std::string> TrackedFile::getFileContent() const {
-    return content;
-}
+    vector<string> const TrackedFile::getFileContent() {
+        return content;
+    }
 
 TrackedFile::status TrackedFile::getFileStatus() const {
     return currentStatus;

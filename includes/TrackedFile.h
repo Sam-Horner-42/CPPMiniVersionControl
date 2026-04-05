@@ -16,10 +16,19 @@ class TrackedFile {
     std::string getFileName() const;
     std::string getFilePath() const;
 
+    void updateContent(string filePath, string status);
+    void displayFileInfo();
+    std::string getFileName() const;
+    std::string getFileName() const;
+    string getFilePath();
+    vector<string> getFileContent() const;
+    Status::Status getFileStatus();
+    int const getEditCount();
     private:
     std::string filePath;
     std::string fileName;
     std::vector<std::string> content;
+    std::string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
     int editCount;
     status currentStatus;
 

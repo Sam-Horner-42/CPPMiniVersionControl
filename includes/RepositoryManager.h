@@ -7,6 +7,8 @@
 #ifndef REPOSITORYMANAGER_H
 #define REPOSITORYMANAGER_H
 
+#include <string>
+
 #include "../includes/Repository.h"
 #include "../includes/TrackedFile.h"
 #include "../includes/Commit.h"
@@ -24,11 +26,13 @@ class RepositoryManager {
     ~RepositoryManager();
     Repository::Repository RepositoryManager::createRepository(const std::string& repoName);
     void loadRepostiory();
-    bool saveRepository();
-    Commit::Commit searchCommits(const std::string& searchString);
+    void saveRepository();
+    Commit* searchCommits(const std::string& searchString);
     void getFileStatus(const TrackedFile::TrackedFile& file);
 
     void restore(const std::string& commitId);
+    Commit* getParentCommit(const std::string& commitId);
+    void restore(const std::string& commitId,const std::string& restoreCommitId);
 };
 
 #endif

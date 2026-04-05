@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 
 /*
  * class definitions for the Repository class
@@ -13,9 +13,6 @@
 
 #include "TrackedFile.h"
 #include "Commit.h"
-
-using namespace std;
-
 
 class Repository {
   std::string repoName;

@@ -7,7 +7,6 @@
  * Author: Jacob Dawes - 041169788, Spencer Scarlett 041151395, Ethan Geary 041032340
  */
 
-
 #include <string>
 #include <map>
 #include <vector>
@@ -38,7 +37,6 @@ class Commit {
     std::string getDate() const;
     std::string getMessage() const;
 
-<<<<<<< HEAD
     void displayCommit();
     void getSummary();
 
@@ -55,23 +53,13 @@ class Commit {
     std::string author;
     std::string timestamp;
     static std::vector<TrackedFile> commitVector;
-=======
+
+    std::vector<std::string> getAllAttributes();
     Commit* getParentCommit();
 
-    public:
-    string const getId();
-    string const getDate();
-    string const getMessages();
     vector<TrackedFile> const getFiles();
     void displayCommit();
     void getSummary();
-
-    bool checkStagedFiles(vector<TrackedFile> fileVector);
-    bool compareHashedFiles(TrackedFile comparingStagedFile);
-    void addToCommitVector(bool tf, TrackedFile addingStagedFile);
-    void clearCommitVector();
-    vector<string> commitToRepo(vector<TrackedFile> commitFiles);
->>>>>>> 34fbbdc (working on commit restoration.)
 };
 
 #endif
