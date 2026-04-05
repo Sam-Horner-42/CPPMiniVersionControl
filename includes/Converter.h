@@ -1,5 +1,7 @@
 // Header for the defined converter
 // This file converts data passed from the backend into QT version for easier display
+
+// Author: Samuel Horner
 #pragma once
 
 #include <QString>
