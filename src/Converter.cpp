@@ -2,6 +2,8 @@
 // This file handles conversions from regular C++ data to QT data
 // This will allow the GUI to remain seperate from the backend logic
 // This aids in abstraction and reduces duplicated code
+
+// Author: Samuel Horner
 #include "Converter.h"
 
 #include "../includes/TrackedFile.h"
