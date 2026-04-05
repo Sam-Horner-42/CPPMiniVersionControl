@@ -37,21 +37,12 @@ class Commit {
     std::string getDate() const;
     std::string getMessage() const;
 
+    std::vector<std::string> getAllAttributes();
     Commit* getParentCommit();
 
-    public:
-    string const getId();
-    string const getDate();
-    string const getMessages();
     vector<TrackedFile> const getFiles();
     void displayCommit();
     void getSummary();
-
-    bool checkStagedFiles(vector<TrackedFile> fileVector);
-    bool compareHashedFiles(TrackedFile comparingStagedFile);
-    void addToCommitVector(bool tf, TrackedFile addingStagedFile);
-    void clearCommitVector();
-    vector<string> commitToRepo(vector<TrackedFile> commitFiles);
 };
 
 #endif

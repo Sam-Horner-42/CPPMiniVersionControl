@@ -23,6 +23,10 @@ public:
     );
     ~StandardCommit();
 
+    // commented out the overrides because they dont override anything from commit.cpp or commit.h
+    std::vector<std::string> getAllAttributes(); //override;
+    std::vector<std::string> displayCommit(); //override;
+    std::string getSummary(); //override;
     void createSnapshot(const std::string& filename, const std::vector<std::string>& content);
     void updateSnapshot(const std::string& filename, const std::vector<std::string>& content);
     std::vector<std::string> getAllAttributes() override;
