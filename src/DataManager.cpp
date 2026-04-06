@@ -32,7 +32,9 @@ string DataManager::generateId(string repositoryName, vector<TrackedFile> files)
     result = result.substr(0, 10);
     return result;  
 }
-
+/**
+ * Trying to get this to push to main for some reason it's preventing that.
+ */
 void DataManager::saveData(string repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
 
     if (!fs::exists("projects/" + repositoryName)){
