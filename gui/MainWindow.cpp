@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include <QMessageBox>
 
 namespace Ui {
     class MainWindow;
@@ -102,6 +103,14 @@ void MainWindow::setupTabWidgets() {
 void MainWindow::on_commitStaged_clicked()
 {
 	QString commitMessage = ui.commitInput->toPlainText();
+	
+
+	if (commitMessage.isEmpty()) {
+		QMessageBox::warning(this, "Commit Message Required", "Commit message cannot be empty!");
+		ui.commitInput->setFocus();
+		return;
+	}
+
 	qDebug() << "Commit Staged button clicked. Message:" << commitMessage;
 	// if (!commitMessage.isEmpty() && currentRepo) {
 	//     currentRepo->commit(commitMessage.toStdString());
@@ -175,6 +184,7 @@ void MainWindow::on_actionCommit_Staged_triggered()
 {
 	qDebug() << "Commit Staged action triggered from Menu.";
 	// Simple call to the button logic to avoid complicating things
+	
 	on_commitStaged_clicked();
 }
 
