@@ -1,6 +1,29 @@
 
 #include "../includes/RepositoryManager.h"
 
+// do not touch, json work
+#include "../includes/nlohmann/json.hpp"
+using json = nlohmann::json;
+
+/*
+ * Sam Required function
+ */
+RepositoryManager::Project RepositoryManager::getProjectInfo() {
+    Project result;  
+    
+    std::ifstream file("dataHandler.json");
+    json data = json::parse(file);
+    
+    for (auto& project : data["projects"]) {
+        result.name = project["name"];
+        result.id = project["id"];
+        result.path = project["path"];
+        return result;
+    }
+    
+    return result;
+}
+
 RepositoryManager::RepositoryManager(Repository& repo) :
 repo(repo) {}
 
