@@ -8,13 +8,43 @@ using namespace std;
 namespace fs = std::filesystem;
 
 
-void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
+string DataManager::generateId(string repositoryName, vector<TrackedFile> files){
+
+    /*
+    using the FNV-1a hasing algorithm without extras
+    FowlerNollVo hash function, we need two magic large numbers(given I didn't make them), offset and prime
+    use them based off contents of the files, convert the hash to a string and take the first 10
+    https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+    */
+    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
+    unsigned long long prime = 1099511628211ULL; // fnv-1a prime
+    for (auto& file : files){
+            string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
+            std::ifstream fileContentRead(txtFilePath, std::ios::binary);
+        char c;
+        while (fileContentRead.get(c)) {
+            hash = (hash ^ c) * prime;  
+        }
+        
+    }
+    // Convert hash to string and take first 10 characters
+    string result = to_string(hash);
+    result = result.substr(0, 10);
+    return result;  
+}
+/**
+ * Trying to get this to push to main for some reason it's preventing that.
+ */
+void DataManager::saveData(string repositoryName) {
 
     if (!fs::exists("projects/" + repositoryName)){
         fs::create_directories("projects/" + repositoryName);
     }
 
-    
+    // Future ethan work? no idea anymore
+    vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();
+    vector<TrackedFile> files = RepositoryManager::getFileVector();
+
     // files
     for (auto& file : files){
         string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
@@ -108,7 +138,12 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
     
 }
 
-bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
+bool loadData(const std::string& repositoryName) {
+
+    // Future ethan work? no idea anymore
+    vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();
+    vector<TrackedFile> files = RepositoryManager::getFileVector();
+
     string pathDataHandler = "dataHandler.json";
     std::ifstream in(pathDataHandler);
     if (!in.is_open()) { 
