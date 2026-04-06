@@ -8,6 +8,23 @@ using namespace std;
 namespace fs = std::filesystem;
 
 
+/*
+
+*/
+string DataManager::singleHash(string repositoryName, string fileName){
+    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
+    unsigned long long prime = 1099511628211ULL; // fnv-1a prime
+    string txtFilePath = "projects/" + repositoryName + "/" + fileName;
+    std::ifstream fileContentRead(txtFilePath, std::ios::binary);
+    char c;
+    while (fileContentRead.get(c)) {
+        hash = (hash ^ c) * prime;  
+    }
+    string result = to_string(hash);
+    result = result.substr(0, 10);
+    return result;  
+}
+
 string DataManager::generateId(string repositoryName, vector<TrackedFile> files){
 
     /*
@@ -19,8 +36,8 @@ string DataManager::generateId(string repositoryName, vector<TrackedFile> files)
     unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
     unsigned long long prime = 1099511628211ULL; // fnv-1a prime
     for (auto& file : files){
-            string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
-            std::ifstream fileContentRead(txtFilePath, std::ios::binary);
+        string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
+        std::ifstream fileContentRead(txtFilePath, std::ios::binary);
         char c;
         while (fileContentRead.get(c)) {
             hash = (hash ^ c) * prime;  
@@ -43,7 +60,7 @@ void DataManager::saveData(string repositoryName) {
 
     // Future ethan work? no idea anymore
     vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();
-    vector<TrackedFile> files = RepositoryManager::getFileVector();
+    vector<TrackedFile> files = RepositoryManager.getFileVector();
 
     // files
     for (auto& file : files){
