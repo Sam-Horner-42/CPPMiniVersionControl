@@ -12,7 +12,9 @@ using string = std::string;
 using cout = std::cout;
 using endl = std::endl;
 
-using namespace std;
+using string = std::string;
+using cout = std::cout;
+using endl = std::endl;
 
 #define REPOWRAPPER ".vcm"
 
@@ -20,7 +22,9 @@ Repository::Repository() {};
 
 Repository::~Repository() {};
 
-bool Repository::initRepository(const string& repoName, const string& repoPath) {
+std::string Repository::getRepoName() { return repoName; }
+
+bool Repository::initRepository(const string& repoName,const string& repoPath) {
 
   this->repoPath = repoPath;
   
@@ -178,7 +182,7 @@ vector<string> Repository::getCommitHistory() {
     vector<string> commitHistoryVec;
     for (auto& commit : commits) {
       string logCommit = "Commit ID: " + commit->getId() + 
-       "Date: " + commit->getDate() + 
+       "Date: " + commit->getTimestamp() + 
        "Message: " + commit->getMessage();
       // one commit pushed to vector
         commitHistoryVec.push_back(logCommit);

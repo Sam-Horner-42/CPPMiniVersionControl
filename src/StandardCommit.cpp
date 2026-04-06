@@ -13,54 +13,59 @@ vector<string> StandardCommit::getAllAttributes() {
     content.push_back(getAuthor() + "\n");
     content.push_back(getTimestamp() + "\n");
 
-    // default destructor
-    StandardCommit::~StandardCommit() {}
+    return content;
+}
 
-    // combination of all getters into a predicable ordered
-    // vector. ORDER: { ID, MESSAGE, AUTHOR, TIMESTAMP }
-    // @return: vector of commit data in order.
-    vector<string> StandardCommit::getAllAttributes() {
-        vector<string> content;
+// returns a full vector containing all commit info
+vector<string> StandardCommit::displayCommit() {
+    return this->getAllAttributes();
+}
 
-        content.push_back(getId() + "\n");
-        content.push_back(getMessage() + "\n");
-        content.push_back(getAuthor() + "\n");
-        content.push_back(getTimestamp() + "\n");
+// returns a small summary commit id and message
+string StandardCommit::getSummary() {
+    return "Commit ID: " + getId() +
+    " Parent ID: " + getParentId() +
+    " Commit Message:\n" + getMessage();
+}
 
-        return content;
+void StandardCommit::createSnapshot(const string& filename, const vector<string>& content) {
+    string contentstring;
+
+    for (const auto& line : content) {
+        contentstring += line + "\n";
     }
 
-    // returns a full vector containing all commit info
-    vector<string> StandardCommit::displayCommit() {
-        return this->getAllAttributes();
+    fileSnapshot.insert({filename, contentstring});
+}
+
+void StandardCommit::updateSnapshot(const string& filename, const vector<string>& content) {
+    string contentstring;
+
+    for (const auto& line : content) {
+        contentstring += line + "\n";
     }
 
-    // returns a small summary commit id and message
-    string StandardCommit::getSummary() {
-        return "Commit ID: " + getId() +
-        " Parent ID: " + getParentId() +
-        " Commit Message:\n" + getMessage();
+    fileSnapshot[filename] = contentstring;
+}
+
+void StandardCommit::createSnapshot(const string& filename, const vector<string>& content) {
+    string contentstring;
+
+    for (const auto& line : content) {
+        contentstring += line + "\n";
     }
 
-    void StandardCommit::createSnapshot(const string& filename, const vector<string>& content) {
-        string contentstring;
+    filesnapshot.insert({filename,contentstring});
+}
 
-        for (const auto& line : content) {
-            contentstring += line + "\n";
-        }
+void StandardCommit::updateSnapshot(const string& filename, const vector<string>& content) {
+    string contentstring;
 
-        filesnapshot.insert({filename,contentstring});
+    for (const auto& line : content) {
+        contentstring += line + "\n";
     }
-
-    void StandardCommit::updateSnapshot(const string& filename, const vector<string>& content) {
-        string contentstring;
-
-        for (const auto& line : content) {
-            contentstring += line + "\n";
-        }
-                filesnapshot[filename] = contentstring;
-    }
-};
+            filesnapshot[filename] = contentstring;
+}
 
 // returns a full vector containing all commit info
 vector<string> StandardCommit::displayCommit() {
@@ -137,4 +142,20 @@ void Commit::clearCommitVector() {
 // for spencer, what i was thinking was just you take the commitVector, which holds each file object being commit, and put that into the repo as the intended txt structure
 std::vector<TrackedFile> Commit::getCommitVector() const {
     return commitVector;
+}
+
+//functions to be used in Repository.cpp
+string Commit::getId() const {
+    return commitId;
+}
+
+string Commit::getDate() const {
+    return timestamp;
+}
+
+string Commit::getMessage() const {
+    return message;
+bool StandardCommit::hasFile(const string& filename) {
+    auto it = fileSnapshot.find(filename);
+    return it != fileSnapshot.end() ? true : false;
 }

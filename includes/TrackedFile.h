@@ -19,7 +19,7 @@ class TrackedFile {
     std::string commitMessage;
 
     public:
-    TrackedFile(const std::string& filePath, status status);
+    TrackedFile(const std::string& filePath, const std::string& status);
     ~TrackedFile();
 
     enum class status {Added, Modified, Staged, Committed};
