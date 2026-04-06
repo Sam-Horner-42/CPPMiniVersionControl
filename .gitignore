@@ -55,6 +55,9 @@ nunit-*.xml
 [Rr]eleasePS/
 dlldata.c
 
+# private folder
+notforgit/
+
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
 
