@@ -1,8 +1,8 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
-#include <TrackedFile.h>
-#include <Commit.h>
+#include "TrackedFile.h"
+#include "Commit.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
