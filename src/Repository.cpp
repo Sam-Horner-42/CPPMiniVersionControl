@@ -7,10 +7,9 @@
 
 #include "../includes/Repository.h"
 
-using std::string;
-using std::cout;
-using std::endl;
-using std::vector;
+using string = std::string;
+using cout = std::cout;
+using endl = std::endl;
 
 #define REPOWRAPPER ".vcm"
 
@@ -176,9 +175,24 @@ bool Repository::fileIsTracked(const string& filepath) {
   return foundFile;
 }
 
-void Repository::updateFileStatus(TrackedFile& file, TrackedFile::status newStatus) {
+void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
+  string status;
+  switch(newStatus) {
+    case fileStatus::Added:
+      status = "Added";
+      break;
+    case fileStatus::Modified:
+      status = "Modified";
+      break;
+    case fileStatus::Staged:
+      status = "Staged";
+      break;
+    case fileStatus::Committed:
+      status = "Committed";
+      break;
+  }
 
-  file.updateContent(file.getFilePath(), newStatus);
+  file.updateContent(file->getFilePath(), status);
 }
 
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs

@@ -17,13 +17,11 @@
 
 class Commit {
 
-    private:
     std::string commitId;
     std::string parentId;
     std::string message;
     std::string author;
     std::string timestamp;
-    
 
     public:
     // default constructor

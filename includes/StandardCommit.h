@@ -22,13 +22,13 @@ public:
 	) : Commit(commitId, parentId, message, author, timestamp) {}
 	~StandardCommit() {}
 
-	std::vector<std::string> getAllAttributes() override;
-	std::vector<std::string> displayCommit() override;
-	std::string getSummary() override;
+    std::vector<std::string> getAllAttributes() override;
+    std::vector<std::string> displayCommit() override;
+    std::string getSummary() override;
 
-	void createSnapshot(const std::string& filename, const std::vector<std::string>& content);
-	void updateSnapshot(const std::string& filename, const std::vector<std::string>& content);
-	bool hasFile(const std::string& filename) override;
+    void createSnapshot(const std::string& filename, const std::vector<std::string>& content);
+    void updateSnapshot(const std::string& filename, const std::vector<std::string>& content);
+    bool hasFile(const std::string& filename) override;
 
 	StandardCommit* getParentCommit(std::string parentId);
 	

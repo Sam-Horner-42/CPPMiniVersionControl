@@ -22,10 +22,10 @@ class TrackedFile {
     std::string commitMessage;
 
     public:
-    TrackedFile(const std::string& filePath, status status);
+    TrackedFile(const std::string& filePath, const std::string& status);
     ~TrackedFile();
 
-    //enum class status {Added, Modified, Staged, Committed};
+    enum class status {Added, Modified, Staged, Committed};
 
     void updateContent(std::string filePath, status fileStatus);
 
@@ -37,7 +37,7 @@ class TrackedFile {
     std::string getCommitMessage() const;
     void setCommitMessage(std::string commitMsg);
 
-    int getEditCount() const;
+    int getEditCount();
 };
 
 #endif
