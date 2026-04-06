@@ -4,7 +4,7 @@
 RepositoryManager::RepositoryManager() {}
 RepositoryManager::~RepositoryManager() {}
 
-Repository::Repository RepositoryManager::createRepository(const string& repoName) {
+Repository RepositoryManager::createRepository(const string& repoName) {
     Repository repo;
     // initialize the repo with a name 
     repo.initRepository(repoName);
@@ -16,7 +16,7 @@ Repository::Repository RepositoryManager::createRepository(const string& repoNam
     // have full path as the function input param
     // return a fully filled repo object containing the repo contents
 void RepositoryManager::loadRepostiory() {
-        
+    data.loadData(repo.getRepoName(),repo.getFileVector(),repo.getCommitVector());
 }
 
 bool RepositoryManager::saveRepository() {
@@ -30,7 +30,7 @@ bool RepositoryManager::saveRepository() {
     return true;    
 }
 
-Commit::Commit searchCommits(const std::string& searchString) {
+Commit searchCommits(const std::string& searchString) {
     
 }
 
