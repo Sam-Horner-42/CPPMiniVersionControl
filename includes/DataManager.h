@@ -1,5 +1,4 @@
-#ifndef DATAMANAGER_H
-#define DATAMANAGER_H
+#pragma once
 
 #include <TrackedFile.h>
 #include <Commit.h>

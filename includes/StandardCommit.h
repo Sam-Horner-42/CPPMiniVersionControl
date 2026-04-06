@@ -1,6 +1,3 @@
-/*
-    Definition of the Standard Commit class
-*/
 #pragma once
 
 #include <vector>
@@ -8,10 +5,10 @@
 #include <map>
 
 #include "../includes/Commit.h"
+#include "../includes/TrackedFile.h"
 
 class StandardCommit : public Commit {
 private:
-    /* key is the file name, value is file content */
     std::map<std::string, std::string> fileSnapshot;
 public:
     StandardCommit(
@@ -23,19 +20,17 @@ public:
     );
     ~StandardCommit();
 
-    // commented out the overrides because they dont override anything from commit.cpp or commit.h
-    std::vector<std::string> getAllAttributes(); //override;
-    std::vector<std::string> displayCommit(); //override;
-    std::string getSummary(); //override;
-    void createSnapshot(const std::string& filename, const std::vector<std::string>& content);
-    void updateSnapshot(const std::string& filename, const std::vector<std::string>& content);
     std::vector<std::string> getAllAttributes() override;
     std::vector<std::string> displayCommit() override;
     std::string getSummary() override;
 
-    bool checkStagedFiles(vector<TrackedFile> fileVector);
+    void createSnapshot(const std::string& filename, const std::vector<std::string>& content);
+    void updateSnapshot(const std::string& filename, const std::vector<std::string>& content);
+    bool hasFile(const std::string& filename) override;
+
+    bool checkStagedFiles(std::vector<TrackedFile> fileVector);
     bool compareHashedFiles(TrackedFile comparingStagedFile);
     void addToCommitVector(bool tf, TrackedFile addingStagedFile);
     void clearCommitVector();
-    vector<string> commitToRepo(vector<TrackedFile> commitFiles);
+    std::vector<std::string> commitToRepo(std::vector<TrackedFile> commitFiles);
 };

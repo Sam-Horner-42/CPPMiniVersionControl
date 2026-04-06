@@ -7,7 +7,9 @@
 
 #include "../includes/Repository.h"
 
-using namespace std;
+using string = std::string;
+using cout = std::cout;
+using endl = std::endl;
 
 #define REPOWRAPPER ".vcm"
 
@@ -15,7 +17,9 @@ Repository::Repository() {};
 
 Repository::~Repository() {};
 
-bool Repository::initRepository(const string& repoName, const string& repoPath) {
+std::string Repository::getRepoName() { return repoName; }
+
+bool Repository::initRepository(const string& repoName,const string& repoPath) {
 
   this->repoPath = repoPath;
   
@@ -145,8 +149,24 @@ bool Repository::fileIsTracked(const string& filepath) {
   return foundFile;
 }
 
-void Repository::updateFileStatus(TrackedFile& file, TrackedFile::status newStatus) {
-  file.updateContent(file.getFilePath(), newStatus);
+void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
+  string status;
+  switch(newStatus) {
+    case fileStatus::Added:
+      status = "Added";
+      break;
+    case fileStatus::Modified:
+      status = "Modified";
+      break;
+    case fileStatus::Staged:
+      status = "Staged";
+      break;
+    case fileStatus::Committed:
+      status = "Committed";
+      break;
+  }
+
+  file.updateContent(file->getFilePath(), status);
 }
 
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs
@@ -157,7 +177,7 @@ vector<string> Repository::getCommitHistory() {
     vector<string> commitHistoryVec;
     for (auto& commit : commits) {
       string logCommit = "Commit ID: " + commit->getId() + 
-       "Date: " + commit->getDate() + 
+       "Date: " + commit->getTimestamp() + 
        "Message: " + commit->getMessage();
       // one commit pushed to vector
         commitHistoryVec.push_back(logCommit);
@@ -174,8 +194,8 @@ const vector<TrackedFile>& Repository::getFileVector() const {
 Commit* Repository::findCommit(const string& commitId) {
   if(commitId.empty()) return nullptr;
 
-  for (auto i = 0; i < commits.size(); i++) {
-    if(commits[i].getId() == commitId) return commits[i].get();
+  for (const auto& commit : commits) {
+    if(commit->getId() == commitId) return commit.get();
   }
 
   return nullptr;
