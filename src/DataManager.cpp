@@ -35,13 +35,16 @@ string DataManager::generateId(string repositoryName, vector<TrackedFile> files)
 /**
  * Trying to get this to push to main for some reason it's preventing that.
  */
-void DataManager::saveData(string repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
+void DataManager::saveData(string repositoryName) {
 
     if (!fs::exists("projects/" + repositoryName)){
         fs::create_directories("projects/" + repositoryName);
     }
 
-    
+    // Future ethan work? no idea anymore
+    vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();
+    vector<TrackedFile> files = RepositoryManager::getFileVector();
+
     // files
     for (auto& file : files){
         string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
@@ -135,7 +138,12 @@ void DataManager::saveData(string repositoryName, vector<TrackedFile> files, vec
     
 }
 
-bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
+bool loadData(const std::string& repositoryName) {
+
+    // Future ethan work? no idea anymore
+    vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();
+    vector<TrackedFile> files = RepositoryManager::getFileVector();
+
     string pathDataHandler = "dataHandler.json";
     std::ifstream in(pathDataHandler);
     if (!in.is_open()) { 
