@@ -84,6 +84,14 @@ TrackedFile::status TrackedFile::getFileStatus() const {
     return currentStatus;
 }
 
+std::string TrackedFile::getCommitMessage() const {
+    return commitMessage;
+}
+
+void TrackedFile::setCommitMessage(std::string commitMsg) {
+    this->commitMessage = commitMsg;
+}
+
 int const TrackedFile::getEditCount() { //fixed to have const in the correct spot
     return editCount; 
 }

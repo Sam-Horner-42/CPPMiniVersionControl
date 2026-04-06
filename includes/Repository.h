@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 #include "TrackedFile.h"
 #include "Commit.h"
@@ -45,4 +46,7 @@ public:
   
   std::vector<TrackedFile> getFileVector();
   Commit* findCommit(const std::string& commitId);
+
+  const std::vector<TrackedFile>& Repository::getFileVector() const;
+  
 };
