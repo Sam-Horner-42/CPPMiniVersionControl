@@ -1,6 +1,6 @@
 #ifndef COMMIT_H
 #define COMMIT_H
-#pragma once;
+#pragma once
 
 /*
  * class definitions for the commit class

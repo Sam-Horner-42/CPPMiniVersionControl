@@ -18,8 +18,9 @@ using namespace std;
 
 Repository::Repository() {};
 
-Repository::~Repository() {}
+Repository::~Repository() {};
 
+std::string getRepoName(){return repoName;}
 bool Repository::initRepository(const string& repoName,const string& repoPath) {
 
   this->repoPath = repoPath;

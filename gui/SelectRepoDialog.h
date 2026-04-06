@@ -1,31 +1,41 @@
-// SelectRepoDialog.h
 #pragma once
+
 #include <QtWidgets/QDialog>
-#include<QString>
-#include<QStandardItemModel>
+#include <QString>
+#include <QStandardItemModel>
+#include <QMap> // Added just to be safe, since you use QMap below
 #include <QDebug>
 #include "ui_SelectRepoDialog.h"
 
+// Struct to bundle the repo data together
+struct RepoInfo {
+	QString name;
+	QString id;
+	QString path;
+};
+
 class SelectRepoDialog : public QDialog
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    SelectRepoDialog(QWidget* parent = nullptr);
-    ~SelectRepoDialog();
+	SelectRepoDialog(QWidget* parent = nullptr);
+	~SelectRepoDialog();
 
-    // Methods to get the data back to StartingWindow
-    QString getSelectedRepoName() const;
-    QString getSelectedRepoPath() const;
+	// Methods to get the data back to StartingWindow
+	QString getSelectedRepoName() const;
+	QString getSelectedRepoPath() const;
 
 private slots:
-    void on_okButton_clicked();
+	void on_okButton_clicked();
 
 private:
+	Ui::SelectRepoDialog ui;
+	QStandardItemModel* model; // 
 
-    Ui::SelectRepoDialog ui;
-    QStandardItemModel* model; // 
+	// Map of repo names and file paths
+	QMap<QString, RepoInfo> repoMap;
 
-    // Map of repo names and file paths
-    QMap<QString, QString> repoMap;
+	// Helper method to parse the JSON
+	void loadJsonIntoMap();
 };
