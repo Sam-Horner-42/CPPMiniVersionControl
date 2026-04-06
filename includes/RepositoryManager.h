@@ -16,10 +16,19 @@
 
 class RepositoryManager {
   private:
+  
     Repository repo;
     DataManager data;
   public:
-    RepositoryManager(Repository& repo);
+  struct Project{
+      string name;
+      string id;
+      string path;
+    };
+
+    Project getProjectInfo();
+
+    RepositoryManager (Repository& repo);
     ~RepositoryManager();
     Repository RepositoryManager::createRepository(const std::string& repoName);
     void loadRepostiory();
