@@ -1,24 +1,24 @@
-/*
- * Definition for the Analytics Engine class
- * Author: Jacob Dawes - 041169788
- */
+// /*
+//  * Definition for the Analytics Engine class
+//  * Author: Jacob Dawes - 041169788
+//  */
 
-#ifndef ANALYTICSENGINE_H
-#define ANALYTICSENGINE_H
+// #ifndef ANALYTICSENGINE_H
+// #define ANALYTICSENGINE_H
 
-#include <string>
-#include <iostream>
-#include <iomanip>
+// #include <string>
+// #include <iostream>
+// #include <iomanip>
 
-using namespace std;
+// using namespace std;
 
-template <typename T>
-class AnalyticsEngine {
-public:
-    int computeTotalCommits(const T& repo);
-    int  computeTrackedFilesCount(const T& repo);
-    void computeMostModifiedFiles(const T& repo);
-};
-#include "AnalyticsEngine.cpp" 
+// template <typename T>
+// class AnalyticsEngine {
+// public:
+//     int computeTotalCommits(const T& repo);
+//     int  computeTrackedFilesCount(const T& repo);
+//     void computeMostModifiedFiles(const T& repo);
+// };
+// #include "AnalyticsEngine.cpp" 
 
-#endif
+// #endif

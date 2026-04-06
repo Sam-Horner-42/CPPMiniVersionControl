@@ -109,10 +109,12 @@ void Commit::clearCommitVector() {
     commitVector.clear();
 }
 
-// for Sam
-// the when we are fully confirming the commit to be pushed to the repository we will call this function
-// as of right now it stores all the committed file names into a string vector and passes that back since jacob had suggested for that to be the case
-// i will change this function as needed since im sure there must be more to it than this
+// this function is a getter for the commit vector. The commit vector is just a vector of the tracked files that are specifically getting commit into the repo.
+// How I have the committing set up is just that i have a few functions that narrow down the tracked files vector to just transfer staged files that have a different hash to the repo file
+// this commitVector just stores those files that have a different hash to the repository old version, and then they all have the status set to Commit.
+// its entirely used for another function to get that commitVector during the commit.
+
+// for spencer, what i was thinking was just you take the commitVector, which holds each file object being commit, and put that into the repo as the intended txt structure
 std::vector<TrackedFile> Commit::getCommitVector() const {
     return commitVector;
 }

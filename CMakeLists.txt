@@ -31,7 +31,6 @@ set(PROJECT_SOURCES
     gui/SelectRepoDialog.ui
     gui/SelectRepoDialog.h
     gui/SelectRepoDialog.cpp
-    #src/Commit.cpp
     #src/AnalyticsEngine.cpp
     #src/DiffEngine.cpp
     #src/Repository.cpp
