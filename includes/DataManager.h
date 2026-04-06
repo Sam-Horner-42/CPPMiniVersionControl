@@ -1,8 +1,8 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
-#include "TrackedFile.h"
-#include "Commit.h"
+#include <TrackedFile.h>
+#include <Commit.h>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -22,3 +22,5 @@ public:
     void saveData(string repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits);
     bool loadData(const string& repositoryName, vector<TrackedFile>& files, vector<unique_ptr<Commit>>& commits);
 };
+
+#endif
