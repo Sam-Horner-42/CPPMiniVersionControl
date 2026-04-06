@@ -11,7 +11,7 @@
 
 Repository::Repository() {};
 
-Repository::~Repository() {}
+Repository::~Repository() {};
 
 bool Repository::initRepository(const std::string& repoName, const std::string& repoPath) {
 
@@ -145,20 +145,6 @@ bool Repository::fileIsTracked(const std::string& filepath) {
   return foundFile;
 }
 
-
-// 4. Repository
-// Attributes:
-// • repoName : string
-// • files : vector<TrackedFile>
-// • commits : vector<unique_ptr<Commit>>
-// Behaviors:
-// • initRepository()
-// • addFile()
-// • stageFile()
-// • commitChanges()
-// • restoreFile()
-// • getCommitHistory()
-
 void Repository::updateFileStatus(TrackedFile& file, TrackedFile::status newStatus) {
   file.updateContent(file.getFilePath(), newStatus);
 }
@@ -182,4 +168,15 @@ std::vector<std::string> Repository::getCommitHistory() {
 
 const std::vector<TrackedFile>& Repository::getFileVector() const {
   return files;
+}
+
+/* find commits within the repostiroy's commits vector. */
+Commit* Repository::findCommit(const std::string& commitId) {
+  if(commitId.empty()) return nullptr;
+
+  for (auto i = 0; i < commits.size(); i++) {
+    if(commits[i].getId() == commitId) return commits[i].get();
+  }
+
+  return nullptr;
 }

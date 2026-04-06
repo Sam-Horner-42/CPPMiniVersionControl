@@ -22,7 +22,6 @@ class TrackedFile {
     std::string commitMessage;
 
     public:
-    TrackedFile();
     TrackedFile(const std::string& filePath, const std::string& status);
     ~TrackedFile();
 

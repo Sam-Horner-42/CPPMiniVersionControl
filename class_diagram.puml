@@ -1,5 +1,7 @@
 @startuml MiniVCS Class Diagram
 
+title "Mini Version Controller - Class Diagram"
+
 skinparam classAttributeIconSize 0
 skinparam classFontStyle Bold
 
@@ -62,6 +64,7 @@ class Repository {
     + getFiles() : vector<TrackedFile>
     + getRepositoryName() : string
     + generateCommitID() : string
+    + getNumOfCommits() : int
 }
 
 class DiffEngine {

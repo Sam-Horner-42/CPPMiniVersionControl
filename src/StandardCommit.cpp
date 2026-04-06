@@ -1,5 +1,7 @@
 #include "../includes/StandardCommit.h"
 
+using namespace std;
+
 class StandardCommit : public Commit {
 
     // default constructor
@@ -17,29 +19,47 @@ class StandardCommit : public Commit {
     // combination of all getters into a predicable ordered
     // vector. ORDER: { ID, MESSAGE, AUTHOR, TIMESTAMP }
     // @return: vector of commit data in order.
-    std::vector<std::string> StandardCommit::getAllAttributes() {
-        std::vector<std::string> content;
+    vector<string> StandardCommit::getAllAttributes() {
+        vector<string> content;
 
-        content.push_back(getId());
-        content.push_back(getMessage());
-        content.push_back(getAuthor());
-        content.push_back(getTimestamp());
+        content.push_back(getId() + "\n");
+        content.push_back(getMessage() + "\n");
+        content.push_back(getAuthor() + "\n");
+        content.push_back(getTimestamp() + "\n");
 
         return content;
     }
 
     // returns a full vector containing all commit info
-    std::vector<std::string> StandardCommit::displayCommit() {
+    vector<string> StandardCommit::displayCommit() {
         return this->getAllAttributes();
     }
 
     // returns a small summary commit id and message
-    std::string StandardCommit::getSummary() {
+    string StandardCommit::getSummary() {
         return "Commit ID: " + getId() +
         " Parent ID: " + getParentId() +
         " Commit Message:\n" + getMessage();
     }
 
+    void StandardCommit::createSnapshot(const string& filename, const vector<string>& content) {
+        string contentstring;
+
+        for (const auto& line : content) {
+            contentstring += line + "\n";
+        }
+
+        filesnapshot.insert({filename,contentstring});
+    }
+
+    void StandardCommit::updateSnapshot(const string& filename, const vector<string>& content) {
+        string contentstring;
+
+        for (const auto& line : content) {
+            contentstring += line + "\n";
+        }
+                filesnapshot[filename] = contentstring;
+    }
 };
 
 /**
@@ -115,19 +135,19 @@ void Commit::clearCommitVector() {
 // its entirely used for another function to get that commitVector during the commit.
 
 // for spencer, what i was thinking was just you take the commitVector, which holds each file object being commit, and put that into the repo as the intended txt structure
-std::vector<TrackedFile> Commit::getCommitVector() const {
+vector<TrackedFile> Commit::getCommitVector() const {
     return commitVector;
 }
 
 //functions to be used in Repository.cpp
-std::string Commit::getId() const {
+string Commit::getId() const {
     return commitId;
 }
 
-std::string Commit::getDate() const {
+string Commit::getDate() const {
     return timestamp;
 }
 
-std::string Commit::getMessage() const {
+string Commit::getMessage() const {
     return message;
 }

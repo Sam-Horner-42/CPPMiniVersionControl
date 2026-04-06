@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 
 /*
  * class definitions for the Repository class
@@ -14,7 +14,6 @@
 
 #include "TrackedFile.h"
 #include "Commit.h"
-
 
 class Repository {
   std::string repoName;
@@ -42,9 +41,8 @@ public:
   //enum class fileStatus {Added, Modified, Staged, Committed};
 
   void updateFileStatus(TrackedFile& file, TrackedFile::status newStatus);
-  
-  std::vector<TrackedFile> getFileVector();
 
   const std::vector<TrackedFile>& Repository::getFileVector() const;
   
+  Commit* findCommit(const std::string& commitId);
 };
