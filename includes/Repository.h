@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 #include "TrackedFile.h"
 #include "Commit.h"
@@ -43,4 +44,7 @@ public:
   void updateFileStatus(TrackedFile& file, TrackedFile::status newStatus);
   
   std::vector<TrackedFile> getFileVector();
+
+  const std::vector<TrackedFile>& Repository::getFileVector() const;
+  
 };

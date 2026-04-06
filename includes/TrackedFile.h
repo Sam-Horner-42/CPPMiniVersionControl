@@ -19,6 +19,7 @@ class TrackedFile {
     std::vector<std::string> content;
     int editCount;
     status currentStatus;
+    std::string commitMessage;
 
     public:
     TrackedFile();
@@ -32,6 +33,8 @@ class TrackedFile {
     std::string getFilePath() const;
     std::vector<std::string> getFileContent() const;
     status getFileStatus() const;
+    std::string getCommitMessage() const;
+    void setCommitMessage(std::string commitMsg);
 
     int const getEditCount();
 };
