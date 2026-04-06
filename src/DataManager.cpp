@@ -47,6 +47,8 @@ void DataManager::saveData(string repositoryName, vector<TrackedFile> files, vec
     if (!fs::exists("projects/" + repositoryName)){
         fs::create_directories("projects/" + repositoryName);
     }
+
+    
     // files
     for (auto& file : files){
         string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
@@ -181,7 +183,7 @@ bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vect
                 files.push_back(trackedFile);
             }
         }
-        // commits log
+        // commits log update
         for (const auto& commitI : projectMetadata["commits"]){
             int id = commitI.value("id", 0);
             string date = commitI.value("date", "");
