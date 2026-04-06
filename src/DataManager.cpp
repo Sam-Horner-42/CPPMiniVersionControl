@@ -1,21 +1,39 @@
 #include "../includes/DataManager.h"
 #include "../includes/nlohmann/json.hpp"
 
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <filesystem>
-#include <sstream>
-#include <filesystem>
-#include <ctime>
+
 
 using json = nlohmann::json;
-
 using namespace std;
 namespace fs = std::filesystem;
 
 
-void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
+string DataManager::generateId(string repositoryName, vector<TrackedFile> files){
+
+    /*
+    using the FNV-1a hasing algorithm without extras
+    FowlerNollVo hash function, we need two magic large numbers(given I didn't make them), offset and prime
+    use them based off contents of the files, convert the hash to a string and take the first 10
+    https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+    */
+    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
+    unsigned long long prime = 1099511628211ULL; // fnv-1a prime
+    for (auto& file : files){
+            string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
+            std::ifstream fileContentRead(txtFilePath, std::ios::binary);
+        char c;
+        while (fileContentRead.get(c)) {
+            hash = (hash ^ c) * prime;  
+        }
+        
+    }
+    // Convert hash to string and take first 10 characters
+    string result = to_string(hash);
+    result = result.substr(0, 10);
+    return result;  
+}
+
+void DataManager::saveData(string repositoryName, vector<TrackedFile> files, vector<unique_ptr<Commit>> commits) {
 
     if (!fs::exists("projects/" + repositoryName)){
         fs::create_directories("projects/" + repositoryName);
@@ -25,13 +43,14 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
         string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
         ofstream txtFileWrite(txtFilePath);
             if (txtFileWrite.is_open()){
-                txtFileWrite << file.getFileContent();
+                for (auto& line : file.getFileContent()) {
+                txtFileWrite << line << endl;
+            }
                 txtFileWrite.close();
             }
     }
     
-    // json
-    std::ofstream metadataJson("metadata.json");
+    // json    
     json projectMetadata;
     string metaDataPath = "projects/"+repositoryName+"/" + "metadata.json";
 
@@ -45,6 +64,7 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
     json filesMetadata = json::array();
     time_t timestamp;
     time(&timestamp);
+
     for (auto& file : files) {
         json tempObject;
         tempObject["fileName"] = file.getFileName();
@@ -58,12 +78,13 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
     json commitsData = json::array();
     for (auto& commit : commits){
         json TempObj;
-        TempObj["id"] = commit.getId();
-        TempObj["date"] = commit.getDate();
-        TempObj["message"] = commit.getMessage();
+        TempObj["id"] = commit->getId();
+        TempObj["date"] = commit->getDate();
+        TempObj["message"] = commit->getMessage();
         commitsData.push_back(std::move(TempObj));
     }
        projectMetadata["commits"] = commitsData;
+
     // metadata saving
     ofstream metadataOut(metaDataPath);
     if (metadataOut.is_open()) {
@@ -75,15 +96,38 @@ void DataManager::saveData(string repositoryName,  vector<TrackedFile> files, ve
     string pathDataHandler = "dataHandler.json";
 
     ifstream dataHandlerIn(pathDataHandler);
-    if(dataHandlerIn.is_open()) {
-        metadataIn >> dataHandler;
-        metadataIn.close();
+    if (dataHandlerIn.is_open()) {
+        dataHandlerIn >> dataHandler;
+        dataHandlerIn.close();
     }
-
-    json projectItem;
-    projectItem["name"] = repositoryName;
-    projectItem["id"] = 12345; // generateId(repositoryName); i need to back something for ids
-    projectItem["path"] = "projects/" + repositoryName;
+    
+    if (!dataHandler.contains("projects")) {
+        dataHandler["projects"] = json::array();
+    }
+    
+    // Check if project already exists
+    bool projectExists = false;
+    for (auto& project : dataHandler["projects"]) {
+        if (project["name"] == repositoryName) {
+            project["id"] = generateId(repositoryName, files);
+            projectExists = true;
+            break;
+        }
+    }
+    
+    if (!projectExists) {
+        json projectItem;
+        projectItem["name"] = repositoryName;
+        projectItem["id"] = generateId(repositoryName, files);
+        projectItem["path"] = "projects/" + repositoryName;
+        dataHandler["projects"].push_back(projectItem);
+    }
+    
+    ofstream dataHandlerOut(pathDataHandler);
+    if (dataHandlerOut.is_open()) {
+        dataHandlerOut << setw(4) << dataHandler << endl;
+        dataHandlerOut.close();
+    }
     
 }
 
@@ -156,7 +200,7 @@ bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vect
         }
         // commits log
         for (const auto& commitI : projectMetadata["commits"]){
-            int id = commitI.value("id", 0);
+            string id = commitI.value("id", "");
             string date = commitI.value("date", "");
             string msg = commitI.value("message","");
             auto commit = make_unique<Commit>(id, date, msg);
