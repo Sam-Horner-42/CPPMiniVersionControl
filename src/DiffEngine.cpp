@@ -15,6 +15,8 @@ using namespace std;
 void DiffEngine::computeDiff(const vector<string>& currentContent, const vector<string>& oldContent) {
     if(currentContent.empty() || oldContent.empty()) return;
 
+    this->diffString = "";
+
     int minSize = min(currentContent.size(), oldContent.size());
     string diffString = "";
 

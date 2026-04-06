@@ -9,49 +9,20 @@
 #include <vector>
 
 class TrackedFile {
-
-    public:
-    void updateContent(std::string filePath);
-    void displayFileInfo();
-    std::string getFileName() const;
-    std::string getFilePath() const;
-
-    void updateContent(string filePath, string status);
-    void displayFileInfo();
-    std::string getFileName() const;
-    std::string getFileName() const;
-    string getFilePath();
-    vector<string> getFileContent() const;
-    Status::Status getFileStatus();
-    int const getEditCount();
-    enum class status {Added, Modified, Staged, Committed};
-    
-    void updateContent(std::string filePath);
-    void displayFileInfo();
-    std::string getFileName() const;
-    std::string getFilePath() const;
-
-    void updateContent(string filePath, string status);
-    void displayFileInfo();
-    std::string getFileName() const;
-    std::string getFileName() const;
-    string getFilePath();
-    vector<string> getFileContent() const;
-    Status::Status getFileStatus();
-    int const getEditCount();
     
     private:
     std::string filePath;
     std::string fileName;
     std::vector<std::string> content;
-    std::string status; //The status of a file will be Modified, Staged, or Committed, and i guess NULL when undefined
     int editCount;
     status currentStatus;
+    std::string commitMessage;
 
     public:
-    TrackedFile();
     TrackedFile(const std::string& filePath, const std::string& status);
     ~TrackedFile();
+
+    enum class status {Added, Modified, Staged, Committed};
 
     void updateContent(std::string filePath, status fileStatus);
 
@@ -60,8 +31,10 @@ class TrackedFile {
     std::string getFilePath() const;
     std::vector<std::string> getFileContent() const;
     status getFileStatus() const;
+    std::string getCommitMessage() const;
+    void setCommitMessage(std::string commitMsg);
 
-    int const getEditCount();
+    int getEditCount();
 };
 
 #endif

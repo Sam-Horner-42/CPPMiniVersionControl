@@ -28,6 +28,8 @@ public:
   void stageFile(const std::string& filepath);
   bool commitChanges();
 
+  void setRepoName(const std::string& repoName) { this->repoName = repoName; }
+
   std::vector<std::string> getCommitHistory();
   int  getNumOfCommits();
 

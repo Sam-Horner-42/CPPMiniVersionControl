@@ -1,6 +1,8 @@
 
 #include "../includes/TrackedFile.h"
 
+using namespace std;
+
 //functions
 void TrackedFile::updateContent(std::string filePath, status fileStatus) {
 

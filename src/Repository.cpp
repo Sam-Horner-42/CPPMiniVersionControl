@@ -12,7 +12,9 @@
 #include "../includes/Repository.h"
 #include "../includes/TrackedFile.h"
 
-using namespace std;
+using string = std::string;
+using cout = std::cout;
+using endl = std::endl;
 
 #define REPOWRAPPER ".vcm"
 
@@ -20,7 +22,8 @@ Repository::Repository() {};
 
 Repository::~Repository() {};
 
-std::string getRepoName(){return repoName;}
+std::string Repository::getRepoName() { return repoName; }
+
 bool Repository::initRepository(const string& repoName,const string& repoPath) {
 
   this->repoPath = repoPath;
@@ -170,7 +173,7 @@ void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
       break;
   }
 
-  file.updateContent(file.getFilePath(), status);
+  file.updateContent(file->getFilePath(), status);
 }
 
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs
@@ -181,7 +184,7 @@ vector<string> Repository::getCommitHistory() {
     vector<string> commitHistoryVec;
     for (auto& commit : commits) {
       string logCommit = "Commit ID: " + commit->getId() + 
-       "Date: " + commit->getDate() + 
+       "Date: " + commit->getTimestamp() + 
        "Message: " + commit->getMessage();
       // one commit pushed to vector
         commitHistoryVec.push_back(logCommit);
@@ -198,8 +201,8 @@ vector<TrackedFile> Repository::getFileVector() {
 Commit* Repository::findCommit(const std::string& commitId) {
   if(commitId.empty()) return nullptr;
 
-  for (auto i = 0; i < commits.size(); i++) {
-    if(commits[i].getId() == commitId) return commits[i].get();
+  for (const auto& commit : commits) {
+    if(commit->getId() == commitId) return commit.get();
   }
 
   return nullptr;

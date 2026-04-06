@@ -18,6 +18,5 @@ public:
     int  computeTrackedFilesCount(const T& repo);
     void computeMostModifiedFiles(const T& repo);
 };
-#include "AnalyticsEngine.cpp" 
 
 #endif
