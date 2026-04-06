@@ -154,7 +154,7 @@ bool loadData(const std::string& repositoryName, vector<TrackedFile> files, vect
                 files.push_back(trackedFile);
             }
         }
-        // commits log
+        // commits log update
         for (const auto& commitI : projectMetadata["commits"]){
             int id = commitI.value("id", 0);
             string date = commitI.value("date", "");
