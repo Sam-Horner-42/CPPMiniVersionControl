@@ -57,6 +57,7 @@ dlldata.c
 
 # private folder
 notforgit/
+.vscode/
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/

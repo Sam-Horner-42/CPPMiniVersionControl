@@ -33,6 +33,8 @@ public:
   std::vector<std::string> extractFileContent(const std::string& filepath);
   void setRepoName(const std::string& repoName) { this->repoName = repoName; }
 
+  void setRepoName(const std::string& repoName) { this->repoName = repoName; }
+
   std::vector<std::string> getCommitHistory();
   int  getNumOfCommits();
 
