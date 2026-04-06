@@ -40,6 +40,8 @@ void DataManager::saveData(string repositoryName, vector<TrackedFile> files, vec
     if (!fs::exists("projects/" + repositoryName)){
         fs::create_directories("projects/" + repositoryName);
     }
+
+    
     // files
     for (auto& file : files){
         string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
