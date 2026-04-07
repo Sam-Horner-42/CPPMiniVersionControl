@@ -41,6 +41,10 @@ void DiffEngine::computeDiff(const vector<string>& currentContent, const vector<
         }
     }
 
+    diffString += "[+] Lines Added: " + linesAdded + "\n";
+    diffString += "[+] Lines Removed: " + linesRemoved + "\n";
+    diffString += "[+] Lines Modified: " + linesModified + "\n";
+
     this->diffString = diffString;
 }
 
