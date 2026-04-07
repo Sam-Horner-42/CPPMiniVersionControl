@@ -45,9 +45,9 @@ bool RepositoryManager::loadRepostiory(const string& repoName) {
 
 void RepositoryManager::saveRepository() {
     // I have no idea what's really required here but this is best solution I believe??
-    string name = repo.getRepository();
-    vector<TrackedFile> files = Repository::getFileObject();
-    vector<unique_ptr<Commit>> commits = Commit::getCommitVector(); 
+    std::string name = repo.getRepository();
+    std::vector<TrackedFile> files = Repository::getFileObject(); // should get files - ethan work
+    std::vector<std::unique_ptr<Commit>> commits = getCommitVector(); 
     data.saveData(name, files, commits);
 }
 
@@ -105,9 +105,6 @@ Commit* RepositoryManager::searchCommits(const string& searchString) {
 Commit* RepositoryManager::getParentCommit(const string& commitId) {
     auto c = searchCommits(commitId);
     auto parent = searchCommits(c->getParentId());
-
-    return parent;
-}
 
 /* performs the restoration to the parent. */
 void RepositoryManager::restoreToParent(const string& commitId) {
