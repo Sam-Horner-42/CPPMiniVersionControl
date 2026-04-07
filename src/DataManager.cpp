@@ -17,7 +17,6 @@ string DataManager::singleHash(string repositoryName, string fileName) {
         hash = (hash ^ c) * prime;  
     }
     string result = to_string(hash);
-    result = result.substr(0, 10);
     return result;  
 }
 

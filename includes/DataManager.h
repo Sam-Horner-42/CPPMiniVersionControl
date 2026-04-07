@@ -15,10 +15,10 @@
 // Added to .h
 class DataManager {
 public:
-    string generateId(string repositoryName, vector<TrackedFile> files);
-    string singleHash(string fileContents);
-    void saveData(string repositoryName);
-    bool loadData(const string& repositoryName);
+    std::string generateId(std::string repositoryName, std::vector<TrackedFile> files);
+    std::string singleHash(std::string fileContents);
+    void saveData(std::string repositoryName);
+    bool loadData(const std::string& repositoryName);
 };
 
 #endif
