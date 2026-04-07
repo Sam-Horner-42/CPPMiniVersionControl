@@ -85,3 +85,4 @@ TrackedFile::status TrackedFile::getFileStatus() const {
 int const TrackedFile::getEditCount() { //fixed to have const in the correct spot
     return editCount; 
 }
+
