@@ -1,6 +1,6 @@
 // /*
 //  * Definition for the Analytics Engine class
-//  * Author: Jacob Dawes - 041169788
+//  * Author:  - 041
 //  */
 
 // #ifndef ANALYTICSENGINE_H

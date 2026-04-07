@@ -38,8 +38,6 @@ public:
   std::vector<TrackedFile> getFiles() const;
   bool fileIsTracked(const std::string& filepath);
 
-  //enum class fileStatus {Added, Modified, Staged, Committed};
-
   void updateFileStatus(TrackedFile& file, TrackedFile::status newStatus);
 
   const std::vector<TrackedFile>& Repository::getFileVector() const;
