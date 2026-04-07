@@ -110,7 +110,19 @@ bool Commit::compareHashedFiles(TrackedFile comparingStagedFile) {
     //please make this function to compare the file hash of each file in the TrackedFiles vector
     //with the file hash of each file in the current commit of the repository
     //return true if hashes are different, false if hashes are the same
-        
+    //current file hash
+    string currentText = "";
+    for (const auto& line : comparingStagedFile.getFileContent()) {
+        currentText += line;
+    }
+    string currentHash = DataManager::singleHash(currentText);
+
+    string previousHash = "";
+    if (filesnapshot.count(comparingStagedFile.getFileName())) {
+        string oldText = filesnapshot[comparingStagedFile.getFileName()];
+        previousHash = DataManager::singleHash(oldText);
+    }
+return (currentHash != previousHash);
 }
 
 void Commit::addToCommitVector(bool tf, TrackedFile addingStagedFile) {

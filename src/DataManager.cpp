@@ -172,7 +172,7 @@ bool loadData(const std::string& repositoryName) {
     // handles dataHandler content
     bool foundStat=false;
     if (handlerJson.contains("projects")){
-        for (const auto& project : handlerJson["projects"]){
+        for (auto& project : handlerJson["projects"]){
             if(project["name"]==repositoryName){
                 projectPath=project["path"];
                 projectId=project["id"];
@@ -200,7 +200,7 @@ bool loadData(const std::string& repositoryName) {
         metadataIn >> projectMetadata;
         metadataIn.close();
         if(projectMetadata.contains("files")){
-            for (const auto& file : projectMetadata["files"]){
+            for (auto& file : projectMetadata["files"]){
                 string fileName = file.value("fileName", "");
                 string filePath = file.value("filePath", "");
                 // Read the actual content from the txt file
@@ -221,7 +221,7 @@ bool loadData(const std::string& repositoryName) {
             }
         }
         // commits log update
-        for (const auto& commitI : projectMetadata["commits"]){
+        for (auto& commitI : projectMetadata["commits"]){
             string id = commitI.value("id", "");
             string date = commitI.value("date", "");
             string msg = commitI.value("message","");

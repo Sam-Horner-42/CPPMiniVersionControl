@@ -20,5 +20,3 @@ public:
     void saveData(std::string repositoryName);
     bool loadData(const std::string& repositoryName);
 };
-
-#endif
