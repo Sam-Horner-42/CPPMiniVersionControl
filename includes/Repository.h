@@ -13,7 +13,7 @@
 #include <stdexcept>
 
 #include "TrackedFile.h"
-#include "Commit.h"
+#include "StandardCommit.h"
 
 class Repository {
   std::string repoName;
@@ -24,16 +24,19 @@ public:
   Repository();
   ~Repository();
 
+  bool checkStagedFiles(StandardCommit& commit);
   bool initRepository(const std::string& repoName, const std::string& repoPath);
   void addFile(const std::string& filepath);
   void stageFile(const std::string& filepath);
-  bool commitChanges();
+  bool commitChanges(StandardCommit& commit);
 
+  std::vector<std::string> extractFileContent(const std::string& filepath);
   void setRepoName(const std::string& repoName) { this->repoName = repoName; }
 
   std::vector<std::string> getCommitHistory();
   int  getNumOfCommits();
 
+  std::string getRepoName();
 
   TrackedFile& getTrackedFile(const std::string& filepath); // helper class to get the tracked file used in addFile
   int  getNumOfTrackedFiles();
@@ -48,4 +51,9 @@ public:
 
   const std::vector<TrackedFile>& getFileVector() const;
   
+  Commit* findCommit(const std::string& commitId);
+
+
+
+
 };

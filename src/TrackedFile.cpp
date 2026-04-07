@@ -92,6 +92,6 @@ void TrackedFile::setCommitMessage(string commitMsg) {
     this->commitMessage = commitMsg;
 }
 
-int const TrackedFile::getEditCount() { //fixed to have const in the correct spot
+int TrackedFile::getEditCount() const { //fixed to have const in the correct spot
     return editCount; 
 }

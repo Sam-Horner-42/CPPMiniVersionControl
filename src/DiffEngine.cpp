@@ -15,7 +15,7 @@ using namespace std;
 void DiffEngine::computeDiff(const vector<string>& currentContent, const vector<string>& oldContent) {
     if(currentContent.empty() || oldContent.empty()) return;
 
-    this->diffString = "";
+    diffString = "";
 
     int minSize = min(currentContent.size(), oldContent.size());
     string diffString = "";
@@ -41,14 +41,14 @@ void DiffEngine::computeDiff(const vector<string>& currentContent, const vector<
         }
     }
 
-    diffString += "[+] Lines Added: " + linesAdded + "\n";
-    diffString += "[+] Lines Removed: " + linesRemoved + "\n";
-    diffString += "[+] Lines Modified: " + linesModified + "\n";
+    diffString += "[+] Lines Added: " + to_string(linesAdded) + "\n";
+    diffString += "[+] Lines Removed: " + to_string(linesRemoved) + "\n";
+    diffString += "[+] Lines Modified: " + to_string(linesModified) + "\n";
 
     this->diffString = diffString;
 }
 
-string DiffEngine::displayDiff() {
+std::string DiffEngine::displayDiff() const {
   return this->diffString;
 }
 
