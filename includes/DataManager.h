@@ -15,8 +15,8 @@
 // Added to .h
 class DataManager {
 public:
-    std::string DataManager::singleHash(std::string repositoryName, std::string fileName);
     std::string generateId(std::string repositoryName, std::vector<TrackedFile> files);
+    std::string singleHash(std::string fileContents);
     void saveData(std::string repositoryName);
     bool loadData(const std::string& repositoryName);
 };
