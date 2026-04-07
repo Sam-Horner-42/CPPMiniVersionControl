@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "TrackedFile.h"
-#include "Repository.h"
+//#include "Repository.h"
 
 class Commit {
 
@@ -46,12 +46,22 @@ class Commit {
     Commit* getParentCommit();
 
     std::vector<TrackedFile> const getFiles();
-    
-    // virtual functions
-    virtual bool hasFile(const std::string& filename) = 0;
-    virtual std::vector<std::string> getAllAttributes() = 0;
-    virtual std::vector<std::string> displayCommit() = 0;
-    virtual std::string getSummary() = 0;
+    void displayCommit();
+    void getSummary();
+
+    static bool checkStagedFiles(std::vector<TrackedFile> fileVector);
+    static bool compareHashedFiles(TrackedFile comparingStagedFile);
+    static void addToCommitVector(bool tf, TrackedFile addingStagedFile);
+    static void clearCommitVector();
+    std::vector<TrackedFile> getCommitVector() const;
+
+    private:
+    std::string commitId;
+    std::string parentId;
+    std::string message;
+    std::string author;
+    std::string timestamp;
+    static std::vector<TrackedFile> commitVector;
 };
 
 #endif

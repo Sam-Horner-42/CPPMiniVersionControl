@@ -34,7 +34,8 @@ public:
   std::vector<std::string> getCommitHistory();
   int  getNumOfCommits();
 
-  TrackedFile& Repository::getTrackedFile(const std::string& filepath); // helper class to get the tracked file used in addFile
+
+  TrackedFile& getTrackedFile(const std::string& filepath); // helper class to get the tracked file used in addFile
   int  getNumOfTrackedFiles();
 
   std::vector<TrackedFile> getFiles() const;
@@ -45,6 +46,6 @@ public:
   std::vector<TrackedFile> getFileVector();
   Commit* findCommit(const std::string& commitId);
 
-  const std::vector<TrackedFile>& Repository::getFileVector() const;
+  const std::vector<TrackedFile>& getFileVector() const;
   
 };

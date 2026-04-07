@@ -22,18 +22,23 @@ class RepositoryManager {
     DataManager data;
     AnalyticsEngine analyzer;
   public:
-    RepositoryManager(Repository& repo);
+  struct Project{
+      std::string name;
+      std::string id;
+      std::string path;
+    };
+
+    Project getProjectInfo();
+
+    RepositoryManager (Repository& repo);
     ~RepositoryManager();
-    void createRepository(const std::string& repoName, const std::string& repoPath);
-    bool loadRepostiory(const std::string& repoName);
-    void saveRepository();
+    Repository createRepository(const std::string& repoName);
+    void loadRepository();
+    bool saveRepository();
     Commit* searchCommits(const std::string& searchString);
-    void getFileStatus(const TrackedFile& file);
+    TrackedFile::status getFileStatus(const TrackedFile& file);
+
     void restoreToParent(const std::string& commitId);
-
-    std::unordered_map<std::string,std::string> callParentDifferentiation(Commit* diffCommit);
-    std::unordered_map<std::string,std::string> callRegularDifferentiation(Commit* diffCommit1, Commit* diffCommit2);
-
     Commit* getParentCommit(const std::string& commitId);
     void restore(const std::string& commitId, const std::string& restoreCommitId);
 };

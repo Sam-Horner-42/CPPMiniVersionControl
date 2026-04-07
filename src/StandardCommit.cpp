@@ -13,7 +13,62 @@ vector<string> StandardCommit::getAllAttributes() {
     content.push_back(getAuthor() + "\n");
     content.push_back(getTimestamp() + "\n");
 
-    return content;
+    // default destructor
+    StandardCommit::~StandardCommit() {}
+
+    // combination of all getters into a predicable ordered
+    // vector. ORDER: { ID, MESSAGE, AUTHOR, TIMESTAMP }
+    // @return: vector of commit data in order.
+    vector<string> StandardCommit::getAllAttributes() {
+        vector<string> content;
+
+        content.push_back(getId() + "\n");
+        content.push_back(getMessage() + "\n");
+        content.push_back(getAuthor() + "\n");
+        content.push_back(getTimestamp() + "\n");
+
+        return content;
+    }
+
+    // returns a full vector containing all commit info
+    vector<string> StandardCommit::displayCommit() {
+        return this->getAllAttributes();
+    }
+
+    // returns a small summary commit id and message
+    string StandardCommit::getSummary() {
+        return "Commit ID: " + getId() +
+        " Parent ID: " + getParentId() +
+        " Commit Message:\n" + getMessage();
+    }
+
+    void StandardCommit::createSnapshot(const string& filename, const vector<string>& content) {
+        string contentstring;
+
+        for (const auto& line : content) {
+            contentstring += line + "\n";
+        }
+
+        fileSnapshot.insert({filename,contentstring});
+    }
+
+    void StandardCommit::updateSnapshot(const string& filename, const vector<string>& content) {
+        string contentstring;
+
+        for (const auto& line : content) {
+            contentstring += line + "\n";
+        }
+                fileSnapshot[filename] = contentstring;
+    }
+};
+
+/**
+ * under this header will be all the functions from the commit class
+ */
+
+ //unsure who is supposed to do displayCommit() and getSummary()
+ void Commit::displayCommit() {
+    //TODO: DISPLAY COMMIT
 }
 
 // returns a full vector containing all commit info
@@ -101,8 +156,9 @@ bool Commit::checkStagedFiles(std::vector<TrackedFile> fileVector) {
         // pass the current iterated file through compareHashedFiles to check
         // nomatter true or false it is a parameter to addToCommitVector
         Commit::addToCommitVector(compareHashedFiles(fileVector[i]), fileVector[i]);
-        return true;
+        
     }
+	return true;
 }
 
 bool Commit::compareHashedFiles(TrackedFile comparingStagedFile) {
