@@ -45,15 +45,11 @@ string DataManager::generateId(string repositoryName, vector<TrackedFile> files)
 /**
  * Trying to get this to push to main for some reason it's preventing that.
  */
-void DataManager::saveData(string repositoryName) {
+void DataManager::saveData(std::string& repositoryName, std::vector<TrackedFile>& files, StandardCommit& commit) {
 
     if (!fs::exists("projects/" + repositoryName)){
         fs::create_directories("projects/" + repositoryName);
     }
-
-    // Future ethan work? no idea anymore
-    vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();
-    vector<TrackedFile> files = RepositoryManager.getFileVector();
 
     // files
     for (auto& file : files){
@@ -148,7 +144,7 @@ void DataManager::saveData(string repositoryName) {
     
 }
 
-bool loadData(const std::string& repositoryName) {
+bool loadData(std::string& repositoryName) {
 
     // Future ethan work? no idea anymore
     vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();

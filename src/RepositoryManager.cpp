@@ -3,7 +3,7 @@
 // do not touch, json work
 #include "../includes/nlohmann/json.hpp"
 using json = nlohmann::json;
-
+using std::string;
 /*
  * Sam Required function
  */
@@ -16,7 +16,7 @@ RepositoryManager::Project RepositoryManager::getProjectInfo() {
     for (auto& project : data["projects"]) {
         result.name = project["name"];
         result.id = project["id"];
-        result.path = project["path"];
+        result.filePath = project["path"];
         return result;
     }
     
@@ -28,7 +28,7 @@ repo(repo) {}
 
 RepositoryManager::~RepositoryManager() {}
 
-void RepositoryManager::createRepository(const string& repoName,const string& repoPath) {
+void RepositoryManager::createRepository(const std::string& repoName,const std::string& repoPath) {
     // initialize the repo with a name
     repo.initRepository(repoName,repoPath);
 }
@@ -36,30 +36,29 @@ void RepositoryManager::createRepository(const string& repoName,const string& re
 // this will load from persistant storage (files)
 // have full path as the function input param
 // return a fully filled repo object containing the repo contents
-bool RepositoryManager::loadRepostiory(const string& repoName) {
+bool RepositoryManager::loadRepostiory(std::string& repoName) {
     repo.setRepoName(repoName);
-    data.loadData(repoName,repo.getFileVector(),repo.getCommitHistory());
+    data.loadData(repoName);
 
     return true;
 }
 
-void RepositoryManager::saveRepository() {
+void RepositoryManager::saveRepository(StandardCommit& commit) {
     // I have no idea what's really required here but this is best solution I believe??
-    std::string name = repo.getRepository();
-    std::vector<TrackedFile> files = Repository::getFileObject(); // should get files - ethan work
-    std::vector<std::unique_ptr<Commit>> commits = getCommitVector(); 
-    data.saveData(name, files, commits);
+    std::string name = repo.getRepoName();
+    std::vector<TrackedFile> files = commit.getCommitVector(); // should get files - ethan work
+    data.saveData(name, files, commit);
 }
 
 /* SAM: this function diffs all the files in both the parent and the current
    as long as it exists in both. It returns a map of all the diffs 
    KEY: filename VALUE: DiffString */
-unordered_map<string,string> RepositoryManager::callParentDifferentiation(Commit* diffCommit) {
-    unordered_map<string,string> diffMap;
-    auto parent = getParentCommit(diffCommit->getId());
-    auto parentFiles = parent->getTrackedFiles();
+std::unordered_map<std::string, std::string> RepositoryManager::callParentDifferentiation(StandardCommit& diffCommit) {
+    std::unordered_map<string,string> diffMap;
+    auto parent = getParentCommit(diffCommit.getId());
+    auto parentFiles = parent->getCommitVector();
 
-    for (const auto& file : diffCommit->getTrackedFiles()) {
+    for (const auto& file : diffCommit.getCommitVector()) {
         if (!parent->hasFile(file->getFileName())) continue;
 
         auto it = find_if(parentFiles.begin(), parentFiles.end(), [&](const auto& f) {
@@ -103,9 +102,10 @@ Commit* RepositoryManager::searchCommits(const string& searchString) {
 
 /* returns the parent commit as a pointer */
 Commit* RepositoryManager::getParentCommit(const string& commitId) {
-    auto c = searchCommits(commitId);
-    auto parent = searchCommits(c->getParentId());
-
+	auto c = searchCommits(commitId);
+	auto parent = searchCommits(c->getParentId());
+	return parent;
+}
 /* performs the restoration to the parent. */
 void RepositoryManager::restoreToParent(const string& commitId) {
     auto parent = getParentCommit(commitId);
@@ -122,7 +122,7 @@ void RepositoryManager::restore(const string& commitId,const string& restoreComm
     auto restore = searchCommits(restoreCommitId);
 
     for (const auto& file : restore->getTrackedFiles()) {
-        current->updateSnapshot(file->getFileName(), file->getFileContent());
+        current->updateSnapshot(file.getFileName(), file.getFileContent());
     }
 }
 

@@ -7,9 +7,10 @@
 
 #include "../includes/Repository.h"
 
-using string = std::string;
-using cout = std::cout;
-using endl = std::endl;
+using std::string;
+using std::cout;
+using std::endl;
+using std::vector;
 
 #define REPOWRAPPER ".vcm"
 
@@ -25,14 +26,14 @@ bool Repository::initRepository(const string& repoName,const string& repoPath) {
   
   // create snapshots , branches , config folders
   // & create the initial config file.
-  if(!filesystem::create_directory(REPOWRAPPER)
-     || !filesystem::create_directory(string(REPOWRAPPER) + "/snapshots")
-     || !filesystem::create_directory(string(REPOWRAPPER) + "/Branches")
-     || !filesystem::create_directory(string(REPOWRAPPER) + "/config")) {
+  if(!std::filesystem::create_directory(REPOWRAPPER)
+     || !std::filesystem::create_directory(string(REPOWRAPPER) + "/snapshots")
+     || !std::filesystem::create_directory(string(REPOWRAPPER) + "/Branches")
+     || !std::filesystem::create_directory(string(REPOWRAPPER) + "/config")) {
     return false;
   }
 
-  ofstream configFile(string(REPOWRAPPER) + "/config/repo_config",ios::out);
+  std::ofstream configFile(string(REPOWRAPPER) + "/config/repo_config",std::ios::out);
 
   if(!configFile) return false;
 
@@ -53,7 +54,7 @@ TrackedFile& Repository::getTrackedFile(const string& filepath) {
     }
   }
   //if no file tracked to return then do nothing since the next function will add it
-  throw runtime_error("getTrackedFile() found no tracked file");
+  throw std::runtime_error("getTrackedFile() found no tracked file");
 }
 
 // begin tracking the file or return if already tracked
@@ -82,12 +83,12 @@ void Repository::addFile(const string& filepath) {
  */
 void Repository::stageFile(const string& filepath) {
   if(!fileIsTracked(filepath)) {
-    throw runtime_error("no file tracked with that name"); //checking to see if file is NOT in the tracker vector
+    throw std::runtime_error("no file tracked with that name"); //checking to see if file is NOT in the tracker vector
   }
 
   TrackedFile& file = getTrackedFile(filepath);
-  vector<string> localContent = extractFileContent(filepath);
-  vector<string> trackedContent = file.getFileContent();
+  std::vector<string> localContent = extractFileContent(filepath);
+  std::vector<string> trackedContent = file.getFileContent();
   TrackedFile::status status = file.getFileStatus();
   
   if(status == TrackedFile::status::Added) {
@@ -105,22 +106,48 @@ void Repository::stageFile(const string& filepath) {
 
 // for Sam, this is the initial startingpoint for the commit button to call
 // its just true for success, false for somethings gone wrong
-bool Repository::commitChanges() {
-  vector<TrackedFile> fileVector = getFileVector();
-  bool returnvar = Commit::checkStagedFiles(fileVector);
+bool Repository::commitChanges(StandardCommit& commit) {
+  std::vector<TrackedFile> fileVector = commit.getCommitVector();
+  bool returnvar = checkStagedFiles(commit);
   return returnvar;
 }
 
+bool Repository::checkStagedFiles(StandardCommit& commit) {
+	//TODO: Check TrackedFile vector for which files are staged
+	// it should iterate through the whole vector to make sure everything is staged
+	// if a file is not staged then we return a false value
+
+	//get vector size for the looping
+	int vectorSize = commit.getCommitVector().size();
+
+	//for loop to iterate through vector
+	for (int i = 0; i < vectorSize; i++) {
+		// check each file in the vector for if it is staged
+		// if not every file is staged then return false and abort the current commit
+		// the false return will cause the popup for listing every file that isnt staged and give the user the prompt for if they wish to try and stage those files, if that succeeds it will try to do a new commit
+		if (commit.getCommitVector()[i].getFileStatus() != TrackedFile::status::Staged) {
+			commit.getCommitVector().clear();
+			return false;
+			break;
+		}
+
+		// pass the current iterated file through compareHashedFiles to check
+		// nomatter true or false it is a parameter to addToCommitVector
+		commit.addToCommitVector(commit.compareHashedFiles(commit.getCommitVector()[i]), commit.getCommitVector()[i]);
+
+	}
+	return true;
+}
 // helper functions
 
 // extract the file name from the path
-string extractFileName(const string& filepath) {
-  return filesystem::path(filepath).filename().string();
+std::string extractFileName(const std::string& filepath) {
+  return std::filesystem::path(filepath).filename().string();
 }
 
 // get the content from the file into memory
-vector<string> extractFileContent(const string& filepath) {
-  ifstream inFile(filepath);
+std::vector<string> extractFileContent(const string& filepath) {
+  std::ifstream inFile(filepath);
   if(!inFile) return {};
 
   string input = "";
@@ -149,24 +176,9 @@ bool Repository::fileIsTracked(const string& filepath) {
   return foundFile;
 }
 
-void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
-  string status;
-  switch(newStatus) {
-    case fileStatus::Added:
-      status = "Added";
-      break;
-    case fileStatus::Modified:
-      status = "Modified";
-      break;
-    case fileStatus::Staged:
-      status = "Staged";
-      break;
-    case fileStatus::Committed:
-      status = "Committed";
-      break;
-  }
+void Repository::updateFileStatus(TrackedFile& file, TrackedFile::status newStatus) {
 
-  file.updateContent(file->getFilePath(), status);
+  file.updateContent(file.getFilePath(), newStatus);
 }
 
 // TODO: Update so that it reads froma JSON/TXT file, read the commit logs

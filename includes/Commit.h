@@ -23,7 +23,7 @@ class Commit {
     std::string message;
     std::string author;
     std::string timestamp;
-    static std::vector<TrackedFile> commitVector;
+    
 
     public:
     // default constructor
