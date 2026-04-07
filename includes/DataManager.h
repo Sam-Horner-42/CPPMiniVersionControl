@@ -12,14 +12,13 @@
 #include <vector>
 #include <memory>
 
-using namespace std;
-
 // Added to .h
 class DataManager {
 public:
-    string generateId(string repositoryName, vector<TrackedFile> files);
-    void saveData(string repositoryName);
-    bool loadData(const string& repositoryName);
+    std::string DataManager::singleHash(std::string repositoryName, std::string fileName);
+    std::string generateId(std::string repositoryName, std::vector<TrackedFile> files);
+    void saveData(std::string repositoryName);
+    bool loadData(const std::string& repositoryName);
 };
 
 #endif

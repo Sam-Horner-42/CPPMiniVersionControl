@@ -7,6 +7,19 @@ using json = nlohmann::json;
 using namespace std;
 namespace fs = std::filesystem;
 
+string DataManager::singleHash(string repositoryName, string fileName) {
+    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
+    unsigned long long prime = 1099511628211ULL; // fnv-1a prime
+    string txtFilePath = "projects/" + repositoryName + "/" + fileName;
+    std::ifstream fileContentRead(txtFilePath, std::ios::binary);
+    char c;
+    while (fileContentRead.get(c)) {
+        hash = (hash ^ c) * prime;  
+    }
+    string result = to_string(hash);
+    result = result.substr(0, 10);
+    return result;  
+}
 
 string DataManager::generateId(string repositoryName, vector<TrackedFile> files){
 

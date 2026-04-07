@@ -57,7 +57,7 @@ TrackedFile& Repository::getTrackedFile(const string& filepath) {
   throw runtime_error("getTrackedFile() found no tracked file");
 }
 
-// begin tracking the file or staging if already tracked
+// begin tracking the file or return if already tracked
 // use the above function to check if the file is tracked and to then get the file and pass it back into this function
 void Repository::addFile(const string& filepath) {
   if(fileIsTracked(filepath)) {
