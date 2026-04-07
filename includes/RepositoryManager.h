@@ -20,6 +20,14 @@ class RepositoryManager {
     Repository repo;
     DataManager data;
   public:
+  struct Project{
+      string name;
+      string id;
+      string path;
+    };
+
+    Project getProjectInfo();
+
     RepositoryManager (Repository& repo);
     ~RepositoryManager();
     Repository RepositoryManager::createRepository(const std::string& repoName);

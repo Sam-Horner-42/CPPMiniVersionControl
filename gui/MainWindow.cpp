@@ -35,26 +35,49 @@ void MainWindow::setupTabWidgets() {
 	// build history tab
 	QVBoxLayout* historyLayout = new QVBoxLayout(ui.history);
 	historyList = new QListWidget(ui.history);
+	// Add mock commit history
+	historyList->addItem("[a1b2c3d] Sam Horner - 2026-04-05 - Updated GUI");
+	historyList->addItem("[f4e5d6c] Jacob Dawes - 2026-04-03 - Added DiffEngine");
+	historyList->addItem("[b6f5t7t] Abdelmounaim Aouf - 2026-04-01 - Added Analytics Engine");
+	historyList->addItem("[9b8a7c6] Spencer Scarlett - 2026-03-28 - Updated RepositoryManager");
+	historyList->addItem("[e7f8g9h] Ethan Geary - 2026-03-22 - Initial commit");
+	
+
 	historyLayout->addWidget(historyList);
-	ui.history->setLayout(historyLayout);
 
 	// Build diff tab
 	QVBoxLayout* diffLayout = new QVBoxLayout(ui.diffTab);
 	diffView = new QTextEdit(ui.diffTab);
+	// Add mock git diff output
+	QString mockDiff = (" - displayDiff(); \n"
+		"+         // created a more complicated diff function \n"
+		"-     }\n"
+		"+         displayComplexDiff();\n"
+		"+     }\n");
+
+	diffView->setPlainText(mockDiff);
 	diffView->setReadOnly(true);
 
 	// Setting a mono font for code/diffs
 	QFont monoFont("Courier New", 10);
 	diffView->setFont(monoFont);
 	diffLayout->addWidget(diffView);
-	ui.diffTab->setLayout(diffLayout);
+	
 
 	// Build Analytics tab
 	QVBoxLayout* analyticsLayout = new QVBoxLayout(ui.analytics);
-	statsLabel = new QLabel("Select a repository to view analytics.", ui.analytics);
+	statsLabel = new QLabel(ui.analytics);
+	// Add mock repository statistics
+	QString mockStats =
+		"<b>Repository:</b> MiniVersionControl Project<br><br>"
+		"<b>Total Commits:</b> 42<br>"
+		"<b>Most Modified File: </b> Compilers.c <br>"
+		"<b>Last Updated:</b> 2026-04-06";
+
+	statsLabel->setText(mockStats);
 	statsLabel->setAlignment(Qt::AlignCenter);
 	analyticsLayout->addWidget(statsLabel);
-	ui.analytics->setLayout(analyticsLayout);
+	
 }
 
 //void MainWindow::refreshFileTable(const std::vector<TrackedFile*>& allFiles) {
