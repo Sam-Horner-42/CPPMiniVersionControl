@@ -62,16 +62,16 @@ class StandardCommit : public Commit {
     }
 };
 
-/**
- * under this header will be all the functions from the commit class
- */
-
- //unsure who is supposed to do displayCommit() and getSummary()
- void Commit::displayCommit() {
-    //TODO: DISPLAY COMMIT
+// returns a full vector containing all commit info
+vector<string> StandardCommit::displayCommit() {
+    return this->getAllAttributes();
 }
-void Commit::getSummary() {
-    //TODO: GET COMMIT SUMMARY
+
+// returns a small summary commit id and message
+string StandardCommit::getSummary() {
+    return "Commit ID: " + getId() +
+    " Parent ID: " + getParentId() +
+    " Commit Message:\n" + getMessage();
 }
 
 bool Commit::checkStagedFiles(std::vector<TrackedFile> fileVector) {
