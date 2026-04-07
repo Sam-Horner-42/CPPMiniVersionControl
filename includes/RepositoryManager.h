@@ -21,22 +21,22 @@ class RepositoryManager {
     DataManager data;
   public:
   struct Project{
-      string name;
-      string id;
-      string path;
+      std::string name;
+      std::string id;
+      std::string path;
     };
 
     Project getProjectInfo();
 
     RepositoryManager (Repository& repo);
     ~RepositoryManager();
-    Repository RepositoryManager::createRepository(const std::string& repoName);
-    void loadRepostiory();
+    Repository createRepository(const std::string& repoName);
+    void loadRepository();
     bool saveRepository();
     Commit* searchCommits(const std::string& searchString);
-    void getFileStatus(const TrackedFile& file);
+    TrackedFile::status getFileStatus(const TrackedFile& file);
 
-    void restore(const std::string& commitId);
+    void restoreToParent(const std::string& commitId);
     Commit* getParentCommit(const std::string& commitId);
     void restore(const std::string& commitId,const std::string& restoreCommitId);
 };

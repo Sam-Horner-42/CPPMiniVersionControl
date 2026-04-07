@@ -49,7 +49,7 @@ class StandardCommit : public Commit {
             contentstring += line + "\n";
         }
 
-        filesnapshot.insert({filename,contentstring});
+        fileSnapshot.insert({filename,contentstring});
     }
 
     void StandardCommit::updateSnapshot(const string& filename, const vector<string>& content) {
@@ -58,7 +58,7 @@ class StandardCommit : public Commit {
         for (const auto& line : content) {
             contentstring += line + "\n";
         }
-                filesnapshot[filename] = contentstring;
+                fileSnapshot[filename] = contentstring;
     }
 };
 
@@ -96,8 +96,9 @@ bool Commit::checkStagedFiles(std::vector<TrackedFile> fileVector) {
         // pass the current iterated file through compareHashedFiles to check
         // nomatter true or false it is a parameter to addToCommitVector
         Commit::addToCommitVector(compareHashedFiles(fileVector[i]), fileVector[i]);
-        return true;
+        
     }
+	return true;
 }
 
 bool Commit::compareHashedFiles(TrackedFile comparingStagedFile) {

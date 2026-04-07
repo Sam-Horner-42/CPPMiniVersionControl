@@ -29,7 +29,7 @@ repo(repo) {}
 
 RepositoryManager::~RepositoryManager() {}
 
-Repository RepositoryManager::createRepository(const string& repoName) {
+Repository RepositoryManager::createRepository(const std::string& repoName) {
     Repository repo;
     // initialize the repo with a name 
     repo.initRepository(repoName);
@@ -47,19 +47,19 @@ void RepositoryManager::loadRepostiory() {
 bool RepositoryManager::saveRepository() {
 
     // I have no idea what's really required here but this is best solution I believe??
-    string name = repo.getRepository();
-    vector<TrackedFile> files = Repository::getFileObject(); // should get files - ethan work
-    vector<unique_ptr<Commit>> commits = getCommitVector(); 
+    std::string name = repo.getRepository();
+    std::vector<TrackedFile> files = Repository::getFileObject(); // should get files - ethan work
+    std::vector<std::unique_ptr<Commit>> commits = getCommitVector(); 
     data.saveData(name, files, commits);
         
     return true;    
 }
 
-Commit* RepositoryManager::searchCommits(const string& searchString) {
+Commit* RepositoryManager::searchCommits(const std::string& searchString) {
     return repo.findCommit(searchString);
 }
 
-Commit* RepositoryManager::getParentCommit(const string& commitId) {
+Commit* RepositoryManager::getParentCommit(const std::string& commitId) {
     auto c = searchCommits(commitId);
     auto parent = searchCommits(c->getParentId());
 
@@ -67,7 +67,7 @@ Commit* RepositoryManager::getParentCommit(const string& commitId) {
 }
 
 /* performs the restoration to the parent. */
-void RepositoryManager::restoreToParent(const string& commitId) {
+void RepositoryManager::restoreToParent(const std::string& commitId) {
     auto parent = getParentCommit(commitId);
     auto current = searchCommits(commitId);
 
@@ -77,7 +77,7 @@ void RepositoryManager::restoreToParent(const string& commitId) {
 }
 
 /* restore commit x to commit y */
-void RepositoryManager::restore(const string& commitId,const string& restoreCommitId) {
+void RepositoryManager::restore(const std::string& commitId, const std::string& restoreCommitId) {
     auto current = searchCommit(commitId);
     auto restore = searchCommits(restoreCommitId);
 
@@ -86,33 +86,33 @@ void RepositoryManager::restore(const string& commitId,const string& restoreComm
     }
 }
 
-Commit* RepositoryManager::getParentCommit(const string& commitId) {
-    auto c = searchCommits(commitId);
-    auto parent = searchCommits(c->getParentId());
-
-    return parent;
-}
+//Commit* RepositoryManager::getParentCommit(const string& commitId) {
+//    auto c = searchCommits(commitId);
+//    auto parent = searchCommits(c->getParentId());
+//
+//    return parent;
+//}
 
 /* performs the restoration to the parent. */
-void RepositoryManager::restoreToParent(const string& commitId) {
-    auto parent = getParentCommit(commitId);
-    auto current = searchCommits(commitId);
-
-    for (auto& file : parent->commits) {
-        current->updateSnapshot(file->getFileName(),file->getFileContent());
-    }
-}
+//void RepositoryManager::restoreToParent(const string& commitId) {
+//    auto parent = getParentCommit(commitId);
+//    auto current = searchCommits(commitId);
+//
+//    for (auto& file : parent->commits) {
+//        current->updateSnapshot(file->getFileName(),file->getFileContent());
+//    }
+//}
 
 /* restore commit x to commit y */
-void RepositoryManager::restore(const string& commitId,const string& restoreCommitId) {
-    auto current = searchCommit(commitId);
-    auto restore = searchCommits(restoreCommitId);
+//void RepositoryManager::restore(const string& commitId,const string& restoreCommitId) {
+//    auto current = searchCommit(commitId);
+//    auto restore = searchCommits(restoreCommitId);
+//
+//    for (auto& file : restore->commits) {
+//        current->updateSnapshot(file->getFileName(),file->getFileContent());
+//    }
+//}
 
-    for (auto& file : restore->commits) {
-        current->updateSnapshot(file->getFileName(),file->getFileContent());
-    }
-}
-
-Status::Status RepositoryManager::getFileStatus(const TrackedFile& file) {
+TrackedFile::status RepositoryManager::getFileStatus(const TrackedFile& file) {
     return file.getFileStatus();
 }

@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "TrackedFile.h"
-#include "Repository.h"
+//#include "Repository.h"
 
 class Commit {
 
@@ -41,7 +41,7 @@ class Commit {
     std::vector<std::string> getAllAttributes();
     Commit* getParentCommit();
 
-    vector<TrackedFile> const getFiles();
+    std::vector<TrackedFile> const getFiles();
     void displayCommit();
     void getSummary();
 

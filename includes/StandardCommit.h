@@ -24,18 +24,18 @@ public:
     ~StandardCommit();
 
     // commented out the overrides because they dont override anything from commit.cpp or commit.h
-    std::vector<std::string> getAllAttributes(); //override;
-    std::vector<std::string> displayCommit(); //override;
-    std::string getSummary(); //override;
+    //std::vector<std::string> getAllAttributes(); //override;
+    //std::vector<std::string> displayCommit(); //override;
+    //std::string getSummary(); //override;
     void createSnapshot(const std::string& filename, const std::vector<std::string>& content);
     void updateSnapshot(const std::string& filename, const std::vector<std::string>& content);
     std::vector<std::string> getAllAttributes() override;
     std::vector<std::string> displayCommit() override;
     std::string getSummary() override;
 
-    bool checkStagedFiles(vector<TrackedFile> fileVector);
+    bool checkStagedFiles(std::vector<TrackedFile> fileVector);
     bool compareHashedFiles(TrackedFile comparingStagedFile);
     void addToCommitVector(bool tf, TrackedFile addingStagedFile);
     void clearCommitVector();
-    vector<string> commitToRepo(vector<TrackedFile> commitFiles);
+    std::vector<std::string> commitToRepo(vector<TrackedFile> commitFiles);
 };

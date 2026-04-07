@@ -2,6 +2,8 @@
  * Definitions for the diff engine
  * Author: Jacob Dawes - 041169788
  */
+#include <string>
+#include <vector>
 
 #ifndef DIFFENGINE_H
 #define DIFFENGINE_H
