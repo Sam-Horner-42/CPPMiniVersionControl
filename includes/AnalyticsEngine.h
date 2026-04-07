@@ -1,6 +1,7 @@
-/*
- * Definition for the Analytics Engine class
- */
+// /*
+//  * Definition for the Analytics Engine class
+//  * Author:  - 041
+//  */
 
 // #ifndef ANALYTICSENGINE_H
 // #define ANALYTICSENGINE_H
