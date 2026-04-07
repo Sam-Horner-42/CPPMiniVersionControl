@@ -17,11 +17,13 @@
 
 class Commit {
 
+    private:
     std::string commitId;
     std::string parentId;
     std::string message;
     std::string author;
     std::string timestamp;
+    static std::vector<TrackedFile> commitVector;
 
     public:
     // default constructor
@@ -43,6 +45,8 @@ class Commit {
     std::string getMessage() const { return message; }
 
     Commit* getParentCommit();
+
+    std::vector<TrackedFile> const getFiles();
     
     // virtual functions
     virtual bool hasFile(const std::string& filename) = 0;
