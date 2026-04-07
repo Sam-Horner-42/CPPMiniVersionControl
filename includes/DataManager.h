@@ -16,7 +16,7 @@
 class DataManager {
 public:
     string generateId(string repositoryName, vector<TrackedFile> files);
-    string singleHash(string repositoryName, string singleFile);
+    string singleHash(string fileContents);
     void saveData(string repositoryName);
     bool loadData(const string& repositoryName);
 };
