@@ -25,11 +25,6 @@ class RepositoryManager {
     AnalyticsEngine<StandardCommit> analyzer;
     DiffEngine differ;
   public:
-	struct Project {
-		std::string name;
-		std::string filePath;
-		std::string id;
-	};
     RepositoryManager(Repository& repo);
     ~RepositoryManager();
 

@@ -7,10 +7,9 @@
 
 #include "../includes/Repository.h"
 
-using std::string;
-using std::cout;
-using std::endl;
-using std::vector;
+using string = std::string;
+using cout = std::cout;
+using endl = std::endl;
 
 using json = nlohmann::json;
 #define REPOWRAPPER ".vcm"
@@ -119,6 +118,67 @@ TrackedFile* Repository::getSingleTrackedFile(const string& filePath) {
 
 const vector<TrackedFile>& Repository::getFileVector() {
   return currentFiles;
+}
+
+  inFile.close();
+  return content;
+}
+
+/**
+ * fileIsTracked iterates through the whole vector to return a true or false based on if the file already exists within the vector
+ * the boolean output is false by default but if it matches the filepath to one found in the files vector then it sets the foundFile bool to true
+ */
+bool Repository::fileIsTracked(const string& filepath) {
+  int vectorSize = files.size();
+  bool foundFile = false;
+
+  for(int i = 0; i < vectorSize; i++) {
+    if(files[i].getFilePath() == filepath) {
+      foundFile = true;
+    }
+  }
+  return foundFile;
+}
+
+void Repository::updateFileStatus(TrackedFile& file, fileStatus newStatus) {
+  string status;
+  switch(newStatus) {
+    case fileStatus::Added:
+      status = "Added";
+      break;
+    case fileStatus::Modified:
+      status = "Modified";
+      break;
+    case fileStatus::Staged:
+      status = "Staged";
+      break;
+    case fileStatus::Committed:
+      status = "Committed";
+      break;
+  }
+
+  file.updateContent(file->getFilePath(), status);
+}
+
+// TODO: Update so that it reads froma JSON/TXT file, read the commit logs
+// add to a vector of commit msgs, return vector to qt for use
+vector<string> Repository::getCommitHistory() {
+
+  // temp var, I assume it's already open so no need to reopen?
+    vector<string> commitHistoryVec;
+    for (auto& commit : commits) {
+      string logCommit = "Commit ID: " + commit->getId() + 
+       "Date: " + commit->getTimestamp() + 
+       "Message: " + commit->getMessage();
+      // one commit pushed to vector
+        commitHistoryVec.push_back(logCommit);
+    }
+    // holds full history
+    return commitHistoryVec;
+}   
+
+const vector<TrackedFile>& Repository::getFileVector() const {
+  return files;
 }
 
 /* find commits within the repostiroy's commits vector. */

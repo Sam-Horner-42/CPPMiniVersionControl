@@ -1,44 +1,23 @@
 #include "../includes/RepositoryManager.h"
 
-// do not touch, json work
-#include "../includes/nlohmann/json.hpp"
-using json = nlohmann::json;
-using std::string;
-/*
- * Sam Required function
- */
-RepositoryManager::Project RepositoryManager::getProjectInfo() {
-    Project result;  
-    
-    std::ifstream file("dataHandler.json");
-    json data = json::parse(file);
-    
-    for (auto& project : data["projects"]) {
-        result.name = project["name"];
-        result.id = project["id"];
-        result.filePath = project["path"];
-        return result;
-    }
-    
-    return result;
-}
+using namespace std;
 
 RepositoryManager::RepositoryManager(Repository& repo) :
 repo(repo) {}
 
 RepositoryManager::~RepositoryManager() {}
 
-void RepositoryManager::createRepository(const std::string& repoName,const std::string& repoPath) {
+void RepositoryManager::createRepository(const string& repoName,const string& repoPath) {
     // initialize the repo with a name
-    repo.initRepository(repoName,repoPath);
+    this->repo = repo.initRepository(repoName,repoPath);
 }
 
 // this will load from persistant storage (files)
 // have full path as the function input param
 // return a fully filled repo object containing the repo contents
-bool RepositoryManager::loadRepostiory(std::string& repoName) {
+bool RepositoryManager::loadRepostiory(const string& repoName) {
     repo.setRepoName(repoName);
-    data.loadData(repoName);
+    data.loadData(repoName, repo);
 
     return true;
 }

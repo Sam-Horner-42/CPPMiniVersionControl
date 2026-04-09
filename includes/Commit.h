@@ -17,7 +17,6 @@
 
 class Commit {
 
-    private:
     std::string commitId;
     std::string parentId;
     std::string message;

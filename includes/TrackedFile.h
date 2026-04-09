@@ -25,7 +25,7 @@ class TrackedFile {
     TrackedFile(const std::string& filePath, status status);
 	~TrackedFile() {};
 
-    //enum class status {Added, Modified, Staged, Committed};
+    enum class status {Added, Modified, Staged, Committed};
 
     void setNamePath(std::string filePath);
     void setStatus(status newStatus);
