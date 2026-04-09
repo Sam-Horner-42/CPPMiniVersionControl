@@ -107,7 +107,7 @@ void Repository::stageFile(const string& filepath) {
 // for Sam, this is the initial startingpoint for the commit button to call
 // its just true for success, false for somethings gone wrong
 bool Repository::commitChanges(StandardCommit& commit) {
-  std::vector<TrackedFile> fileVector = commit.getCommitVector();
+  std::vector<TrackedFile> fileVector = commit.getIncomingFiles();
   bool returnvar = checkStagedFiles(commit);
   return returnvar;
 }
@@ -118,22 +118,22 @@ bool Repository::checkStagedFiles(StandardCommit& commit) {
 	// if a file is not staged then we return a false value
 
 	//get vector size for the looping
-	int vectorSize = commit.getCommitVector().size();
+	int vectorSize = commit.getIncomingFiles().size();
 
 	//for loop to iterate through vector
 	for (int i = 0; i < vectorSize; i++) {
 		// check each file in the vector for if it is staged
 		// if not every file is staged then return false and abort the current commit
 		// the false return will cause the popup for listing every file that isnt staged and give the user the prompt for if they wish to try and stage those files, if that succeeds it will try to do a new commit
-		if (commit.getCommitVector()[i].getFileStatus() != TrackedFile::status::Staged) {
-			commit.getCommitVector().clear();
+		if (commit.getIncomingFiles()[i].getFileStatus() != TrackedFile::status::Staged) {
+			commit.getIncomingFiles().clear();
 			return false;
 			break;
 		}
 
 		// pass the current iterated file through compareHashedFiles to check
-		// nomatter true or false it is a parameter to addToCommitVector
-		commit.addToCommitVector(commit.compareHashedFiles(commit.getCommitVector()[i]), commit.getCommitVector()[i]);
+		// nomatter true or false it is a parameter to addToIncomingFiles
+		commit.addToIncomingFiles(commit.compareHashedFiles(commit.getIncomingFiles()[i]), commit.getIncomingFiles()[i]);
 
 	}
 	return true;

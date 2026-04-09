@@ -144,11 +144,8 @@ void DataManager::saveData(std::string& repositoryName, std::vector<TrackedFile>
     
 }
 
-bool loadData(std::string& repositoryName) {
-
-    // Future ethan work? no idea anymore
-    vector<unique_ptr<RepositoryManager> commits = Commit::getCommitVector();
-    vector<TrackedFile> files = RepositoryManager::getFileVector();
+bool loadData(std::string& repositoryName, Repository* repository) {
+	
 
     string pathDataHandler = "dataHandler.json";
     std::ifstream in(pathDataHandler);

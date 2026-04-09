@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include <QMessageBox>
 
 namespace Ui {
     class MainWindow;
@@ -126,11 +127,11 @@ void MainWindow::on_commitStaged_clicked()
 {
 	QString commitMessage = ui.commitInput->toPlainText();
 	qDebug() << "Commit Staged button clicked. Message:" << commitMessage;
-	// if (!commitMessage.isEmpty() && currentRepo) {
-	//     currentRepo->commit(commitMessage.toStdString());
-	//     ui.commitInput->clear();
-	//     // refreshTable();
-	// }
+	if (!commitMessage.isEmpty()) {
+		//currentRepo->commit(commitMessage.toStdString());
+		ui.commitInput->clear();
+		QMessageBox::warning(this, "Invalid Commit Message", "Please provide a valid, not empty commit message.");
+	}
 }
 
 void MainWindow::on_discardChanges_clicked()
@@ -153,8 +154,6 @@ void MainWindow::on_fileTable_cellClicked(int row, int column)
 
 	// Update the Diff View (Mock logic)
 	// diffView->setPlainText(diffEngine->displayDiff()); // Assuming this gets a String of the whole diff
-	diffView->setPlainText("--- a/" + fileName + "\n+++ b/" + fileName +
-		"\n@@ -1,1 +1,2 @@\n- Old Line\n+ New Line added by Sam");
 
 	// Switch to the Diff Tab
 	ui.infoTab->setCurrentWidget(ui.diffTab);

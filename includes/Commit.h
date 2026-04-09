@@ -34,7 +34,7 @@ class Commit {
         const std::string& author,
         const std::string& timestamp
     )
-    : commitId(commitId),message(message),
+    : commitId(commitId),parentId(parentId),message(message),
     author(author), timestamp(timestamp) {}
 
     // class getters
@@ -44,7 +44,7 @@ class Commit {
     std::string getId() const { return commitId; }
     std::string getMessage() const { return message; }
 
-    Commit* getParentCommit();
+    
 
     std::vector<TrackedFile> const getFiles();
     

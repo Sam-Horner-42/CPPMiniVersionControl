@@ -50,7 +50,7 @@ public:
   
   Commit* findCommit(const std::string& commitId);
 
-
+  void addCommit(std::unique_ptr<StandardCommit> commit) { commits.push_back(commit); }
 
 
 };

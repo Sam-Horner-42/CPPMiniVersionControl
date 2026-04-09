@@ -46,7 +46,7 @@ bool RepositoryManager::loadRepostiory(std::string& repoName) {
 void RepositoryManager::saveRepository(StandardCommit& commit) {
     // I have no idea what's really required here but this is best solution I believe??
     std::string name = repo.getRepoName();
-    std::vector<TrackedFile> files = commit.getCommitVector(); // should get files - ethan work
+    std::vector<TrackedFile> files = commit.getIncomingFiles(); // should get files - ethan work
     data.saveData(name, files, commit);
 }
 
@@ -55,10 +55,10 @@ void RepositoryManager::saveRepository(StandardCommit& commit) {
    KEY: filename VALUE: DiffString */
 std::unordered_map<std::string, std::string> RepositoryManager::callParentDifferentiation(StandardCommit& diffCommit) {
     std::unordered_map<string,string> diffMap;
-    auto parent = getParentCommit(diffCommit.getId());
-    auto parentFiles = parent->getCommitVector();
+    StandardCommit* parent = getParentCommit(diffCommit.getId());
+    auto parentFiles = parent->getIncomingFiles();
 
-    for (const auto& file : diffCommit.getCommitVector()) {
+    for (const auto& file : diffCommit.getIncomingFiles()) {
         if (!parent->hasFile(file->getFileName())) continue;
 
         auto it = find_if(parentFiles.begin(), parentFiles.end(), [&](const auto& f) {
@@ -96,13 +96,13 @@ unordered_map<string,string> RepositoryManager::callRegularDifferentiation(Commi
 }
 
 /* Search for a commit if it exists in the repo's vector */
-Commit* RepositoryManager::searchCommits(const string& searchString) {
+StandardCommit* RepositoryManager::searchCommits(const string& searchString) {
     return repo.findCommit(searchString);
 }
 
 /* returns the parent commit as a pointer */
-Commit* RepositoryManager::getParentCommit(const string& commitId) {
-	auto c = searchCommits(commitId);
+StandardCommit* RepositoryManager::getParentCommit(const string& commitId) {
+	StandardCommit* c = searchCommits(commitId);
 	auto parent = searchCommits(c->getParentId());
 	return parent;
 }

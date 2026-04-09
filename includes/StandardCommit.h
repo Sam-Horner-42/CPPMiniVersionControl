@@ -10,7 +10,7 @@
 class StandardCommit : public Commit {
 private:
 	std::map<std::string, std::string> fileSnapshot;
-	std::vector<TrackedFile> commitVector;
+	std::vector<TrackedFile> incomingFileVector;
 public:
 	StandardCommit(
 		const std::string& commitId,
@@ -18,8 +18,9 @@ public:
 		const std::string& message,
 		const std::string& author,
 		const std::string& timestamp
-	);
-	~StandardCommit();
+
+	) : Commit(commitId, parentId, message, author, timestamp) {}
+	~StandardCommit() {}
 
 	std::vector<std::string> getAllAttributes() override;
 	std::vector<std::string> displayCommit() override;
@@ -29,9 +30,10 @@ public:
 	void updateSnapshot(const std::string& filename, const std::vector<std::string>& content);
 	bool hasFile(const std::string& filename) override;
 
+	StandardCommit* getParentCommit(std::string parentId);
 	
 	bool compareHashedFiles(TrackedFile comparingStagedFile);
-	void addToCommitVector(bool tf, TrackedFile addingStagedFile);
-	std::vector<TrackedFile> getCommitVector() const;
+	void addToIncomingFiles(bool tf, TrackedFile addingStagedFile);
+	std::vector<TrackedFile> getIncomingFiles() const;
 	std::vector<std::string> commitToRepo(std::vector<TrackedFile> commitFiles);
 };

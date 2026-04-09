@@ -38,7 +38,7 @@ void InitRepoDialog::on_okButton_clicked()
 
 	// Validate Path
 	QDir dir(path);
-	if (path.trimmed().isEmpty() || !dir.isAbsolute()) {
+	if (path.trimmed().isEmpty() || !dir.isAbsolute() || !dir.exists()) {
 		QMessageBox::warning(this, "Invalid Path", "Please provide a valid, absolute directory path.");
 		ui.repoPathInput->clear();    // Reset the field
 		ui.repoPathInput->setFocus(); // Put the text cursor back in this box
