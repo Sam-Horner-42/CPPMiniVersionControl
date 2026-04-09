@@ -14,7 +14,7 @@ class DiffEngine {
   int linesAdded = 0;
   int linesRemoved = 0;
   public:
-    void computeDiff(const std::vector<std::string>& currentContent, const std::vector<std::string>& oldContent);
+    void computeDiff(const std::string& currentContent, const std::string& oldContent);
     std::string displayDiff() const;
 };
 
