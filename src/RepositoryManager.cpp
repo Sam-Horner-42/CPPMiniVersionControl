@@ -17,13 +17,12 @@ void RepositoryManager::createRepository(const string& repoName,const string& re
 // return a fully filled repo object containing the repo contents
 bool RepositoryManager::loadRepostiory(const string& repoName) {
     repo.setRepoName(repoName);
-    data.loadData(repoName,repo.getFileVector(),repo.getCommitHistory());
+    data.loadData(repoName, repo);
 
     return true;
 }
 
 void RepositoryManager::saveRepository() {
-    // I have no idea what's really required here but this is best solution I believe??
     std::string name = repo.getRepoName();
     std::vector<TrackedFile> files = commit.getIncomingFiles(); // should get files - ethan work
     data.saveData(name, files, commit);

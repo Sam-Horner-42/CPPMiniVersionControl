@@ -146,14 +146,13 @@ void DataManager::saveData(std::string& repositoryName, std::vector<TrackedFile>
 
 bool loadData(std::string& repositoryName, Repository* repository) {
 	
-
     string pathDataHandler = "dataHandler.json";
     std::ifstream in(pathDataHandler);
     if (!in.is_open()) { 
-            std::cerr << "cannot open json file\n"; // for testing, most console outputs are for US not output
-            return false; 
-        }
-    
+        std::cerr << "cannot open json file\n"; 
+        return false; 
+    }
+   
     json handlerJson;
     in >> handlerJson;
     in.close();

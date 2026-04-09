@@ -16,7 +16,6 @@ std::vector<std::string> StandardCommit::getAllAttributes() {
 	return content;
 }
 
-
 void StandardCommit::createSnapshot(const std::string& filename, const std::vector<std::string>& content) {
 	std::string contentstring;
 
@@ -48,8 +47,6 @@ std::string StandardCommit::getSummary() {
 		" Commit Message:\n" + getMessage();
 }
 
-
-
 bool StandardCommit::compareHashedFiles(TrackedFile comparingStagedFile) {
 	//Mano-TODO: 
 	//please make this function to compare the file hash of each file in the TrackedFiles vector
@@ -70,14 +67,14 @@ bool StandardCommit::compareHashedFiles(TrackedFile comparingStagedFile) {
 	return (currentHash != previousHash);
 }
 
-void StandardCommit::addToCommitVector(bool tf, TrackedFile addingStagedFile) {
+void StandardCommit::addToIncomingFiles(bool tf, TrackedFile addingStagedFile) {
 	//TODO: This function is supposed to populate the Commit Vector
 	// it will take the true or false from the compareHashedFiles
 	// if true is passed in then it will add the staged file into the commit vector
 
 	// if truefalse variable is true then add the file into the staged file vector
 	if (tf == true) {
-		commitVector.push_back(addingStagedFile);
+		incomingFileVector.push_back(addingStagedFile);
 	}
 	// if truefalse variable is false then ignore that file
 	else if (tf == false) {
@@ -132,14 +129,14 @@ bool Commit::checkStagedFiles(std::vector<TrackedFile> fileVector) {
         // if not every file is staged then return false and abort the current commit
         // the false return will cause the popup for listing every file that isnt staged and give the user the prompt for if they wish to try and stage those files, if that succeeds it will try to do a new commit
         if (fileVector[i].getFileStatus() != TrackedFile::status::Staged) {
-            Commit::clearCommitVector();
-            return false;
+            Commit::clearIncomingFiles();
+            return false;      
             break;
         }
 
         // pass the current iterated file through compareHashedFiles to check
-        // nomatter true or false it is a parameter to addToCommitVector
-        Commit::addToCommitVector(compareHashedFiles(fileVector[i]), fileVector[i]);
+        // nomatter true or false it is a parameter to addToIncomingFiles
+        Commit::addToIncomingFiles(compareHashedFiles(fileVector[i]), fileVector[i]);
         return true;
     }
 }
@@ -169,14 +166,14 @@ StandardCommit* StandardCommit::getParentCommit() {
     return this->parentCommit;  
 }
 
-void Commit::addToCommitVector(bool tf, TrackedFile addingStagedFile) {
+void Commit::addToIncomingFiles(bool tf, TrackedFile addingStagedFile) {
     //TODO: This function is supposed to populate the Commit Vector
     // it will take the true or false from the compareHashedFiles
     // if true is passed in then it will add the staged file into the commit vector
 
     // if truefalse variable is true then add the file into the staged file vector
     if (tf == true) {
-        commitVector.push_back(addingStagedFile);
+        incomingFileVector.push_back(addingStagedFile);
     }
     // if truefalse variable is false then ignore that file
     else if (tf == false) {
@@ -185,19 +182,19 @@ void Commit::addToCommitVector(bool tf, TrackedFile addingStagedFile) {
 
 }
 
-void Commit::clearCommitVector() {
+void Commit::clearIncomingFiles() {
     //TODO: This function will be called to clear out the commit vector entirely
-    commitVector.clear();
+    incomingFileVector.clear();
 }
 
 // this function is a getter for the commit vector. The commit vector is just a vector of the tracked files that are specifically getting commit into the repo.
 // How I have the committing set up is just that i have a few functions that narrow down the tracked files vector to just transfer staged files that have a different hash to the repo file
-// this commitVector just stores those files that have a different hash to the repository old version, and then they all have the status set to Commit.
-// its entirely used for another function to get that commitVector during the commit.
+// this IncomingFile Vector just stores those files that have a different hash to the repository old version, and then they all have the status set to Commit.
+// its entirely used for another function to get that IncomingFile Vector during the commit.
 
-// for spencer, what i was thinking was just you take the commitVector, which holds each file object being commit, and put that into the repo as the intended txt structure
-std::vector<TrackedFile> StandardCommit::getCommitVector() const {
-	return commitVector;
+// for spencer, what i was thinking was just you take the IncomingFile Vector, which holds each file object being commit, and put that into the repo as the intended txt structure
+std::vector<TrackedFile> StandardCommit::getIncomingFiles() const {
+	return incomingFileVector;
 }
 
 bool StandardCommit::hasFile(const std::string& filename) {
