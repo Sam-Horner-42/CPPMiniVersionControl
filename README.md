@@ -1,1 +1,1 @@
-Git Version Source Control Project from Algonquin College
+Git Version Source Control Project from Algonquin College.
