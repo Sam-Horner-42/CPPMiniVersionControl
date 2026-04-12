@@ -5,7 +5,6 @@
 #include <map>
 
 #include "Commit.h"
-#include "TrackedFile.h"
 
 
 class StandardCommit : public Commit {

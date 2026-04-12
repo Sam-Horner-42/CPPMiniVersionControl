@@ -32,11 +32,13 @@ set(PROJECT_SOURCES
     gui/SelectRepoDialog.h
     gui/SelectRepoDialog.cpp
     #includes/AnalyticsEngine.h
+	src/DataManager.cpp
     src/DiffEngine.cpp
     src/Repository.cpp
     src/RepositoryManager.cpp
     src/StandardCommit.cpp
     src/TrackedFile.cpp
+	
 )
 
 qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

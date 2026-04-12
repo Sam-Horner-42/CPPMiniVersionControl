@@ -20,5 +20,5 @@ public:
     std::string generateId(std::string repositoryName, std::vector<TrackedFile> files);
     std::string singleHash(std::string fileContents);
     void saveData(std::string& repositoryName, Commit& currentCommit);
-    bool loadData(std::string& repositoryName);
+    bool loadData(std::string& repositoryName, Repository& repo);
 };

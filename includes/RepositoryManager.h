@@ -40,7 +40,7 @@ class RepositoryManager {
     StandardCommit* searchCommits(const std::string& searchString);
     TrackedFile::status getFileStatus(const TrackedFile& file);
     void restoreToParent(const std::string& commitId);
-	  void updateFileStatus(std::string& filePath, TrackedFile::status newStatus);
+	void updateFileStatus(std::string& filePath, TrackedFile::status newStatus);
     std::unordered_map<std::string, std::string> callParentDifferentiation(StandardCommit& diffCommit);
     std::unordered_map<std::string,std::string> callRegularDifferentiation(StandardCommit& diffCommit1, StandardCommit& diffCommit2);
 

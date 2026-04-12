@@ -38,7 +38,7 @@ void RepositoryManager::createRepository(const std::string& repoName,const std::
 // return a fully filled repo object containing the repo contents
 bool RepositoryManager::loadRepostiory(std::string& repoName) {
     repo.setRepoName(repoName);
-    data.loadData(repoName);
+    data.loadData(repoName, repo);
 
     return true;
 }
@@ -117,11 +117,15 @@ StandardCommit* RepositoryManager::searchCommits(const string& searchString) {
 }
 
 // /* returns the parent commit as a pointer */
-// StandardCommit* RepositoryManager::getParentCommit(const string& commitId) {
+StandardCommit* RepositoryManager::getParentCommit(const string& commitId) {
 // 	StandardCommit* c = searchCommits(commitId);
 // 	auto parent = searchCommits(c->getParentId());
 // 	return static_cast<StandardCommit*>(parent);
-// }
+	StandardCommit* commit = new StandardCommit("ID", "PARENT", "MESSAGE", "AUTHOR", "TIMESTAMP");
+	return commit;
+
+
+}
 
 // /* performs the restoration to the parent. */
 // void RepositoryManager::restoreToParent(const string& commitId) {
@@ -141,7 +145,7 @@ StandardCommit* RepositoryManager::searchCommits(const string& searchString) {
 //     for (const auto& file : restore->getTrackedFiles()) {
 //         current->updateSnapshot(file.getFileName(), file.getFileContent());
 //     }
-// }
+//}
 
 TrackedFile::status RepositoryManager::getFileStatus(const TrackedFile& file) {
     return file.getFileStatus();

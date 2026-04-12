@@ -8,24 +8,25 @@ using namespace std;
 namespace fs = std::filesystem;
 
 
-string DataManager::singleHash(string fileContents){
-    // unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
+std::string DataManager::singleHash(std::string fileContents){
+    std::string result = "result";
+	// unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
     // unsigned long long prime = 1099511628211ULL; // fnv-1a prime
     // for (const auto& c : fileContents)
     //     hash = (hash ^ c) * prime;  // updated so that it just reads a fileContent string and applies hash
 
     // string result = to_string(hash);
-    return "result";  
+    return result;  
 }
 
 string DataManager::generateId(string repositoryName, vector<TrackedFile> files){
 
-    // /*
+    //
     // using the FNV-1a hasing algorithm without extras
     // FowlerNollVo hash function, we need two magic large numbers(given I didn't make them), offset and prime
     // use them based off contents of the files, convert the hash to a string and take the first 10
     // https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-    // */
+    // 
     // unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
     // unsigned long long prime = 1099511628211ULL; // fnv-1a prime
     // for (const auto& file : files){
@@ -123,7 +124,7 @@ void DataManager::saveData(std::string& repositoryName, Commit& currentCommit) {
 // use maps, now update shitshots and load whatever
 
 
-bool loadData(std::string& repositoryName, Repository& repo) {
+bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
     // string pathDataHandler = "dataHandler.json";
     // std::ifstream in(pathDataHandler);
     // if (!in.is_open()) { 

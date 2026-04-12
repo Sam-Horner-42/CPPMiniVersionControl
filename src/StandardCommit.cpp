@@ -35,7 +35,7 @@ std::vector<std::string> StandardCommit::displayCommit() {
 // returns a small summary commit id and message
 std::string StandardCommit::getSummary() {
 	return "Commit ID: " + getId() +
-		" Parent ID: " + getParentId() +
+		" Parent ID: " + getParentId() + //StandardCommit* getParentCommit(const std::string& commitId);
 		" Commit Message:\n" + getMessage();
 }
 
