@@ -4,7 +4,7 @@
 using namespace std;
 
 //functions
-void TrackedFile::updateContent(string filePath, status fileStatus) {
+void TrackedFile::setNamePath(string filePath) {
 
     //class filePath variable is set to the passed in filePath parameter
     this->filePath = filePath;
@@ -12,38 +12,13 @@ void TrackedFile::updateContent(string filePath, status fileStatus) {
     //Sets filename to the name of the file with file extension
     //This works by finding the last slash in the filepath and then going past that
     this->fileName = filePath.substr(filePath.find_last_of('/') + 1);
-
-    //opens the file using the filePath parameter
-    ifstream file(filePath);
-    if (file.is_open()) { //checks if file is opened properly, if so then clear the content in the object to get a blank slate
-        content.clear();
-        string line;
-        while (getline(file, line)) { //use "line" string to get the whole file line by line passing it into the content vector
-            content.push_back(line);
-        }
-        file.close(); //close the file after the contents have been put into the content vector line by line
-    }
-    else {
-        content.push_back("UpdateContent() Could not read file content"); //if unable 
-    }
-    //counter for my compute most modified files 
-    if (content != this->content) {
-        this->editCount++;
-        this->content = content;
-    }
-    else {
-        this->content.clear();
-    }
-
-    this->currentStatus = fileStatus;
 }
 
-/**
- * Mano-TODO: please fix to not use couts
- * we are going to be passing this function to the GUI so rather than void or cout it should have a return with the string of all the file info
- * do the exact same thing but use a single string rather than multiple cout lines and it will be good
- */
-vector<string> TrackedFile::displayFileInfo() {  //fixed to be a vector<string> return since it was set to void which cant return anything
+void TrackedFile::setStatus(status newStatus) {
+    this->currentStatus = newStatus;
+}
+
+vector<string> TrackedFile::displayFileInfo() {
     vector<string> info;
     info.push_back("File: " + fileName);
     info.push_back("Path: " + filePath);
@@ -72,26 +47,18 @@ vector<string> TrackedFile::displayFileInfo() {  //fixed to be a vector<string> 
 string TrackedFile::getFileName() const {
     return fileName;
 }
-string TrackedFile::getFilePath() const { // readded const to have it work
+string TrackedFile::getFilePath() const {
     return filePath;
-}
-
-vector<string> TrackedFile::getFileContent() const {
-    return content;
 }
 
 TrackedFile::status TrackedFile::getFileStatus() const {
     return currentStatus;
 }
 
-string TrackedFile::getCommitMessage() const {
-    return commitMessage;
-}
-
 void TrackedFile::setCommitMessage(string commitMsg) {
     this->commitMessage = commitMsg;
 }
 
-int TrackedFile::getEditCount() const { //fixed to have const in the correct spot
+int TrackedFile::getEditCount() const {
     return editCount; 
 }

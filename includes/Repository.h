@@ -14,43 +14,56 @@
 
 #include "TrackedFile.h"
 #include "StandardCommit.h"
+#include "../includes/nlohmann/json.hpp"
 
 class Repository {
   std::string repoName;
   std::string repoPath;
-  std::vector<TrackedFile> files;
   std::vector<std::unique_ptr<Commit>> commits;
+  std::vector<TrackedFile> currentFiles;
+  StandardCommit currentCommit;
 public:
-  Repository();
-  ~Repository();
+	Repository() {};
+	~Repository() {};
 
-  bool checkStagedFiles(StandardCommit& commit);
-  bool initRepository(const std::string& repoName, const std::string& repoPath);
-  void addFile(const std::string& filepath);
+  // copy constructor
+  Repository(const Repository& other) 
+    : repoName(other.repoName),
+      repoPath(other.repoPath),
+      currentFiles(other.currentFiles),
+      currentCommit(other.currentCommit)
+  {
+      for (const auto& commit : other.commits) {
+          if (commit) {
+              StandardCommit* sc = dynamic_cast<StandardCommit*>(commit.get());
+              if (sc) {
+                  commits.push_back(std::make_unique<StandardCommit>(*sc));
+              }
+          }
+      }
+  }
+
+  void updateFileStatus(const std::string& file, TrackedFile::status newStatus);
   void stageFile(const std::string& filepath);
-  bool commitChanges(StandardCommit& commit);
-
-  std::vector<std::string> extractFileContent(const std::string& filepath);
+  bool initRepository(const std::string& repoName, const std::string& repoPath);
   void setRepoName(const std::string& repoName) { this->repoName = repoName; }
-
+  TrackedFile* getSingleTrackedFile(const std::string& filePath);
+  
   std::vector<std::string> getCommitHistory();
   int  getNumOfCommits();
 
   std::string getRepoName();
 
-  TrackedFile& getTrackedFile(const std::string& filepath); // helper class to get the tracked file used in addFile
-  int  getNumOfTrackedFiles();
+  TrackedFile* findFile(const std::string& filename);
 
-  std::vector<TrackedFile> getFiles() const;
-  bool fileIsTracked(const std::string& filepath);
+  void setCurrentCommit(Commit& c) { currentCommit = dynamic_cast<StandardCommit&>(c); }
+  StandardCommit& getCurrentCommit() { return dynamic_cast<StandardCommit&>(currentCommit); }
 
-  void updateFileStatus(TrackedFile& file, TrackedFile::status newStatus);
-
-  const std::vector<TrackedFile>& getFileVector() const;
+  std::vector<TrackedFile> getCurrentFiles() { return currentFiles; }
   
-  Commit* findCommit(const std::string& commitId);
+  const std::vector<TrackedFile>& getFileVector();
+  void buildJSONMetaData(const std::string& repoPath);
+  StandardCommit* findCommit(const std::string& commitId);
 
-  void addCommit(std::unique_ptr<StandardCommit> commit) { commits.push_back(commit); }
-
-
+  void addCommit(std::unique_ptr<StandardCommit> commit) { commits.push_back(std::move(commit)); }
 };

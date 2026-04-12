@@ -6,46 +6,59 @@
 
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 #include "../includes/StandardCommit.h"
 #include "../includes/DiffEngine.h"
 
 using namespace std;
 
-void DiffEngine::computeDiff(const vector<string>& currentContent, const vector<string>& oldContent) {
+void DiffEngine::computeDiff(const std::string& currentContent, const std::string& oldContent) {
     if(currentContent.empty() || oldContent.empty()) return;
 
-    diffString = "";
+    // split both strings into lines
+    auto splitLines = [](const std::string& str) {
+        std::vector<std::string> lines;
+        std::istringstream stream(str);
+        std::string line;
+        while(getline(stream, line)) {
+            lines.push_back(line);
+        }
+        return lines;
+    };
 
-    int minSize = min(currentContent.size(), oldContent.size());
-    string diffString = "";
+    std::vector<std::string> currentLines = splitLines(currentContent);
+    std::vector<std::string> oldLines = splitLines(oldContent);
+
+    std::string result = "";
+    int minSize = min(currentLines.size(), oldLines.size());
 
     for(auto i = 0; i < minSize; i++) {
-        if(currentContent[i] != oldContent[i]) {
+        if(currentLines[i] != oldLines[i]) {
             linesModified++;
-            diffString += "- " + oldContent[i] + "\n";
-            diffString += "+ " + currentContent[i] + "\n";
+            result += "- " + oldLines[i] + "\n";
+            result += "+ " + currentLines[i] + "\n";
         }
     }
 
-    if(currentContent.size() > oldContent.size()) {
-        for(auto i = minSize; i < currentContent.size(); i++) {
+    if(currentLines.size() > oldLines.size()) {
+        for(auto i = minSize; i < currentLines.size(); i++) {
             linesAdded++;
-            diffString += "+ " + currentContent[i] + "\n";
+            result += "+ " + currentLines[i] + "\n";
         }
     }
-    else if(currentContent.size() < oldContent.size()) {
-        for(auto i = minSize; i < oldContent.size(); i++) {
-            linesRemoved++;  
-            diffString += "- " + oldContent[i] + "\n"; 
+    else if(currentLines.size() < oldLines.size()) {
+        for(auto i = minSize; i < oldLines.size(); i++) {
+            linesRemoved++;
+            result += "- " + oldLines[i] + "\n";
         }
     }
 
-    diffString += "[+] Lines Added: " + to_string(linesAdded) + "\n";
-    diffString += "[+] Lines Removed: " + to_string(linesRemoved) + "\n";
-    diffString += "[+] Lines Modified: " + to_string(linesModified) + "\n";
+    result += "[+] Lines Added: " + to_string(linesAdded) + "\n";
+    result += "[+] Lines Removed: " + to_string(linesRemoved) + "\n";
+    result += "[+] Lines Modified: " + to_string(linesModified) + "\n";
 
-    this->diffString = diffString;
+    this->diffString = result;
 }
 
 std::string DiffEngine::displayDiff() const {

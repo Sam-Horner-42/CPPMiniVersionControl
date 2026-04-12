@@ -16,26 +16,30 @@ class TrackedFile {
     private:
     std::string filePath;
     std::string fileName;
-    std::vector<std::string> content;
     int editCount;
     status currentStatus;
     std::string commitMessage;
 
     public:
+		TrackedFile() {};
     TrackedFile(const std::string& filePath, status status);
-    ~TrackedFile();
+	~TrackedFile() {};
 
-    enum class status {Added, Modified, Staged, Committed};
+    //enum class status {Added, Modified, Staged, Committed};
 
-    void updateContent(std::string filePath, status fileStatus);
+    void setNamePath(std::string filePath);
+    void setStatus(status newStatus);
 
     std::vector<std::string> displayFileInfo();
     std::string getFileName() const;
     std::string getFilePath() const;
-    std::vector<std::string> getFileContent() const;
     status getFileStatus() const;
     std::string getCommitMessage() const;
     void setCommitMessage(std::string commitMsg);
+
+    bool operator==(TrackedFile& other) {
+	    return this->getFilePath() == other.getFilePath();
+    }
 
     int getEditCount() const;
 };
