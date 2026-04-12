@@ -1,9 +1,7 @@
 #pragma once
 
 #include "TrackedFile.h"
-#include "StandardCommit.h"
-#include "Repository.h"
-
+#include "Commit.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -19,6 +17,6 @@ class DataManager {
 public:
     std::string generateId(std::string repositoryName, std::vector<TrackedFile> files);
     std::string singleHash(std::string fileContents);
-    void saveData(std::string& repositoryName, Commit& currentCommit);
+    void saveData(std::string& repositoryName, std::vector<TrackedFile>& files, StandardCommit& commit);
     bool loadData(std::string& repositoryName);
 };

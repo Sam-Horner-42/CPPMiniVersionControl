@@ -1,4 +1,6 @@
+
 {
+    "_comment": "Test format, ids are fake and need to be hash based but you get the idea",
     "projects": [
         {
             "name": "FitnessTracker",

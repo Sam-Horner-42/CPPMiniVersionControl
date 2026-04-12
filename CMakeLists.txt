@@ -16,7 +16,7 @@ find_package(Qt${QT_VERSION_MAJOR}
 qt_standard_project_setup()
 
 set(PROJECT_SOURCES
-    #src/MiniVersionControl.cpp
+    src/MiniVersionControl.cpp
     includes/MiniVersionControl.h
     src/main.cpp
     gui/MainWindow.ui
@@ -31,8 +31,7 @@ set(PROJECT_SOURCES
     gui/SelectRepoDialog.ui
     gui/SelectRepoDialog.h
     gui/SelectRepoDialog.cpp
-    includes/AnalyticsEngine.h
-	src/DataManager.cpp
+    #includes/AnalyticsEngine.h
     src/DiffEngine.cpp
     src/Repository.cpp
     src/RepositoryManager.cpp

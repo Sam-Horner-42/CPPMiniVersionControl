@@ -22,8 +22,7 @@ class Commit {
     std::string message;
     std::string author;
     std::string timestamp;
-
-    std::vector<TrackedFile> files;
+    
 
     public:
     // default constructor
@@ -37,8 +36,6 @@ class Commit {
     : commitId(commitId),parentId(parentId),message(message),
     author(author), timestamp(timestamp) {}
 
-	Commit() {};
-
     // class getters
     std::string getParentId() const { return parentId; }
     std::string getAuthor() const { return author; }
@@ -46,9 +43,10 @@ class Commit {
     std::string getId() const { return commitId; }
     std::string getMessage() const { return message; }
 
-    std::vector<TrackedFile> getTrackedFiles() { return files; }
-    void addTrackedFile(const TrackedFile& file) { files.push_back(file); }
+    
 
+    std::vector<TrackedFile> const getFiles();
+    
     // virtual functions
     virtual bool hasFile(const std::string& filename) = 0;
     virtual std::vector<std::string> getAllAttributes() = 0;
