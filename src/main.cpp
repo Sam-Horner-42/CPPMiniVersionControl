@@ -9,14 +9,13 @@
 #include "../gui/StartingWindow.h"
 #include "../gui/InitRepoDialog.h"
 #include "../gui/SelectRepoDialog.h"
-//#include "../includes/Repository.h"
-//#include "../includes/RepositoryManager.h"
+#include "../includes/RepositoryManager.h"
 
 int main(int argc, char* argv[]) {
 	// Initializes the application using QT
     QApplication app(argc, argv);
-
-    StartingWindow startWindow;
+	RepositoryManager repoManager;
+    StartingWindow startWindow(&repoManager);
     QString repoName;
     QString repoPath;
 	bool isNewRepo = false; // default to false
@@ -37,26 +36,16 @@ int main(int argc, char* argv[]) {
 	// This also ensures valid input data before showing the mainWindow
     if (startWindow.exec() == QDialog::Accepted)
     {
-		
-		//if (isNewRepo) {
-		//	// Call the init function 
-		//	if (!currentRepo.initRepository(repoName.toStdString(), repoPath.toStdString())) {
-		//		QMessageBox::critical(nullptr, "Error", "Failed to initialize the repository on disk.");
-		//		return -1; // Exit app if it fails
-		//	}
-		//} else {
-			// Call the load repository function
-			//if (!currentRepo.loadRepository(repoName.toStdString(), repoPath.toStdString())) {
-			//     QMessageBox::critical(nullptr, "Error", "Failed to load the repository from disk.");
-			//     return -1;
-			//}
-		//}
-		
 
-		MainWindow w;
+		
 		// Pass a pointer of the backend object to the MainWindow
-
-		//w.setRepoContext(&currentRepo, repoName, repoPath); 
+		if (isNewRepo) {
+			repoManager.createRepository(repoName.toStdString(), repoPath.toStdString());
+		}
+		else {
+			repoManager.loadRepository(repoName.toStdString());
+		}
+		MainWindow w(&repoManager);
 		w.setRepoContext(repoName, repoPath);
 
 		w.show();

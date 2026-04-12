@@ -2,15 +2,17 @@
 #include "StartingWindow.h"
 #include "InitRepoDialog.h"
 #include "SelectRepoDialog.h"
+#include <QRegularExpression> // Used for input validation
 
-StartingWindow::StartingWindow(QWidget* parent)
-    : QDialog(parent)
+StartingWindow::StartingWindow(RepositoryManager* repoManager, QWidget* parent)
+    : QDialog(parent), m_repoManager(repoManager)
 {
     ui.setupUi(this);
 }
 
 StartingWindow::~StartingWindow(){}
 
+QRegularExpression reSpecChars("[^\\w]"); // This checks for special characters
 // called automatically — no connect() required
 void StartingWindow::on_initRepo_clicked()
 {
@@ -32,15 +34,15 @@ void StartingWindow::on_initRepo_clicked()
 
 void StartingWindow::on_selectRepo_clicked()
 {
-	SelectRepoDialog selectDialog(this);
+	SelectRepoDialog selectDialog(m_repoManager, this);
 
 	if (selectDialog.exec() == QDialog::Accepted)
 	{
 		QString name = selectDialog.getSelectedRepoName();
 		QString path = selectDialog.getSelectedRepoPath();
 
-		if (!name.isEmpty()) {
-			emit repoSelected(name, path, false); // false = existing repository
+		if (!name.contains(reSpecChars) && !name.isEmpty() && !(name.size() > 40)) {
+			emit repoSelected(name, path, false);
 			accept();
 		}
 	}

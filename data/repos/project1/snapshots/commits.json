@@ -1,0 +1,28 @@
+{
+    "commits" : [
+        {
+            "id":"HASHVAL",
+            "author":"Jacob",
+            "parentID":"N/A",
+            "time":"BEFORE",
+            "msg":"mhmm",
+            "fileName":[
+                "fileA",
+                "fileB",
+                "fileCacob"
+            ]
+        },
+        {
+            "id":"HASHVAL2",
+            "author":"JACOB",
+            "parentID":"HASHVAL",
+            "time":"now",
+            "msg":"asdf",
+            "fileName":[
+                "fileA",
+                "fileB",
+                "fileCacob"
+            ]
+        }
+    ]
+}

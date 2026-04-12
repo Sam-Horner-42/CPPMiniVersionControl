@@ -16,7 +16,7 @@ using json = nlohmann::json;
 #define REPOWRAPPER ".vcm"
 
 
-std::string Repository::getRepoName() { return repoName; }
+const std::string& Repository::getRepoName() const { return repoName; }
 
 
 void Repository::buildJSONMetaData(const string& repoPath){
@@ -38,35 +38,29 @@ void Repository::buildJSONMetaData(const string& repoPath){
   }
 }
 
-bool Repository::initRepository(const string& repoName,const string& repoPath) {
-
-  this->repoPath = repoPath;
+// This function will be called from RepositoryManager and return a repository for use in the manager class
+void Repository::initRepository(const string& repoName,const string& repoPath) {
+	this->repoPath = repoPath;
   
-  // create snapshots , branches , config folders
+  // create snapshots , config folders
   // & create the initial config file.
-  if(!std::filesystem::create_directory(REPOWRAPPER)
-     || !std::filesystem::create_directory(string(REPOWRAPPER) + "/snapshots")
-     || !std::filesystem::create_directory(string(REPOWRAPPER) + "/config")) {
-    return false;
-  }
+	if (!std::filesystem::create_directory(REPOWRAPPER)
+		|| !std::filesystem::create_directory(string(REPOWRAPPER) + "/snapshots")
+		|| !std::filesystem::create_directory(string(REPOWRAPPER) + "/config")) {
+	return;} // return null back to the manager so we can check repo != nullptr
   buildJSONMetaData(repoName);
   std::ofstream configFile(string(REPOWRAPPER) + "/config/repo_config",std::ios::out);
 
-  if(!configFile) return false;
+  if(!configFile) return;
 
   configFile << "# this file contains the configurations of your repo.\n";
-  configFile << "Repository Name: " + this->repoName;
+  configFile << "Repository Name: " << repoName;
 
   configFile.close();
-
-  return true;
 }
 
-// TODO: Update so that it reads froma JSON/TXT file, read the commit logs
-// add to a vector of commit msgs, return vector to qt for use
 vector<string> Repository::getCommitHistory() {
 
-  // temp var, I assume it's already open so no need to reopen?
     vector<string> commitHistoryVec;
     for (auto& commit : commits) {
       string logCommit = "Commit ID: " + commit->getId() + 
@@ -86,39 +80,57 @@ TrackedFile* Repository::findFile(const std::string& filename) {
   return nullptr;
 }
 
-void Repository::stageFile(const string& filePath) {
+std::vector<std::unique_ptr<Commit>>& Repository::getRepoCommits() {
+  return commits;
+}
+
+void Repository::stageFile(const string& fileName) {
   //if(currentCommit.fileSnapshot.at(filePath) {  //check for if file DOESNT exist, gui do thing
   //  throw std::runtime_error("no file tracked with that name"); //checking to see if file is NOT in the tracker vector
   //}
 
-  TrackedFile* file = getSingleTrackedFile(filePath);
+  TrackedFile* file = getSingleTrackedFile(fileName);
   TrackedFile::status status = file->getFileStatus();
+  std::string content = file->getFileContent(); //added content back into file
   
   if(status == TrackedFile::status::Added) {
-    updateFileStatus(filePath, TrackedFile::status::Staged);
+    updateFileStatus(fileName, TrackedFile::status::Staged);
     return;
   }
 
-  updateFileStatus(filePath, TrackedFile::status::Modified);
+  updateFileStatus(fileName, TrackedFile::status::Modified);
 
-  updateFileStatus(filePath, TrackedFile::status::Staged);
+  updateFileStatus(fileName, TrackedFile::status::Staged);
 }
 
-
-void Repository::updateFileStatus(const std::string& filePath, TrackedFile::status status) {
-  auto* file = getSingleTrackedFile(filePath);
+/*
+update file status and file content
+*/
+void Repository::updateFileStatus(const std::string& fileName, TrackedFile::status status) {
+  auto* file = getSingleTrackedFile(fileName);
   file->setStatus(status);
 }
 
-TrackedFile* Repository::getSingleTrackedFile(const string& filePath) {
-	for (TrackedFile& file : currentFiles) {
-		if (file.getFilePath() == filePath) return &file;
-	}
-	return nullptr;
+std::string Repository::getStatusAsString(const std::string fileName) {
+  auto* file = getSingleTrackedFile(fileName);
+  return file->getStatusAsString();
 }
 
-const vector<TrackedFile>& Repository::getFileVector() {
-  return currentFiles;
+void Repository::setStatusAsString(const std::string fileName, std::string newStatusString) {
+  auto* file = getSingleTrackedFile(fileName);
+  file->setStatusAsString(newStatusString);
+}
+
+void Repository::updateFileContent(const std::string fileName, std::string newContent) {
+  auto* file = getSingleTrackedFile(fileName);
+  file->setContent(newContent);
+}
+
+TrackedFile* Repository::getSingleTrackedFile(const string& fileName) {
+	for (TrackedFile& file : currentFiles) {
+		if (file.getFileName() == fileName) return &file;
+	}
+	return nullptr;
 }
 
 /* find commits within the repostiroy's commits vector. */

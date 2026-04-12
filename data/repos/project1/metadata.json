@@ -4,19 +4,14 @@
         {
             "fileName": "files.txt",
             "filePath": "projects/FitnessTracker/files.txt",
-            "lastModified": 1704153600000
+            "lastModified": 1704153600000,
+            "status" : "commited"
         },
         {
             "fileName": "extra.txt",
             "filePath": "projects/FitnessTracker/extra.txt",
-            "lastModified": 1704153600001
-        }
-    ],
-    "commits": [
-        {
-            "id": 1,
-            "date": "2024-01-01",
-            "message": "Initial commit with files extra text example"
+            "lastModified": 1704153600001,
+            "status" : "moded"
         }
     ]
 }

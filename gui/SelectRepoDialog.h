@@ -6,8 +6,10 @@
 #include <QMap> // Added just to be safe, since you use QMap below
 #include <QDebug>
 #include "ui_SelectRepoDialog.h"
+#include "../includes/RepositoryManager.h"
 
 // Struct to bundle the repo data together
+
 struct RepoInfo {
 	QString name;
 	QString id;
@@ -19,7 +21,7 @@ class SelectRepoDialog : public QDialog
 	Q_OBJECT
 
 public:
-	SelectRepoDialog(QWidget* parent = nullptr);
+	SelectRepoDialog(RepositoryManager* repoManager, QWidget* parent = nullptr);
 	~SelectRepoDialog();
 
 	// Methods to get the data back to StartingWindow
@@ -31,6 +33,7 @@ private slots:
 
 private:
 	Ui::SelectRepoDialog ui;
+	RepositoryManager* m_repoManager;
 	QStandardItemModel* model; // 
 
 	// Map of repo names and file paths

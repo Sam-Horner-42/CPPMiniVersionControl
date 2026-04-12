@@ -30,17 +30,17 @@ public:
 
     // 2. Compute Tracked Files Count
     int computeTrackedFilesCount(const T& repo) {
-        return static_cast<int>(repo.getFileVector().size());
+        return static_cast<int>(repo.getCurrentFiles().size());
     }
 
     // 3. Compute Most Modified Files
     std::vector<std::string> computeMostModifiedFiles(const T& repo) {
-        std::vector<TrackedFile> sortedFiles = repo.getFileVector();
+        std::vector<TrackedFile> sortedFiles = repo.getCurrentFiles();
         //used the built in sorting method jacob mentioned 
         sort(sortedFiles.begin(), sortedFiles.end(), compareEdits);
         int n = sortedFiles.size();
         // Convert the sorted objects into a string vector for the GUI
-        vector<string> finalReport;
+        std::vector<std::string> finalReport;
         for (int i = 0; i < n; i++) {
             std::string displayLine = sortedFiles[i].getFileName() +
                 " - Edits: " + std::to_string(sortedFiles[i].getEditCount());

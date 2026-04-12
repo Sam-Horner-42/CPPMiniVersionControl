@@ -37,7 +37,9 @@ public:
 	void updateSnapshot(const std::string& filename, const std::string& content);
 	bool hasFile(const std::string& filename) override;
 
-	std::map<std::string,std::string>& getFileSnapshots() { return fileSnapshots; }
+	std::map<std::string,std::string>& getFileSnapshot() { return fileSnapshots; }
+	// here
+	void addToSnapshot(std::string& filename,std::string& content) { fileSnapshots[filename] = content; }
 
 	StandardCommit* getParentCommit(std::string parentId);
 	std::string extractFileName(const std::string& filepath);
@@ -48,7 +50,7 @@ public:
 	bool checkStagedFiles(StandardCommit& commit);
   	bool commitChanges(StandardCommit& commit);
 
-	bool operator==(StandardCommit& other) {
+	bool operator==(const StandardCommit& other) {
 		return this->getId() == other.getId();
 	}
 };

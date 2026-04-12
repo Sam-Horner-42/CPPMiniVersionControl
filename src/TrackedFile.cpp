@@ -1,47 +1,52 @@
-
 #include "../includes/TrackedFile.h"
 
 using namespace std;
 
 //functions
-void TrackedFile::setNamePath(string filePath) {
-
-    //class filePath variable is set to the passed in filePath parameter
+void TrackedFile::setFilePath(string filePath) {
     this->filePath = filePath;
+}
 
-    //Sets filename to the name of the file with file extension
-    //This works by finding the last slash in the filepath and then going past that
-    this->fileName = filePath.substr(filePath.find_last_of('/') + 1);
+void TrackedFile::setFileName(string fileName) {
+    this->fileName = fileName;
 }
 
 void TrackedFile::setStatus(status newStatus) {
     this->currentStatus = newStatus;
 }
 
-vector<string> TrackedFile::displayFileInfo() {
-    vector<string> info;
-    info.push_back("File: " + fileName);
-    info.push_back("Path: " + filePath);
-
-    string statusStr;
-    switch (currentStatus) {
+std::string TrackedFile::getStatusAsString() const {
+    switch(currentStatus) {
         case status::Added:
-            statusStr = "Added";
-            break;
+            return "Added";
         case status::Modified:
-            statusStr = "Modified";
-            break;
+            return "Modified";
         case status::Staged:
-            statusStr = "Staged";
-            break;
+            return "Staged";
         case status::Committed:
-            statusStr = "Committed";
-            break;
+            return "Committed";
+        default:
+            return "???";
     }
+}
 
-    info.push_back("Status: " + statusStr);
-    info.push_back("Total Edits: " + to_string(editCount));
-    return info;
+void TrackedFile::setStatusAsString(std::string newStatusString) {
+    if(newStatusString == "Added") {
+        this->currentStatus = status::Added;
+    }
+    else if(newStatusString == "Modified") {
+        this->currentStatus = status::Modified;
+    }
+    else if(newStatusString == "Staged") {
+        this->currentStatus = status::Staged;
+    }
+    else if(newStatusString == "Committed") {
+        this->currentStatus = status::Committed;
+    }
+}
+
+void TrackedFile::setContent(std::string newContent) {
+    this->content = newContent;
 }
 
 string TrackedFile::getFileName() const {
@@ -55,10 +60,17 @@ TrackedFile::status TrackedFile::getFileStatus() const {
     return currentStatus;
 }
 
+std::string TrackedFile::getContent() const {
+    return content;
+}
+
 void TrackedFile::setCommitMessage(string commitMsg) {
     this->commitMessage = commitMsg;
 }
 
 int TrackedFile::getEditCount() const {
     return editCount; 
+}
+int TrackedFile::incrementEditCount() {
+    return editCount++;
 }

@@ -23,8 +23,10 @@ class Repository {
   std::vector<TrackedFile> currentFiles;
   StandardCommit currentCommit;
 public:
-	Repository() {};
-	~Repository() {};
+	Repository() {}
+	Repository(std::string repoName, std::string repoPath):
+		repoName(repoName), repoPath(repoPath) {}
+	~Repository() {}
 
   // copy constructor
   Repository(const Repository& other) 
@@ -44,24 +46,30 @@ public:
   }
 
   void updateFileStatus(const std::string& file, TrackedFile::status newStatus);
-  void stageFile(const std::string& filepath);
-  bool initRepository(const std::string& repoName, const std::string& repoPath);
+  void updateFileContent(const std::string fileName, std::string newContent);
+  
+  std::string getStatusAsString(const std::string fileName);
+  void setStatusAsString(const std::string fileName, std::string newStatusString);
+
+  void stageFile(const std::string& fileName);
+  void initRepository(const std::string& repoName, const std::string& repoPath);
   void setRepoName(const std::string& repoName) { this->repoName = repoName; }
-  TrackedFile* getSingleTrackedFile(const std::string& filePath);
+  TrackedFile* getSingleTrackedFile(const std::string& fileName);
   
   std::vector<std::string> getCommitHistory();
   int  getNumOfCommits();
 
-  std::string getRepoName();
+  const std::string& getRepoName() const;
 
   TrackedFile* findFile(const std::string& filename);
 
   void setCurrentCommit(Commit& c) { currentCommit = dynamic_cast<StandardCommit&>(c); }
   StandardCommit& getCurrentCommit() { return dynamic_cast<StandardCommit&>(currentCommit); }
 
-  std::vector<TrackedFile> getCurrentFiles() { return currentFiles; }
+  std::vector<std::unique_ptr<Commit>>& getRepoCommits();
+
+  std::vector<TrackedFile> getCurrentFiles() const { return currentFiles; }
   
-  const std::vector<TrackedFile>& getFileVector();
   void buildJSONMetaData(const std::string& repoPath);
   StandardCommit* findCommit(const std::string& commitId);
 

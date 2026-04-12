@@ -39,7 +39,7 @@ class Commit {
     author(author), timestamp(timestamp) {}
 
 	Commit() {};
-
+	virtual ~Commit() {};
     // class getters
     std::string getParentId() const { return parentId; }
     std::string getAuthor() const { return author; }

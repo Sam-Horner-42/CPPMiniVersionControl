@@ -31,7 +31,7 @@ set(PROJECT_SOURCES
     gui/SelectRepoDialog.ui
     gui/SelectRepoDialog.h
     gui/SelectRepoDialog.cpp
-    #includes/AnalyticsEngine.h
+    includes/AnalyticsEngine.h
 	src/DataManager.cpp
     src/DiffEngine.cpp
     src/Repository.cpp

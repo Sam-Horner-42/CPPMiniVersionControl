@@ -1,14 +1,21 @@
 #include "MainWindow.h"
 #include <QMessageBox>
+#include <QFileInfo>
 
+// Author: Sam Horner 040935005
 namespace Ui {
     class MainWindow;
 }
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(RepositoryManager* manager, QWidget *parent)
     : QMainWindow(parent)
+	, m_repoManager(manager)
 {
     ui.setupUi(this);
 	setupTabWidgets();
+	m_fileWatcher = new QFileSystemWatcher(this);
+
+	connect(m_fileWatcher, &QFileSystemWatcher::fileChanged,
+		this, &MainWindow::onFileModified);
 }
 
 MainWindow::~MainWindow()
@@ -18,18 +25,28 @@ MainWindow::~MainWindow()
 //void MainWindow::setRepoContext(Repository* repo, const QString& name, const QString& path)
 void MainWindow::setRepoContext(const QString& name, const QString& path)
 {
-	//this->currentRepo = repo; // connects the repository pointer in main to this window
-
-	// Populate elements using the currentRepo now that is defined for mainWindow.cpp
-	//if (currentRepo != nullptr) {
-	//	this->setWindowTitle(QString("MiniVersionControl - " + QString::fromStdString(currentRepo->getRepoName())));
-	//}
 	this->setWindowTitle(QString("MiniVersionControl - " + name));
 
 	// Clear and populate history
 	historyList->clear();
-	historyList->addItem("2026-04-06: Initial Commit - Sam Horner");
-	historyList->addItem("2026-04-06: Added UI Framework");
+	
+}
+
+void MainWindow::onFileModified(const QString& path) {
+	// If the repo manager is not null
+	if (m_repoManager) {
+		// Create a QFileInfo object using the full path
+		QFileInfo fileInfo(path);
+
+		// Extract just the file name (e.g., "data.txt") and convert to std::string
+		std::string fileName = fileInfo.fileName().toStdString();
+
+		// Pass the extracted file name to the repo manager
+		m_repoManager->updateFileStatus(fileName, TrackedFile::status::Modified);
+
+		// Refresh the UI
+		refreshFileTable();
+	}
 }
 
 void MainWindow::setupTabWidgets() {
@@ -37,91 +54,72 @@ void MainWindow::setupTabWidgets() {
 	QVBoxLayout* historyLayout = new QVBoxLayout(ui.history);
 	historyList = new QListWidget(ui.history);
 	// Add mock commit history
-	historyList->addItem("[a1b2c3d] Sam Horner - 2026-04-05 - Updated GUI");
-	historyList->addItem("[f4e5d6c] Jacob Dawes - 2026-04-03 - Added DiffEngine");
-	historyList->addItem("[b6f5t7t] Abdelmounaim Aouf - 2026-04-01 - Added Analytics Engine");
-	historyList->addItem("[9b8a7c6] Spencer Scarlett - 2026-03-28 - Updated RepositoryManager");
-	historyList->addItem("[e7f8g9h] Ethan Geary - 2026-03-22 - Initial commit");
-	
-
 	historyLayout->addWidget(historyList);
 
 	// Build diff tab
 	QVBoxLayout* diffLayout = new QVBoxLayout(ui.diffTab);
 	diffView = new QTextEdit(ui.diffTab);
-	// Add mock git diff output
-	QString mockDiff = (" - displayDiff(); \n"
-		"+         // created a more complicated diff function \n"
-		"-     }\n"
-		"+         displayComplexDiff();\n"
-		"+     }\n");
-
-	diffView->setPlainText(mockDiff);
+	
 	diffView->setReadOnly(true);
 
 	// Setting a mono font for code/diffs
 	QFont monoFont("Courier New", 10);
 	diffView->setFont(monoFont);
 	diffLayout->addWidget(diffView);
-	
 
 	// Build Analytics tab
 	QVBoxLayout* analyticsLayout = new QVBoxLayout(ui.analytics);
 	statsLabel = new QLabel(ui.analytics);
-	// Add mock repository statistics
-	QString mockStats =
-		"<b>Repository:</b> MiniVersionControl Project<br><br>"
-		"<b>Total Commits:</b> 42<br>"
-		"<b>Most Modified File: </b> Compilers.c <br>"
-		"<b>Last Updated:</b> 2026-04-06";
 
-	statsLabel->setText(mockStats);
 	statsLabel->setAlignment(Qt::AlignCenter);
 	analyticsLayout->addWidget(statsLabel);
 	
 }
 
-//void MainWindow::refreshFileTable(const std::vector<TrackedFile*>& allFiles) {
-//	ui.fileTable->setRowCount(0); // Clear existing rows
-//
-//	for (TrackedFile* file : allFiles) {
-//		int row = ui.fileTable->rowCount();
-//		ui.fileTable->insertRow(row);
-//
-//		// Get the info vector
-//		std::vector<std::string> info = file->displayFileInfo();
-//
-//		// info[0] is "File: name", info[2] is "Status: status"
-//		// Strip the prefix for the table cells
-//		QString fileName = QString::fromStdString(info[0]).remove("File: ");
-//		QString status = QString::fromStdString(info[2]).remove("Status: ");
-//
-//		ui.fileTable->setItem(row, 0, new QTableWidgetItem(fileName));
-//		ui.fileTable->setItem(row, 1, new QTableWidgetItem(status));
-//
-//		// Color code based on status
-//		if (status == "Modified")
-//			ui.fileTable->item(row, 1)->setForeground(Qt::yellow);
-//	}
-//}
+void MainWindow::refreshFileTable() {
+	ui.fileTable->setRowCount(0); // Clear existing rows
 
-//void MainWindow::refreshHistoryTab(Repository* repo) {
-//	// Clear the UI list to prevent duplicates
-//	ui.historyList->clear();
-//
-//	// Fetch the vector from the backend
-//	std::vector<std::string> history = repo->getCommitHistory();
-//
-//	// Loop through the vector and add to the QListWidget
-//	for (const std::string& entry : history) {
-//		QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(entry));
-//
-//		ui.historyList->addItem(item);
-//	}
-//
-//	// Scroll to the bottom so the newest commit is visible
-//	ui.historyList->scrollToBottom();
-//}
+	// If the repo manager is not null
+	if (m_repoManager) {
+		std::vector<TrackedFile> files = m_repoManager->getCurrentFiles();
+		ui.fileTable->setColumnCount(2);
+		ui.fileTable->setHorizontalHeaderLabels({ "File", "Status" });
+
+		// Loop through the tracked files
+		for (size_t i = 0; i < files.size(); ++i) {
+			const TrackedFile& file = files[i];
+
+			int rowPosition = ui.fileTable->rowCount();
+			ui.fileTable->insertRow(rowPosition);
+
+			// Column 0: File Name
+			QTableWidgetItem* nameItem = new QTableWidgetItem(QString::fromStdString(file.getFileName()));
+			ui.fileTable->setItem(rowPosition, 0, nameItem);
+
+			// Column 1: Status
+			QTableWidgetItem* statusItem = new QTableWidgetItem(QString::fromStdString(file.getStatusAsString()));
+			ui.fileTable->setItem(rowPosition, 1, statusItem);
+		}
+	}
+}
+
+void MainWindow::refreshHistoryTab() {
+	// Clear the UI list to prevent duplicates
+	historyList->clear();
+
+	// Fetch the vector from the backend
+	std::vector<std::string> history = m_repoManager->getCommitHistory();
+
+	// Loop through the vector and add to the QListWidget
+	for (const std::string& entry : history) {
+		QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(entry));
+
+		historyList->addItem(item);
+	}
+
+	// Scroll to the bottom so the newest commit is visible
+	historyList->scrollToBottom();
+}
 
 void MainWindow::on_commitStaged_clicked()
 {
@@ -136,14 +134,20 @@ void MainWindow::on_commitStaged_clicked()
 
 void MainWindow::on_discardChanges_clicked()
 {
+	// I think we can just call restore to last commit here and update all file statuses
 	qDebug() << "Discard Changes button clicked.";
 	// Backend hook to discard unstaged changes
+}
+
+void MainWindow::on_stageSelected_clicked() {
+	qDebug() << "Stage All button clicked.";
+	//if(selectedFile != nullptr) m_repoManager->setStaged(selectedFile.toStdString()); // stage the file currently selected at the cell
 }
 
 void MainWindow::on_stageAll_clicked()
 {
 	qDebug() << "Stage All button clicked.";
-
+	//m_repoManager->stageAllFiles();
 	// Backend hook to stage all modified/untracked files
 }
 
@@ -152,11 +156,7 @@ void MainWindow::on_fileTable_cellClicked(int row, int column)
 {
 	QString fileName = ui.fileTable->item(row, 0)->text();
 
-	// Update the Diff View (Mock logic)
-	// diffView->setPlainText(diffEngine->displayDiff()); // Assuming this gets a String of the whole diff
-
-	// Switch to the Diff Tab
-	ui.infoTab->setCurrentWidget(ui.diffTab);
+	selectedFile = fileName; // set the currently selected file
 }
 
 
@@ -173,24 +173,10 @@ void MainWindow::on_actionExit_2_triggered()
 }
 
 // Repository menu
-void MainWindow::on_actionInitialize_Local_Repository_triggered()
-{
-	qDebug() << "Initialize Local Repository action triggered.";
-}
-
-void MainWindow::on_actionOpen_Repository_2_triggered()
-{
-	qDebug() << "Open Repository action triggered.";
-}
-
-void MainWindow::on_actionClone_Repository_2_triggered()
-{
-	qDebug() << "Clone Repository action triggered.";
-}
-
 void MainWindow::on_actionStage_Files_triggered()
 {
 	qDebug() << "Stage Files action triggered.";
+	on_stageAll_clicked();
 }
 
 void MainWindow::on_actionCommit_Staged_triggered()

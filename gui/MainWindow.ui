@@ -501,6 +501,30 @@ background-color: rgb(0, 85, 0);</string>
      <string>Stage All</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="stageSelected">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>320</y>
+      <width>131</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>12</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+background-color: rgb(0, 85, 0);</string>
+    </property>
+    <property name="text">
+     <string>Stage Selected</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -523,9 +547,6 @@ background-color: rgb(0, 85, 0);</string>
     <property name="title">
      <string>Repository</string>
     </property>
-    <addaction name="actionInitialize_Local_Repository"/>
-    <addaction name="actionOpen_Repository_2"/>
-    <addaction name="actionClone_Repository_2"/>
     <addaction name="separator"/>
     <addaction name="actionStage_Files"/>
     <addaction name="actionCommit_Staged"/>
@@ -624,7 +645,7 @@ background-color: rgb(0, 85, 0);</string>
   </action>
   <action name="actionStage_Files">
    <property name="text">
-    <string>Stage Files</string>
+    <string>Stage All Files</string>
    </property>
   </action>
   <action name="actionCommit_Staged">

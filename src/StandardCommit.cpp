@@ -107,6 +107,7 @@ std::vector<TrackedFile> StandardCommit::getIncomingFiles() const {
 	return trackedFiles;
 }
 
+
 bool StandardCommit::hasFile(const std::string& filename) {
 	auto it = fileSnapshots.find(filename);
 	return it != fileSnapshots.end() ? true : false;
