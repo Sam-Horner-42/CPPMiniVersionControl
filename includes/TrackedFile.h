@@ -22,10 +22,18 @@ class TrackedFile {
     std::string commitMessage;
 
     public:
-	TrackedFile() {};
-    TrackedFile(const std::string& filePath, const std::string& fileName, status status) {}; //initial file creation, will have other params set to null or Added status
-    TrackedFile(const std::string& filePath, const std::string& fileName, status status, const std::string& content) {}; //everything constructor
-	TrackedFile(const std::string& fileName, status status) {}; //constructor for editing status
+	TrackedFile()
+		: filePath(""), fileName(""), content(""), editCount(0), currentStatus(status::Added), commitMessage("") {}
+
+	TrackedFile(const std::string& filePath, const std::string& fileName)
+		: filePath(filePath), fileName(fileName), content(""), editCount(0), currentStatus(status::Added), commitMessage("") {}
+
+	TrackedFile(const std::string& filePath, const std::string& fileName, status newStatus, const std::string& content)
+		: filePath(filePath), fileName(fileName), content(content), editCount(0), currentStatus(newStatus), commitMessage("") {}
+
+	TrackedFile(const std::string& fileName, status newStatus)
+		: filePath(""), fileName(fileName), content(""), editCount(0), currentStatus(newStatus), commitMessage("") {}
+
     ~TrackedFile() {};
 
     void setFilePath(std::string filePath);

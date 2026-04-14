@@ -10,11 +10,13 @@ using std::string;
  */
 std::vector<RepositoryManager::Project> RepositoryManager::getProjectInfo() {
     std::vector<RepositoryManager::Project> resultVec;
-    std::ifstream file("dataHandler.json");
+    std::ifstream file("data/dataHandler.json");
 
     // returns an empty json object
-    if (!file) return {};
-
+    if (!file) {
+        
+        return {};
+    }
     json data = json::parse(file);
     
     for (auto& project : data["projects"]) {
@@ -33,7 +35,13 @@ RepositoryManager::~RepositoryManager() {}
 
 void RepositoryManager::createRepository(const std::string& repoName,const std::string& repoPath) {
     // initialize the repo with a name
-    repo.initRepository(repoName,repoPath);
+	std::cout << "We are in createRepository now";
+    repo.initRepository(repoName, repoPath);
+}
+
+bool RepositoryManager::checkIfReal(std::string repoName){
+    bool check = data.checkProjectExist(repoName);
+    return check;
 }
 
 // this will load from persistant storage (files)
@@ -46,10 +54,13 @@ bool RepositoryManager::loadRepository(std::string repoName) {
     return true;
 }
 
-void RepositoryManager::saveRepository(std::string& repoName) {
-    data.saveData(repo, repoName);
+void RepositoryManager::saveRepository(std::string repoName, std::string repoPath) {
+    data.saveData(repo, repoName, repoPath);
 }
 
+void RepositoryManager::addNewTrackedFile(TrackedFile& file) {
+	repo.addNewTrackedFile(file);
+}
 /* SAM: this function diffs all the files in both the parent and the current
    as long as it exists in both. It returns a map of all the diffs 
    KEY: filename VALUE: DiffString */
@@ -79,8 +90,13 @@ std::unordered_map<string,string> RepositoryManager::callParentDifferentiation(c
 }
 
 void RepositoryManager::updateFileStatus(std::string& fileName, TrackedFile::status newStatus) {
-    TrackedFile* fileToBeUpdated = repo.findFile(fileName);
-	fileToBeUpdated->setStatus(newStatus);
+	TrackedFile* fileToBeUpdated = repo.findFile(fileName);
+	if (fileToBeUpdated) { // Check to make sure the file exists
+		fileToBeUpdated->setStatus(newStatus);
+	}
+	else {
+		std::cout << "Warning: Attempted to update status for untracked file:" << fileName;
+	}
 }
 
 std::string RepositoryManager::getStatusAsString(const std::string fileName) {
@@ -88,8 +104,12 @@ std::string RepositoryManager::getStatusAsString(const std::string fileName) {
   return file->getStatusAsString();
 }
 
-const std::vector<TrackedFile> RepositoryManager::getCurrentFiles() const {
+std::vector<TrackedFile>& RepositoryManager::getCurrentFiles() {
     return repo.getCurrentFiles();
+}
+
+void RepositoryManager::deleteTrackedFile(std::string fileName) {
+	repo.deleteTrackedFile(fileName);
 }
 
 void RepositoryManager::setStatusAsString(const std::string fileName, std::string newStatusString) {
@@ -115,6 +135,7 @@ StandardCommit* RepositoryManager::getParentCommit(const string& commitId) {
 	return static_cast<StandardCommit*>(parent);
 }
 
+
 /* performs the restoration to the parent. */
 void RepositoryManager::restoreToParent(const string& commitId) {
     auto parent = getParentCommit(commitId);
@@ -126,6 +147,8 @@ void RepositoryManager::restoreToParent(const string& commitId) {
         current->updateSnapshot(file.getFileName(),parent->getFileSnapshot().at(file.getFileName()));
     }
 }
+
+/* make a function that restores to the previous commit */
 
 std::vector<std::string> RepositoryManager::getCommitHistory() {
     return repo.getCommitHistory();
@@ -149,20 +172,13 @@ std::string RepositoryManager::getFileContent(std::string fileName) {
     throw std::runtime_error("File named " + fileName + " could not be found...");
 }
 
-void RepositoryManager::addNewFile(const std::string& filePath, const std::string& fileName) {
-    repo.getCurrentFiles().push_back(TrackedFile(filePath, fileName, TrackedFile::status::Added));
+void RepositoryManager::addNewTrackedFile(const std::string& filePath, const std::string& fileName) {
+	TrackedFile newFile(filePath, fileName);
+    repo.addNewTrackedFile(newFile);
 }
 
 void RepositoryManager::stageFile(const string& fileName) {
-
-  TrackedFile* file = repo.getSingleTrackedFile(fileName);
-  TrackedFile::status status = file->getFileStatus();
-  std::string content = file->getFileContent(); //added content back into file
-  
-  if(status == TrackedFile::status::Added) {
-    repo.updateFileStatus(fileName, TrackedFile::status::Staged);
-    return;
-  }  
+  repo.stageFile(fileName);  
 }
 
 void RepositoryManager::stageAllFiles() {
@@ -172,4 +188,17 @@ void RepositoryManager::stageAllFiles() {
   for (const auto& file : files) {
     stageFile(file.getFileName());
   }
+}
+
+void RepositoryManager::addCommit(std::unique_ptr<StandardCommit> commit) {
+    repo.addCommit(std::move(commit));
+}
+
+bool RepositoryManager::commitStagedFiles(std::string commitMessage) {
+    string newID = data.generateId(repo.getRepoName(),repo.getCurrentFiles());
+	return repo.commitStagedFiles(commitMessage, newID);
+}
+
+std::vector<std::unique_ptr<Commit>>& RepositoryManager::getRepoCommits() {
+	return repo.getRepoCommits();
 }

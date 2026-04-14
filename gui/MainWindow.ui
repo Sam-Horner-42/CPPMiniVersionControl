@@ -238,7 +238,7 @@ color:rgb(0, 0, 0)
 </string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="diffTab">
      <attribute name="icon">
@@ -255,6 +255,30 @@ color:rgb(0, 0, 0)
      <attribute name="title">
       <string>History</string>
      </attribute>
+     <widget class="QPushButton" name="stageSelected_2">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>480</y>
+        <width>201</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>12</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(0, 85, 0);</string>
+      </property>
+      <property name="text">
+       <string>Restore to this Commit</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="analytics">
      <attribute name="icon">
@@ -454,29 +478,6 @@ font: 700 9pt &quot;Arial&quot;;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="discardChanges">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>350</y>
-      <width>151</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>12</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(170, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Discard Changes</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="stageAll">
     <property name="geometry">
      <rect>
@@ -504,8 +505,8 @@ background-color: rgb(0, 85, 0);</string>
    <widget class="QPushButton" name="stageSelected">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>320</y>
+      <x>110</x>
+      <y>350</y>
       <width>131</width>
       <height>24</height>
      </rect>

@@ -22,8 +22,10 @@ class DataManager {
 public:
     std::string generateId(std::string repositoryName, std::vector<TrackedFile> files);
     std::string singleHash(std::string fileContents);
-    void saveData(Repository& repo, std::string& repositoryName);
+    void saveData(Repository& repo, std::string repositoryName, const std::string repoPath);
     bool loadData(std::string& repositoryName, Repository& repo);
-	json saveCommit(StandardCommit& commit, std::string& repositoryName);
+	json saveCommit(StandardCommit& commit, std::string& repositoryName, const std::string repoPath);
 	json saveFile(TrackedFile& file,std::string& repositoryName);
+    void saveProjectInfo(std::string repositoryName, Repository& repo);
+    bool checkProjectExist(std::string repositoryName);
 };

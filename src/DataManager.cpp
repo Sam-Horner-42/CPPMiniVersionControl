@@ -35,25 +35,37 @@ string DataManager::generateId(string repositoryName, std::vector<TrackedFile> f
     // Convert hash to string and take first 10 characters
     string result = to_string(hash);
     result = result.substr(0, 10);
-    return "result";  
+    return result;  
 }
 // USE maps, read from maps
 // we take the entire repository and save it to memory based on its current state
-void DataManager::saveData(Repository& repo, std::string& repositoryName) {
-
-    json jObj;
-
-    auto& commits = repo.getRepoCommits();
-
-    for (auto& c : commits) {
-        auto& sc = static_cast<StandardCommit&>(*c);
-        jObj["commit"].push_back(saveCommit(sc,repositoryName));
-    }
-
-    // datahandler.json
+bool DataManager::checkProjectExist(std::string repositoryName){
     json dataHandler;
     string pathDataHandler = "data/dataHandler.json";
 
+    ifstream dataHandIn(pathDataHandler);
+    if (dataHandIn.is_open()) {
+        dataHandIn >> dataHandler;
+        dataHandIn.close();
+    }
+    // check if exist
+    for (const auto& project : dataHandler["projects"]) {
+        if (project["name"] == repositoryName) {
+            return true;
+        }
+    }
+    return false;
+}
+void DataManager::saveProjectInfo(std::string repositoryName, Repository& repo){
+     // datahandler.json
+    json dataHandler;
+    string pathDataHandler = "data/dataHandler.json";
+    
+    ifstream dataHandIn(pathDataHandler);
+    if (dataHandIn.is_open()) {
+        dataHandIn >> dataHandler;
+        dataHandIn.close();
+    }
     // check if exist
     bool projectExists = false;
     for (const auto& project : dataHandler["projects"]) {
@@ -68,7 +80,7 @@ void DataManager::saveData(Repository& repo, std::string& repositoryName) {
         json newProject;
         newProject["name"] = repositoryName;
         newProject["id"] = generateId(repositoryName, repo.getCurrentFiles());
-        newProject["path"] = "projects/" + repositoryName + "/";
+        newProject["path"] = repo.getRepoPath();
         dataHandler["projects"].push_back(newProject);
     }
 
@@ -79,44 +91,70 @@ void DataManager::saveData(Repository& repo, std::string& repositoryName) {
         dataHandOut.close();
     }
 }
-
-// Function to save all the commits to different directories
-// The commit hash will be the name of the folder
-// The commit snapshot will be saved by commit
-json DataManager::saveCommit(StandardCommit& commit, std::string& repositoryName) {
-    json commitData;
-    commitData["id"] = commit.getId();
-    commitData["parentId"] = commit.getParentId();
-    commitData["message"] = commit.getMessage();
-    commitData["timestamp"] = commit.getTimestamp();
-    commitData["author"] = commit.getAuthor();
-
-    for (auto& file : commit.getIncomingFiles()) {
-        commitData["files"].push_back(saveFile(file,repositoryName));
+void DataManager::saveData(Repository& repo, std::string repositoryName, const string repoPath) {
+    string metaDataPath = repoPath + "/metadata.json";
+    string commitPath = repoPath + "/vcm/snapshots/commits.json";
+    
+    json allCommitsData;
+    ifstream commitDataIn(commitPath);
+    if (commitDataIn.is_open()) {
+        commitDataIn >> allCommitsData;
+        commitDataIn.close();
     }
-
-    return commitData;
+    
+    auto& currentCommit = repo.getCurrentCommit();
+    json newCommitJson = saveCommit(currentCommit, repositoryName, repoPath);
+    
+    // does not work fix
+    allCommitsData["commits"].push_back(newCommitJson);
+    
+    ofstream commitDataOut(commitPath);
+    if (commitDataOut.is_open()) {
+        commitDataOut << allCommitsData.dump(4);
+        commitDataOut.close();
+    }
+    
+    json metaData;
+    // ifstream metaDataIn(metaDataPath);
+    // if (metaDataIn.is_open()) {
+    //     metaDataIn >> metaData;
+    //     metaDataIn.close();
+    // }
+    
+    auto& files = repo.getCurrentFiles();
+        
+    for (auto& file : files) {
+        metaData["files"].push_back(saveFile(file, repositoryName));
+    }
+    
+    // Write metadata back
+    ofstream metadataOut(metaDataPath);
+    if (metadataOut.is_open()) {
+        metadataOut << metaData.dump(4);
+        metadataOut.close();
+    }
+    
+    saveProjectInfo(repositoryName, repo);
 }
 
-json DataManager::saveFile(TrackedFile& file,string& repositoryName) {
-    json jObj;
-   
-    time_t timestamp;
-    time(&timestamp);
+json DataManager::saveCommit(StandardCommit& commit, std::string& repositoryName, const string repoPath) {
+    json tempObject;
+    tempObject["id"] = commit.getId();
+    tempObject["parentId"] = commit.getParentId();
+    tempObject["message"] = commit.getMessage();
+    tempObject["timestamp"] = commit.getTimestamp();
+    tempObject["author"] = commit.getAuthor();
+
+    return tempObject;
+}
+
+json DataManager::saveFile(TrackedFile& file, string& repositoryName) {
+    // Create new file entry
     json tempObject;
     tempObject["fileName"] = file.getFileName();
     tempObject["filePath"] = file.getFilePath();
-    tempObject["lastModified"] = ctime(&timestamp);
     tempObject["status"] = file.getFileStatus();
-    jObj["files"].push_back(tempObject);
-    
-    string metaDataPath = "projects/"+ repositoryName +"/metadata.json";
-    ofstream metadataOut(metaDataPath);
-    if (metadataOut.is_open()) {
-        metadataOut << jObj.dump(4);
-        metadataOut.close();
-    }
-    return jObj;
+    return tempObject;
 }
 
 
@@ -216,14 +254,13 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
                 
                 // Read actual file content
                 std::string content = " ";
-                std::ifstream txtFile("snapshot/" + commitId + "/" + fileName);
+                std::ifstream txtFile(repo.getRepoPath() + "/" + fileName);
                 if (txtFile.is_open()) {
                     std::stringstream buffer;
                     buffer << txtFile.rdbuf();
                     content = buffer.str();
                     txtFile.close();
                 }
-                auto& sc = dynamic_cast<StandardCommit&>(*c);
 				c = make_unique<StandardCommit>(
                     commitId,
                     parentId,
@@ -232,6 +269,7 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
                     timestamp
                 );
 				// string filename = file.getFileName();
+                auto& sc = dynamic_cast<StandardCommit&>(*c);
                 sc.addToSnapshot(fileName, content);
             }
             repo.getRepoCommits().push_back(move(c));

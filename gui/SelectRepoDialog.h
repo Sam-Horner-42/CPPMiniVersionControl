@@ -38,7 +38,4 @@ private:
 
 	// Map of repo names and file paths
 	QMap<QString, RepoInfo> repoMap;
-
-	// Helper method to parse the JSON
-	void loadJsonIntoMap();
 };

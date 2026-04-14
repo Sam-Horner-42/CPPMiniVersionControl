@@ -25,6 +25,7 @@ void StartingWindow::on_initRepo_clicked()
 		QString path = initDialog.getRepoPath();
 
 		if (!name.isEmpty() && !path.isEmpty()) {
+			qDebug() << "Repo Path: " << path;
 			emit repoSelected(name, path, true); // true = new repository
 			accept(); // Close the StartingWindow so main.cpp can proceed
 		}

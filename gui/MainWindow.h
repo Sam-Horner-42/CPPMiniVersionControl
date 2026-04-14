@@ -7,7 +7,12 @@
 #include <QListWidget>
 #include <QTextEdit>
 #include <QLabel>
+#include <QDir>
+#include <QMessageBox>
+#include <QFileInfo>
+#include <QTimer>
 #include <QFileSystemWatcher>
+#include <QDirIterator>
 //#include "../includes/Repository.h"
 
 class MainWindow : public QMainWindow
@@ -26,9 +31,9 @@ public:
 private slots:
 	// Push Buttons
 	void on_commitStaged_clicked();
-	void on_discardChanges_clicked();
 	void on_stageAll_clicked();
 	void on_stageSelected_clicked();
+	void on_restoreToCommit_clicked();
 
 	// The Table Widget, files and their status
 	void on_fileTable_cellClicked(int row, int column);
@@ -44,6 +49,8 @@ private slots:
 	void on_actionRestore_to_Prior_Commit_triggered();
 
 	void onFileModified(const QString& path);
+
+	void onDirectoryChanged(const QString& path);
 
 private:
     Ui::MainWindow ui;

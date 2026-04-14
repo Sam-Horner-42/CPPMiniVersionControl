@@ -15,21 +15,34 @@ namespace fs = std::filesystem;
 
 SelectRepoDialog::SelectRepoDialog(RepositoryManager* repoManager, QWidget* parent) :
 	QDialog(parent),
-	model(new QStandardItemModel(this)) // Initialize the tree model
+	model(new QStandardItemModel(this)), // Initialize the tree model
+	m_repoManager(repoManager)
 {
 	ui.setupUi(this);
 
 	// Set headers for the tree
 	model->setHorizontalHeaderLabels({ "Repository Information" });
 	if (m_repoManager) {
+		qDebug() << "Repository Manager exists!";
 		std::vector<RepositoryManager::Project> projects = m_repoManager->getProjectInfo();
+
+		qDebug() << "DEBUG: num of projects: " << projects.size(); 
 
 		// Loop through the vector and populate the UI
 		for (const auto& project : projects) {
+			qDebug() << "I am in the for loop for projects.";
+			qDebug() << "ID: " << project.id;
 			QStandardItem* parentItem = new QStandardItem(QString::fromStdString(project.name));
 			parentItem->appendRow(new QStandardItem("ID: " + QString::fromStdString(project.id)));
 			parentItem->appendRow(new QStandardItem("Path: " + QString::fromStdString(project.filePath)));
 			model->appendRow(parentItem);
+			
+			// Populate the map
+			RepoInfo info;
+			info.name = QString::fromStdString(project.name);
+			info.id = QString::fromStdString(project.id);
+			info.path = QString::fromStdString(project.filePath);
+			repoMap.insert(info.name, info);
 		}
 	}
 

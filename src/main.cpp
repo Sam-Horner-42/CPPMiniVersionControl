@@ -36,10 +36,11 @@ int main(int argc, char* argv[]) {
 	// This also ensures valid input data before showing the mainWindow
     if (startWindow.exec() == QDialog::Accepted)
     {
-
+		//QDebug() << "In Main Path: " << repoPath;
 		
 		// Pass a pointer of the backend object to the MainWindow
 		if (isNewRepo) {
+			qDebug() << "New Repo Path: " << repoPath;
 			repoManager.createRepository(repoName.toStdString(), repoPath.toStdString());
 		}
 		else {
@@ -49,7 +50,14 @@ int main(int argc, char* argv[]) {
 		w.setRepoContext(repoName, repoPath);
 
 		w.show();
-		return app.exec();
+		int result = app.exec(); // The program stays here until the window is closed
+
+		// The event loop ended, the user closed the program, we save the repository information
+		if (!repoName.isEmpty()) {
+			qDebug() << "The program is closing";
+			repoManager.saveRepository(repoName.toStdString(), repoPath.toStdString());
+		}
+		return result;
     }
 
     // If the user simply closed the starting window, the app exits cleanly
