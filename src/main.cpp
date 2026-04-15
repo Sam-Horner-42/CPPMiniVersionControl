@@ -49,6 +49,8 @@ int main(int argc, char* argv[]) {
 		MainWindow w(&repoManager);
 		w.setRepoContext(repoName, repoPath);
 
+		
+		
 		w.show();
 		int result = app.exec(); // The program stays here until the window is closed
 

@@ -54,7 +54,11 @@ void InitRepoDialog::on_okButton_clicked()
 // This opens file explorer so the user can select a path
 void InitRepoDialog::on_browseButton_clicked()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, "Select Repository Location");
+	QString homePath = QDir::homePath(); // Returns the user's home directory path
+	QString dir = QFileDialog::getExistingDirectory(this,
+		"Select Repository Location",
+		homePath);
+
     if (!dir.isEmpty())
         ui.repoPathInput->setText(dir);
 }

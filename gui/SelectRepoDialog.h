@@ -3,7 +3,7 @@
 #include <QtWidgets/QDialog>
 #include <QString>
 #include <QStandardItemModel>
-#include <QMap> // Added just to be safe, since you use QMap below
+#include <QMap> 
 #include <QDebug>
 #include "ui_SelectRepoDialog.h"
 #include "../includes/RepositoryManager.h"

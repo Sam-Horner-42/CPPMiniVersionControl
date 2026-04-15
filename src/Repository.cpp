@@ -80,7 +80,10 @@ void Repository::initRepository(const string& repoName,const string& repoPath) {
 vector<string> Repository::getCommitHistory() {
 
     vector<string> commitHistoryVec;
+	qDebug() << "Commits size: " << commits.size();
     for (auto& commit : commits) {
+		//if(!commit) continue;
+		qDebug() << "We got into the four loop.";
       string logCommit = "Commit ID: " + commit->getId() + 
        "Date: " + commit->getTimestamp() + 
        "Message: " + commit->getMessage();
@@ -103,12 +106,11 @@ std::vector<std::unique_ptr<Commit>>& Repository::getRepoCommits() {
 }
 
 void Repository::stageFile(const string& fileName) {
-  TrackedFile* file = getSingleTrackedFile(fileName);
-  TrackedFile::status status = file->getFileStatus();
-  std::string content = file->getFileContent(); //added content back into file
+  TrackedFile* file = getSingleTrackedFile(fileName); //gets a single file via the file name
+  TrackedFile::status status = file->getFileStatus(); //pulls the status from that file
   
-  if(status == TrackedFile::status::Added || status == TrackedFile::status::Modified) {
-    updateFileStatus(fileName, TrackedFile::status::Staged);
+  if(status == TrackedFile::status::Added || status == TrackedFile::status::Modified) { //if the file has its status as added or modified then you can stage the file
+    updateFileStatus(fileName, TrackedFile::status::Staged); //updates the files status to staged
     return;
   }
 }
@@ -168,10 +170,42 @@ StandardCommit* Repository::findCommit(const string& commitId) {
   return nullptr;
 }
 
+// Opens a file based on its path and retrieves the content to be added to the commits map
+std::string Repository::readFileContent(const std::string& filepath) {
+	std::ifstream file(filepath);
+
+	// Check if the file is opened successfully
+	if (!file.is_open()) {
+		qDebug() << "Error: Could not open file at " << filepath;
+		return ""; // Return no content if there is no content 
+	}
+
+	std::stringstream buffer;
+	buffer << file.rdbuf(); // Reads the entire file buffer into the stringstream
+
+	return buffer.str();
+}
+
+// Takes in the vector of current files and the commit to add the map to
+// Adds the currently committed files within the vector to the commit map for this commit
+void Repository::addCommitsToMap(std::vector<TrackedFile>& currentFiles, Commit& commit) {
+	for (auto& file : currentFiles) {
+		if (file.getFileStatus() == TrackedFile::status::Committed) {
+			std::string content = readFileContent(file.getFilePath());
+			dynamic_cast<StandardCommit&>(commit).createSnapshot(file.getFileName(), content);
+
+		}
+	}
+}
+
+void Repository::addCommit(std::unique_ptr<StandardCommit> commit) { 
+	commits.push_back(std::move(commit)); 
+}
+
 bool Repository::commitStagedFiles(string commitMessage, string commitId) {
 	// get trackedfiles vector
 	auto& files = getCurrentFiles();
-	 string parent;
+	string parent;
 
 	// only acknowledge staged files
 	int vectorSize = files.size();
@@ -180,6 +214,7 @@ bool Repository::commitStagedFiles(string commitMessage, string commitId) {
 
     std::string realTime = std::ctime(&currentTime);
     realTime.pop_back();
+
 
 	// set status of staged files to committed
 	for (int i = 0; i < vectorSize; i++) {
@@ -194,7 +229,7 @@ bool Repository::commitStagedFiles(string commitMessage, string commitId) {
 	}
 
 	if (commits.empty()) {
-    parent = commitId;
+		parent = commitId;
 	}
   else {
      auto* p = commits.back().get();
@@ -203,11 +238,13 @@ bool Repository::commitStagedFiles(string commitMessage, string commitId) {
 
 	// create new commit object, author is hardcoded to admin, first commit selfreferences parentcommit id to itself
 	// populate commit objects.addTrackedFile with the committed files
-	// passing commitId and parentId as hardcoded strings, once the functions are in place to use actual commitId and parentId then please replace them
 	auto newCommit = std::make_unique<StandardCommit>(commitId, parent, commitMessage, "Admin", realTime);
 
+	// Need to add the committed files from this commit to the commit's map of files, this should also add any files that were already committed
+	addCommitsToMap(files, *newCommit.get());
 	// pass commit object into addCommit
 	addCommit(std::move(newCommit));
+
 	// return bool TRUE if successful, FALSE if no currently staged files
 	return true;
 }

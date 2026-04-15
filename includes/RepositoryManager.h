@@ -23,7 +23,7 @@ class RepositoryManager {
   private:
     Repository repo;
     DataManager data;
-    AnalyticsEngine<StandardCommit> analyzer;
+    AnalyticsEngine<Repository> analyzer;
     DiffEngine differ;
   public:
 	struct Project {
@@ -66,4 +66,5 @@ class RepositoryManager {
   void stageFile(const string& fileName); //wrapper for Repository::stageFile(), changes file status to staged when good
   void addCommit(std::unique_ptr<StandardCommit> commit); //wrapper for Repository::addCommit(), takes the commit object from the below function and puts it into the commits vector
   bool commitStagedFiles(std::string commitMessage); //wrapper for Repository::commitStagedFiles() using commit message and commit ID, works through repo object
+  std::vector<std::string> getAnalytics() const;//
 };

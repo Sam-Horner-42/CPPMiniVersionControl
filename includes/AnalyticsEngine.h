@@ -24,17 +24,18 @@ public:
     // 1. Compute Total Commits
      // Accesses the commit vector from the Repository
 
-    int computeTotalCommits(const T& repo) {
-        return static_cast<int>(repo.getCommits().size());
+	
+    int computeTotalCommits(const T& repo) const {
+        return static_cast<int>(repo.getRepoCommits().size());
     }
 
     // 2. Compute Tracked Files Count
-    int computeTrackedFilesCount(const T& repo) {
+    int computeTrackedFilesCount(const T& repo) const {
         return static_cast<int>(repo.getCurrentFiles().size());
     }
 
     // 3. Compute Most Modified Files
-    std::vector<std::string> computeMostModifiedFiles(const T& repo) {
+    std::vector<std::string> computeMostModifiedFiles(const T& repo) const {
         std::vector<TrackedFile> sortedFiles = repo.getCurrentFiles();
         //used the built in sorting method jacob mentioned 
         sort(sortedFiles.begin(), sortedFiles.end(), compareEdits);

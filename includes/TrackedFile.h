@@ -34,6 +34,9 @@ class TrackedFile {
 	TrackedFile(const std::string& fileName, status newStatus)
 		: filePath(""), fileName(fileName), content(""), editCount(0), currentStatus(newStatus), commitMessage("") {}
 
+	TrackedFile(const std::string& filePath, const std::string& fileName, status newStatus, int editCount)
+		: filePath(filePath), fileName(fileName), content(""), editCount(editCount), currentStatus(newStatus), commitMessage("") {}
+
     ~TrackedFile() {};
 
     void setFilePath(std::string filePath);
@@ -47,6 +50,8 @@ class TrackedFile {
     std::string getFileName() const;
     std::string getFilePath() const;
     std::string getContent() const;
+	int getEditCount() const;
+	
     TrackedFile::status getFileStatus() const;
 
     std::string getStatusAsString() const;
@@ -60,7 +65,7 @@ class TrackedFile {
 	    return this->getFilePath() == other.getFilePath();
     }
 
-    int getEditCount() const;
+    
 };
 
 #endif

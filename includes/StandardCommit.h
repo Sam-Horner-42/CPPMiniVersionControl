@@ -20,8 +20,8 @@ public:
 		const std::string& timestamp
 
 	) : Commit(commitId, parentId, message, author, timestamp) {}
-	~StandardCommit() {}
-
+	virtual ~StandardCommit() {}
+	
 	StandardCommit() {}
 
 	int  getNumOfTrackedFiles() { return trackedFiles.size(); }

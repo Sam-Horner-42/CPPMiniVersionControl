@@ -52,7 +52,6 @@ void MainWindow::setRepoContext(const QString& name, const QString& path)
 		}
 	}
 
-	// --- File Watcher Loop ---
 	// Iterates over all files recursively, including hidden ones
 	QDirIterator fileIt(path, QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot,
 		QDirIterator::Subdirectories);
@@ -62,12 +61,6 @@ void MainWindow::setRepoContext(const QString& name, const QString& path)
 		if (!filePath.contains("/.vcm/") && !filePath.contains("metadata.json")) {
 			// Registers the file so modifications to it trigger a signal
 			m_fileWatcher->addPath(filePath);
-			// Converts from QString to std::string for RepositoryManager compatibility
-			std::string stdFilePath = filePath.toStdString();
-			// Gets just the file name (e.g. "main.cpp") without the full path
-			std::string stdFileName = fileIt.fileName().toStdString();
-			// Adds the file to the tracked files list via RepositoryManager
-			m_repoManager->addNewTrackedFile(stdFilePath, stdFileName);
 		}
 	}
 
@@ -75,7 +68,7 @@ void MainWindow::setRepoContext(const QString& name, const QString& path)
 	refreshFileTable();
 
 	// Clears the history panel ready to be repopulated
-	historyList->clear();
+	refreshHistoryTab();
 	
 }
 
@@ -106,58 +99,41 @@ void MainWindow::onFileModified(const QString& path) {
 void MainWindow::onDirectoryChanged(const QString& path) {
 	if (!m_repoManager) return;
 
-	// Debounce: wait 150ms for the filesystem to stabilize before processing.
-	// QFileSystemWatcher fires immediately on the inotify/FSEvents event,
-	// which can arrive before the file entry is fully visible in the directory.
-	QTimer::singleShot(150, this, [this, path]() {
-		QDir dir(path);
+	QDir dir(path);
+	QFileInfoList diskFiles = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot);
 
-		// Match the flags used in setRepoContext — include Hidden files
-		QFileInfoList diskFiles = dir.entryInfoList(
-			QDir::Files | QDir::Hidden | QDir::NoDotAndDotDot
+	const std::vector<TrackedFile>& trackedFiles = m_repoManager->getCurrentFiles();
+	const QString vcmMarker = QDir::separator() + QString(".vcm") + QDir::separator();
+
+	// Single loop to evaluate and register files
+	for (const QFileInfo& fileInfo : diskFiles) {
+		const QString absPath = fileInfo.absoluteFilePath();
+		const QString fileName = fileInfo.fileName();
+
+		// Skip internal version control directories and metadata files
+		if (absPath.contains(vcmMarker) || fileName == ".vcm" || fileName == "metadata.json") {
+			continue;
+		}
+
+		// Check if the file is already tracked (Using absolute path to prevent overwrite bug)
+		std::string absPathStr = absPath.toStdString();
+		bool alreadyTracked = std::any_of(
+			trackedFiles.begin(), trackedFiles.end(),
+			[&absPathStr](const TrackedFile& f) {
+				return f.getFilePath() == absPathStr;
+			}
 		);
 
-		const std::vector<TrackedFile>& trackedFiles = m_repoManager->getCurrentFiles();
-		QList<QFileInfo> filesToRegister;
+		// Register the file if it's new and currently exists on disk
+		if (!alreadyTracked && fileInfo.exists()) {
+			qDebug() << "Registering new file:" << fileName;
 
-		for (const QFileInfo& fileInfo : diskFiles) {
-			const QString absPath = fileInfo.absoluteFilePath();
-
-			// Use OS-native separator for reliable cross-platform matching
-			const QString vcmMarker = QDir::separator() + QString(".vcm") + QDir::separator();
-			if (absPath.contains(vcmMarker) || fileInfo.fileName() == ".vcm") {
-				continue;
-			}
-
-			// Also skip internal metadata files at the repo root
-			if (fileInfo.fileName() == "metadata.json") {
-				continue;
-			}
-
-			std::string nameStr = fileInfo.fileName().toStdString();
-			bool alreadyTracked = std::any_of(
-				trackedFiles.begin(), trackedFiles.end(),
-				[&nameStr](const TrackedFile& f) {
-					return f.getFileName() == nameStr;
-				}
-			);
-
-			if (!alreadyTracked) {
-				filesToRegister.append(fileInfo);
-			}
+			m_repoManager->addNewTrackedFile(absPathStr, fileName.toStdString());
+			m_fileWatcher->addPath(absPath);
 		}
+	}
 
-		for (const QFileInfo& newFileInfo : filesToRegister) {
-			qDebug() << "Registering new file:" << newFileInfo.fileName();
-
-			// Guard: re-check the file still exists after the debounce delay
-			if (!newFileInfo.exists()) continue;
-			m_repoManager->addNewTrackedFile(newFileInfo.absoluteFilePath().toStdString(), newFileInfo.fileName().toStdString());
-			m_fileWatcher->addPath(newFileInfo.absoluteFilePath());
-		}
-
-		refreshFileTable();
-		});
+	refreshFileTable();
 }
 
 void MainWindow::setupTabWidgets() {
@@ -203,7 +179,7 @@ void MainWindow::refreshFileTable() {
 		for (size_t i = 0; i < files.size(); ++i) {
 			
 			const TrackedFile& file = files[i];
-			qDebug() << "File Name: " << QString::fromStdString(file.getFileName());
+			qDebug() << "Tracked File Name: " << QString::fromStdString(file.getFileName());
 
 			int rowPosition = ui.fileTable->rowCount();
 			ui.fileTable->insertRow(rowPosition);
@@ -220,22 +196,31 @@ void MainWindow::refreshFileTable() {
 }
 
 void MainWindow::refreshHistoryTab() {
+//	auto& m_repoManager->getRepoCommits();
 	// Clear the UI list to prevent duplicates
 	historyList->clear();
 
 	// Fetch the vector from the backend
-	std::vector<std::string> history = m_repoManager->getCommitHistory();
+	auto& history = m_repoManager->getRepoCommits();
+	
 
 	// Loop through the vector and add to the QListWidget
-	for (const std::string& entry : history) {
-		QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(entry));
-
-		historyList->addItem(item);
-	}
+//	for (auto& entry : history) {
+////		qDebug() << "History value: " << entry;
+//		QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(entry));
+//
+//		historyList->addItem(item);
+//	}
 
 	// Scroll to the bottom so the newest commit is visible
 	historyList->scrollToBottom();
 }
+
+//void MainWindow::refreshAnayticsTab() {
+//	if (m_repoManager) {
+//		m_repoManager->getAnalytics();
+//	}
+//}
 
 void MainWindow::on_commitStaged_clicked()
 {
@@ -262,6 +247,8 @@ void MainWindow::on_commitStaged_clicked()
 	
 }
 
+
+
 void MainWindow::on_stageSelected_clicked() {
 	qDebug() << "Stage All button clicked.";
 	if(!selectedFile.isEmpty()) m_repoManager->stageFile(selectedFile.toStdString());
@@ -277,8 +264,9 @@ void MainWindow::on_stageAll_clicked()
 
 // 
 void MainWindow::on_restoreToCommit_clicked() {
-
+	
 }
+
 // The table of files
 void MainWindow::on_fileTable_cellClicked(int row, int column)
 {

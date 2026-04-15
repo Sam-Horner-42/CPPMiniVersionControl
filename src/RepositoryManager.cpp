@@ -195,10 +195,20 @@ void RepositoryManager::addCommit(std::unique_ptr<StandardCommit> commit) {
 }
 
 bool RepositoryManager::commitStagedFiles(std::string commitMessage) {
-    string newID = data.generateId(repo.getRepoName(),repo.getCurrentFiles());
+    string newID = data.generateId(repo.getRepoName(), repo.getCurrentFiles());
 	return repo.commitStagedFiles(commitMessage, newID);
 }
 
 std::vector<std::unique_ptr<Commit>>& RepositoryManager::getRepoCommits() {
 	return repo.getRepoCommits();
 }
+//std::vector<std::string> RepositoryManager::getAnalytics() const{
+//    std::vector<std::string> finalRport;
+//    int totalCommits = analyzer.computeTotalCommits(repo);
+//    int totalTrackedFiles= analyzer.computeTotalTrackedFiles(repo);
+//    finalReport.push_back("Total Commits: " +std::to_string(totalCommits));
+//    finalReport.puch_back("total Tracked files: " + std::to_string(totalTrackedFile)); 
+//    std::vector<std::string> mostEditedFiles=analyzer.computeMostModifiedFiles(repo);
+//    finalReport.insert(finalReport.end(), mostEditedFiles.begin(), mostEditedFiles.end());
+//    return finalReport; 
+//}

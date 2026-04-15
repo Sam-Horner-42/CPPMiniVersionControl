@@ -11,6 +11,10 @@
 #include <vector>
 #include <memory>
 #include <stdexcept>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <QDebug>
 
 #include "TrackedFile.h"
 #include "StandardCommit.h"
@@ -70,11 +74,14 @@ public:
   std::vector<std::unique_ptr<Commit>>& getRepoCommits(); //return all commits from the repository
 
   std::vector<TrackedFile>& getCurrentFiles() { return currentFiles; } //returns the current file vector for the repository
+  void addToCurrentFiles(TrackedFile& file) { currentFiles.push_back(file); }
   void deleteTrackedFile(const std::string fileName); // Removes a single tracked file from the vector of tracked files
   void buildJSONMetaData(const std::string repoName, const std::string repoPath);
   void buildJSONSnapshots(const std::string repoName, const std::string repoPath);
   StandardCommit* findCommit(const std::string& commitId);
 
-  void addCommit(std::unique_ptr<Commit> commit) { commits.push_back(std::move(commit)); } //adds a single commit object to the commits vector
+  std::string readFileContent(const std::string& filepath);
+  void addCommitsToMap(std::vector<TrackedFile>& currentFiles, Commit& commit);
+  void addCommit(std::unique_ptr<StandardCommit> commit); //adds a single commit object to the commits vector
   bool commitStagedFiles(std::string commitMessage, std::string commitId); //adds the file vector commit to the commit vector, takes in commit message and the commit ID
 };

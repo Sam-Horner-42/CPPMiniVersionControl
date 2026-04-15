@@ -7,6 +7,10 @@ namespace fs = std::filesystem;
 
 std::string DataManager::singleHash(std::string fileContents){
     std::string result;
+    // using the FNV-1a hasing algorithm without extras
+    // FowlerNollVo hash function, we need two magic large numbers(given I didn't make them), offset and prime
+    // use them based off contents of the files, convert the hash to a string and take the first 10
+    // https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
 	unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
     unsigned long long prime = 1099511628211ULL; // fnv-1a prime
     for (const auto& c : fileContents)
@@ -17,28 +21,17 @@ std::string DataManager::singleHash(std::string fileContents){
 }
 
 string DataManager::generateId(string repositoryName, std::vector<TrackedFile> files){
-    // using the FNV-1a hasing algorithm without extras
-    // FowlerNollVo hash function, we need two magic large numbers(given I didn't make them), offset and prime
-    // use them based off contents of the files, convert the hash to a string and take the first 10
-    // https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset
-    unsigned long long prime = 1099511628211ULL; // fnv-1a prime
-    for (const auto& file : files){
-        string txtFilePath = "projects/" + repositoryName + "/" + file.getFileName();
-        std::ifstream fileContentRead(txtFilePath, std::ios::binary);
-        char c;
-        while (fileContentRead.get(c)) {
-            hash = (hash ^ c) * prime;  
-        }
-        
-    }
+	// creates a timestamp as a string
+	std::time_t currentTime = std::time(nullptr);
+	long longTime = long(currentTime);
+    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset, not used here.
+	unsigned long res = hash ^ longTime;
     // Convert hash to string and take first 10 characters
-    string result = to_string(hash);
+    string result = to_string(res);
     result = result.substr(0, 10);
     return result;  
 }
-// USE maps, read from maps
-// we take the entire repository and save it to memory based on its current state
+
 bool DataManager::checkProjectExist(std::string repositoryName){
     json dataHandler;
     string pathDataHandler = "data/dataHandler.json";
@@ -74,12 +67,18 @@ void DataManager::saveProjectInfo(std::string repositoryName, Repository& repo){
             break;
         }
     }
+    // removes new line char, adds real ID
+	std::time_t currentTime = std::time(nullptr);
+	std::string realTime = std::ctime(&currentTime);
+	realTime.pop_back();
     
+   
     // if not existing, make
     if (!projectExists) {
         json newProject;
+        
         newProject["name"] = repositoryName;
-        newProject["id"] = generateId(repositoryName, repo.getCurrentFiles());
+        newProject["id"] = realTime;     //generateId(repositoryName, repo.getCurrentFiles());
         newProject["path"] = repo.getRepoPath();
         dataHandler["projects"].push_back(newProject);
     }
@@ -93,7 +92,7 @@ void DataManager::saveProjectInfo(std::string repositoryName, Repository& repo){
 }
 void DataManager::saveData(Repository& repo, std::string repositoryName, const string repoPath) {
     string metaDataPath = repoPath + "/metadata.json";
-    string commitPath = repoPath + "/vcm/snapshots/commits.json";
+    string commitPath = repoPath + "/.vcm/snapshots/commits.json";
     
     json allCommitsData;
     ifstream commitDataIn(commitPath);
@@ -102,11 +101,11 @@ void DataManager::saveData(Repository& repo, std::string repositoryName, const s
         commitDataIn.close();
     }
     
-    auto& currentCommit = repo.getCurrentCommit();
-    json newCommitJson = saveCommit(currentCommit, repositoryName, repoPath);
-    
-    // does not work fix
-    allCommitsData["commits"].push_back(newCommitJson);
+    for (auto& commit : repo.getRepoCommits()) {
+        if(!commit) continue;
+        json newCommitJson = saveCommit(dynamic_cast<StandardCommit&>(*commit.get()), repositoryName, repoPath);
+        allCommitsData["commits"].push_back(newCommitJson);
+    }
     
     ofstream commitDataOut(commitPath);
     if (commitDataOut.is_open()) {
@@ -115,12 +114,6 @@ void DataManager::saveData(Repository& repo, std::string repositoryName, const s
     }
     
     json metaData;
-    // ifstream metaDataIn(metaDataPath);
-    // if (metaDataIn.is_open()) {
-    //     metaDataIn >> metaData;
-    //     metaDataIn.close();
-    // }
-    
     auto& files = repo.getCurrentFiles();
         
     for (auto& file : files) {
@@ -154,19 +147,21 @@ json DataManager::saveFile(TrackedFile& file, string& repositoryName) {
     tempObject["fileName"] = file.getFileName();
     tempObject["filePath"] = file.getFilePath();
     tempObject["status"] = file.getFileStatus();
+    tempObject["edit_count"] = file.getEditCount();
     return tempObject;
 }
 
 
-// use maps, now update shitshots and load whatever
+// use maps, now update snaps and load whatever
 bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
-    string pathDataHandler = "dataHandler.json";
+	qDebug() << "Load data is running.";
+    string pathDataHandler = "data/dataHandler.json";
     std::ifstream in(pathDataHandler);
     if (!in.is_open()) { 
             std::cerr << "cannot open json file\n"; // for testing, most console outputs are for US not output
             return false; 
         }
-    
+    qDebug() << "! open";
     json handlerJson;
     in >> handlerJson;
     in.close();
@@ -193,10 +188,11 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
 
     // handles the metadata.json file, after we know project exists
     string metadataPath = projectPath + "/metadata.json";
+	qDebug() << "Meta data path: " << metadataPath;
     ifstream metadataIn(metadataPath);
 
     if (!metadataIn.is_open()) {
-        cerr << "Cannot find metadata.json for project" << endl;
+        qDebug() << "Cannot find metadata.json for project";
         return false;
     }
 
@@ -208,33 +204,28 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
 
         if(projectMetadata.contains("files")){
             for (const auto& file : projectMetadata["files"]){
-                string fileName = file.value("fileName", "");
-                string filePath = file.value("filePath", "");
-                // Read the actual content from the txt file
-                string content = "";
-                ifstream txtFile(filePath);
-                if (txtFile.is_open()) {
-                   std::stringstream buffer;
-                    buffer << txtFile.rdbuf();
-                    content = buffer.str();
-                    txtFile.close();
+                string fileName = file.value("fileName",   "NA");
+                string filePath = file.value("filePath",   "NA");
+				int fileStatus = file.value("status",   0);
+                int editCount = file.value("edit_count",0);
+                
+                // file obj creation
+                TrackedFile trackedFile(
+                    filePath,
+                    fileName, 
+                    static_cast<TrackedFile::status>(fileStatus), 
+                    editCount
+                );
 
-                    // file obj creation
-                    TrackedFile trackedFile(filePath, TrackedFile::status::Committed);
-                    // gets commitvector from repo, goes back, then add file
-                    // repo->getCommitVector.back()->addTrackedFile(trackedFile);
-                } else {
-                    cerr << "unable to read " << fileName << endl;
-                }          
+				qDebug() << "File Name: " << fileName;
+                repo.addToCurrentFiles(trackedFile);   
             }
         }
         
-
-
-        std::string filePathing = projectPath + "/snapshots/commits.json";
+        std::string filePathing = projectPath + "/.vcm/snapshots/commits.json";
         std::ifstream snapsIn(filePathing);
         if (!snapsIn.is_open()) {
-            std::cerr << "Failed to open: " << filePathing << std::endl;
+            qDebug() << "Failed to open: " << filePathing;
             return false;
         }
         
@@ -272,7 +263,7 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
                 auto& sc = dynamic_cast<StandardCommit&>(*c);
                 sc.addToSnapshot(fileName, content);
             }
-            repo.getRepoCommits().push_back(move(c));
+            repo.addCommit(std::move(c));
         }
         return true; 
     }

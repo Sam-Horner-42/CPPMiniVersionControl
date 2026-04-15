@@ -255,7 +255,7 @@ color:rgb(0, 0, 0)
      <attribute name="title">
       <string>History</string>
      </attribute>
-     <widget class="QPushButton" name="stageSelected_2">
+     <widget class="QPushButton" name="restoreToCommit">
       <property name="geometry">
        <rect>
         <x>320</x>
