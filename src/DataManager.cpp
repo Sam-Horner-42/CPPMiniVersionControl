@@ -158,10 +158,10 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
     string pathDataHandler = "data/dataHandler.json";
     std::ifstream in(pathDataHandler);
     if (!in.is_open()) { 
-            std::cerr << "cannot open json file\n"; // for testing, most console outputs are for US not output
+            qDebug() << "cannot open json file"; // for testing, most console outputs are for US not output
             return false; 
         }
-    qDebug() << "! open";
+    qDebug() << "Datahandler is open";
     json handlerJson;
     in >> handlerJson;
     in.close();
@@ -182,7 +182,7 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
         }
     }
     if(!foundStat){
-        std::cerr << "Unable to find project"; // us output
+        qDebug() << "Unable to find project"; // us output
         return false;
     }
 
@@ -234,8 +234,10 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
         snapsIn.close();
         
         for (auto& commiti : snapshotsData["commits"]){
-            std::unique_ptr<StandardCommit> c;
+			qDebug() << "The commits loop is running.";
+            //std::unique_ptr<StandardCommit> c;
             for (auto& file : commiti["files"]){
+				qDebug() << "The file loop is now running in load data.";
                 string commitId = commiti["id"];
                 string timestamp = commiti["timestamp"];
                 string parentId = commiti["parentId"];
@@ -252,24 +254,25 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
                     content = buffer.str();
                     txtFile.close();
                 }
-				c = make_unique<StandardCommit>(
-                    commitId,
-                    parentId,
-                    message,
-                    author,
-                    timestamp
-                );
-				// string filename = file.getFileName();
-                auto& sc = dynamic_cast<StandardCommit&>(*c);
-                sc.addToSnapshot(fileName, content);
+				//c = make_unique<StandardCommit>(
+    //                commitId,
+    //                parentId,
+    //                message,
+    //                author,
+    //                timestamp
+    //            );
+				//string filename = file.getFileName();
+                //auto& sc = dynamic_cast<StandardCommit&>(*c);
+                //sc.addToSnapshot(fileName, content);
+				repo.addCommit(commitId, parentId, message, author, timestamp); // I added a parameterized addCommit function
             }
-            repo.addCommit(std::move(c));
+            //repo.addCommit(std::move(c));
         }
         return true; 
     }
     catch(const exception& e)
     {
-        std::cerr << e.what() << "Bad json pass" << '\n';
+        qDebug() << e.what() << "Bad json pass" << '\n';
         return false;
     }
     return false;

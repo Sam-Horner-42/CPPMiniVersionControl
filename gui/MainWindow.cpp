@@ -201,16 +201,16 @@ void MainWindow::refreshHistoryTab() {
 	historyList->clear();
 
 	// Fetch the vector from the backend
-	auto& history = m_repoManager->getRepoCommits();
+	auto history = m_repoManager->getCommitHistory();
 	
 
-	// Loop through the vector and add to the QListWidget
-//	for (auto& entry : history) {
-////		qDebug() << "History value: " << entry;
-//		QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(entry));
-//
-//		historyList->addItem(item);
-//	}
+	 //Loop through the vector and add to the QListWidget
+	//for (auto& entry : history) {
+	//    qDebug() << "History value: " << entry;
+	//	QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(entry));
+
+	//	historyList->addItem(item);
+	//}
 
 	// Scroll to the bottom so the newest commit is visible
 	historyList->scrollToBottom();

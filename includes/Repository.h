@@ -82,6 +82,8 @@ public:
 
   std::string readFileContent(const std::string& filepath);
   void addCommitsToMap(std::vector<TrackedFile>& currentFiles, Commit& commit);
-  void addCommit(std::unique_ptr<StandardCommit> commit); //adds a single commit object to the commits vector
+  void addCommit(std::string commitId, std::string parent, std::string commitMessage, 
+	  std::string admin, std::string timeStamp);
+  //void addCommit(std::unique_ptr<StandardCommit> commit); //adds a single commit object to the commits vector
   bool commitStagedFiles(std::string commitMessage, std::string commitId); //adds the file vector commit to the commit vector, takes in commit message and the commit ID
 };

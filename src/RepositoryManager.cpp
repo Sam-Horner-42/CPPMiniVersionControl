@@ -190,8 +190,11 @@ void RepositoryManager::stageAllFiles() {
   }
 }
 
-void RepositoryManager::addCommit(std::unique_ptr<StandardCommit> commit) {
-    repo.addCommit(std::move(commit));
+void RepositoryManager::addCommit(std::string commitId, std::string parent, std::string commitMessage,
+	std::string admin, std::string timeStamp) {
+    repo.addCommit(commitId, parent, commitMessage, admin, timeStamp);
+
+	// repo.addCommit(commitId, parent, commitMessage, admin, timeStamp);
 }
 
 bool RepositoryManager::commitStagedFiles(std::string commitMessage) {

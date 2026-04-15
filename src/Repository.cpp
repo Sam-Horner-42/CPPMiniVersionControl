@@ -81,14 +81,16 @@ vector<string> Repository::getCommitHistory() {
 
     vector<string> commitHistoryVec;
 	qDebug() << "Commits size: " << commits.size();
-    for (auto& commit : commits) {
-		//if(!commit) continue;
-		qDebug() << "We got into the four loop.";
-      string logCommit = "Commit ID: " + commit->getId() + 
-       "Date: " + commit->getTimestamp() + 
-       "Message: " + commit->getMessage();
-      // one commit pushed to vector
-        commitHistoryVec.push_back(logCommit);
+    for (const auto& commit : commits) {
+		if (commit) {
+			qDebug() << "We got into the for loop.";
+			string logCommit = "Commit ID: " + commit->getId() +
+				"Date: " + commit->getTimestamp() +
+				"Message: " + commit->getMessage();
+			// one commit pushed to vector
+			commitHistoryVec.push_back(logCommit);
+		}
+		qDebug() << "A null commit is found.";
     }
     // holds full history
     return commitHistoryVec;
@@ -198,8 +200,12 @@ void Repository::addCommitsToMap(std::vector<TrackedFile>& currentFiles, Commit&
 	}
 }
 
-void Repository::addCommit(std::unique_ptr<StandardCommit> commit) { 
-	commits.push_back(std::move(commit)); 
+void Repository::addCommit(std::string commitId, std::string parent, std::string commitMessage, 
+	std::string admin, std::string timeStamp) { 
+	//commits.push_back(std::move(commit)); 
+	qDebug() << "Add Commit Successfully called";
+	commits.emplace_back(std::make_unique<StandardCommit>(commitId, parent, commitMessage, admin, timeStamp));
+	qDebug() << "Commits size: " << commits.size();
 }
 
 bool Repository::commitStagedFiles(string commitMessage, string commitId) {
@@ -238,12 +244,12 @@ bool Repository::commitStagedFiles(string commitMessage, string commitId) {
 
 	// create new commit object, author is hardcoded to admin, first commit selfreferences parentcommit id to itself
 	// populate commit objects.addTrackedFile with the committed files
-	auto newCommit = std::make_unique<StandardCommit>(commitId, parent, commitMessage, "Admin", realTime);
+	//auto newCommit = std::make_unique<StandardCommit>(commitId, parent, commitMessage, "Admin", realTime);
 
 	// Need to add the committed files from this commit to the commit's map of files, this should also add any files that were already committed
-	addCommitsToMap(files, *newCommit.get());
+	//addCommitsToMap(files, *newCommit.get());
 	// pass commit object into addCommit
-	addCommit(std::move(newCommit));
+	addCommit(commitId, parent, commitMessage, "Admin", realTime);
 
 	// return bool TRUE if successful, FALSE if no currently staged files
 	return true;
