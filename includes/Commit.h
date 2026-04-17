@@ -55,6 +55,10 @@ class Commit {
     virtual std::vector<std::string> getAllAttributes() = 0;
     virtual std::vector<std::string> displayCommit() = 0;
     virtual std::string getSummary() = 0;
+
+    bool operator==(const Commit& other) {
+        return commitId == other.commitId;
+    }
 };
 
 #endif

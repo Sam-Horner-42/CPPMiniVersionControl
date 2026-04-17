@@ -24,7 +24,7 @@ string DataManager::generateId(string repositoryName, std::vector<TrackedFile> f
 	// creates a timestamp as a string
 	std::time_t currentTime = std::time(nullptr);
 	long longTime = long(currentTime);
-    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset, not used here.
+    unsigned long long hash = 14695981039346656037ULL;  // fnv-1a offset, not based within the FNV
 	unsigned long res = hash ^ longTime;
     // Convert hash to string and take first 10 characters
     string result = to_string(res);
@@ -49,6 +49,7 @@ bool DataManager::checkProjectExist(std::string repositoryName){
     }
     return false;
 }
+
 void DataManager::saveProjectInfo(std::string repositoryName, Repository& repo){
      // datahandler.json
     json dataHandler;
@@ -72,13 +73,12 @@ void DataManager::saveProjectInfo(std::string repositoryName, Repository& repo){
 	std::string realTime = std::ctime(&currentTime);
 	realTime.pop_back();
     
-   
     // if not existing, make
     if (!projectExists) {
         json newProject;
         
         newProject["name"] = repositoryName;
-        newProject["id"] = realTime;     //generateId(repositoryName, repo.getCurrentFiles());
+        newProject["id"] = realTime;
         newProject["path"] = repo.getRepoPath();
         dataHandler["projects"].push_back(newProject);
     }
@@ -90,19 +90,23 @@ void DataManager::saveProjectInfo(std::string repositoryName, Repository& repo){
         dataHandOut.close();
     }
 }
+
 void DataManager::saveData(Repository& repo, std::string repositoryName, const string repoPath) {
     string metaDataPath = repoPath + "/metadata.json";
     string commitPath = repoPath + "/.vcm/snapshots/commits.json";
     
+    json existingData;
     json allCommitsData;
-    ifstream commitDataIn(commitPath);
-    if (commitDataIn.is_open()) {
-        commitDataIn >> allCommitsData;
-        commitDataIn.close();
-    }
+
+     ifstream commitDataIn(commitPath);
+     if (commitDataIn.is_open()) {
+         commitDataIn >> existingData;
+         commitDataIn.close();
+     }
     
     for (auto& commit : repo.getRepoCommits()) {
-        if(!commit) continue;
+        if(!commit || existingData.contains(dynamic_cast<StandardCommit&>(*commit.get()).getId())) continue;
+
         json newCommitJson = saveCommit(dynamic_cast<StandardCommit&>(*commit.get()), repositoryName, repoPath);
         allCommitsData["commits"].push_back(newCommitJson);
     }
@@ -138,7 +142,19 @@ json DataManager::saveCommit(StandardCommit& commit, std::string& repositoryName
     tempObject["timestamp"] = commit.getTimestamp();
     tempObject["author"] = commit.getAuthor();
 
+    createCommitDirectory(commit.getId(), commit.getFileSnapshot(), repoPath);
     return tempObject;
+}
+
+// snapshots handling/creation
+void DataManager::createCommitDirectory(const string& ident, std::map<string,string>& map, std::string repoPath) {
+    string dirpath = repoPath + "/.vcm/snapshots/" + ident; // snap folder creation
+    if(!fs::create_directories(dirpath)) return;
+    for (auto it = map.begin(); it != map.end(); ++it) {
+        ofstream outFile(dirpath + "/" + ident + "_" + it->first);
+        outFile << it->second;
+        outFile.close();
+    }
 }
 
 json DataManager::saveFile(TrackedFile& file, string& repositoryName) {
@@ -150,7 +166,6 @@ json DataManager::saveFile(TrackedFile& file, string& repositoryName) {
     tempObject["edit_count"] = file.getEditCount();
     return tempObject;
 }
-
 
 // use maps, now update snaps and load whatever
 bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
@@ -186,6 +201,8 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
         return false;
     }
 
+    repo.setRepoPath(projectPath);
+
     // handles the metadata.json file, after we know project exists
     string metadataPath = projectPath + "/metadata.json";
 	qDebug() << "Meta data path: " << metadataPath;
@@ -207,7 +224,7 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
                 string fileName = file.value("fileName",   "NA");
                 string filePath = file.value("filePath",   "NA");
 				int fileStatus = file.value("status",   0);
-                int editCount = file.value("edit_count",0);
+                int editCount = file.value("edit_count", 0);
                 
                 // file obj creation
                 TrackedFile trackedFile(
@@ -232,44 +249,60 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
         json snapshotsData;
         snapsIn >> snapshotsData;
         snapsIn.close();
-        
+		std::string commitId;
+
         for (auto& commiti : snapshotsData["commits"]){
 			qDebug() << "The commits loop is running.";
-            //std::unique_ptr<StandardCommit> c;
-            for (auto& file : commiti["files"]){
-				qDebug() << "The file loop is now running in load data.";
-                string commitId = commiti["id"];
-                string timestamp = commiti["timestamp"];
-                string parentId = commiti["parentId"];
-                string author = commiti["author"];
-                string message = commiti["message"];
-                string fileName = file["fileName"];
-                
-                // Read actual file content
-                std::string content = " ";
-                std::ifstream txtFile(repo.getRepoPath() + "/" + fileName);
-                if (txtFile.is_open()) {
-                    std::stringstream buffer;
-                    buffer << txtFile.rdbuf();
-                    content = buffer.str();
-                    txtFile.close();
-                }
-				//c = make_unique<StandardCommit>(
-    //                commitId,
-    //                parentId,
-    //                message,
-    //                author,
-    //                timestamp
-    //            );
-				//string filename = file.getFileName();
-                //auto& sc = dynamic_cast<StandardCommit&>(*c);
-                //sc.addToSnapshot(fileName, content);
-				repo.addCommit(commitId, parentId, message, author, timestamp); // I added a parameterized addCommit function
-            }
-            //repo.addCommit(std::move(c));
+
+			// Extract metadata directly from the current commit object
+			commitId = commiti["id"];
+			std::string timestamp = commiti["timestamp"];
+			std::string parentId = commiti["parentId"];
+			std::string author = commiti["author"];
+			std::string message = commiti["message"];
+
+			// Add the commit using the parameterized function
+			repo.addCommit(commitId, parentId, message, author, timestamp);
         }
-        return true; 
+
+		std::string commitDirPath = repo.getRepoPath() + "/.vcm/snapshots/" + commitId;
+
+		// Traverse the directory and populate the fileSnapshot map
+		if (fs::exists(commitDirPath) && fs::is_directory(commitDirPath)) {
+
+			for (const auto& entry : fs::directory_iterator(commitDirPath)) {
+				// Ensure we are only reading actual files, not sub-directories
+				if (fs::is_regular_file(entry.status())) {
+
+					std::string fileName = entry.path().filename().string();
+					std::string filePath = entry.path().string();
+					std::string fileContent = "";
+
+					// Read actual file content
+					std::ifstream txtFile(filePath);
+					if (txtFile.is_open()) {
+						std::stringstream buffer;
+						buffer << txtFile.rdbuf();
+						fileContent = buffer.str();
+						txtFile.close();
+					}
+					else {
+						qDebug() << "Failed to open file:" << filePath;
+					}
+
+					// Add to your snapshot map
+					repo.findCommit(commitId)->getFileSnapshot()[fileName] = fileContent;
+
+					// Note: If fileSnapshot is specific to the commit (e.g., inside a standardCommit object), 
+					// you would apply it here instead of a global/local map.
+					qDebug() << "Added file to snapshot:" << fileName;
+				}
+			}
+			return true;
+
+		}
     }
+
     catch(const exception& e)
     {
         qDebug() << e.what() << "Bad json pass" << '\n';

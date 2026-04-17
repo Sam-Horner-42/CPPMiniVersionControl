@@ -30,8 +30,8 @@ SelectRepoDialog::SelectRepoDialog(RepositoryManager* repoManager, QWidget* pare
 
 		// Loop through the vector and populate the UI
 		for (const auto& project : projects) {
-			qDebug() << "I am in the for loop for projects.";
-			qDebug() << "ID: " << project.id;
+			//qDebug() << "I am in the for loop for projects.";
+			//qDebug() << "ID: " << project.id;
 			QStandardItem* parentItem = new QStandardItem(QString::fromStdString(project.name));
 			parentItem->appendRow(new QStandardItem("ID: " + QString::fromStdString(project.id)));
 			parentItem->appendRow(new QStandardItem("Path: " + QString::fromStdString(project.filePath)));

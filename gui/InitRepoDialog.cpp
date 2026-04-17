@@ -9,6 +9,12 @@ InitRepoDialog::InitRepoDialog(QWidget* parent) :
     QDialog(parent)
 {
     ui.setupUi(this);
+
+	// This handles input validation through regular expressions
+	QRegularExpression rx("^[A-Za-z0-9]{1,40}$");
+	QValidator* validator = new QRegularExpressionValidator(rx, this);
+
+	ui.repoNameInput->setValidator(validator);
 }
 
 InitRepoDialog::~InitRepoDialog() {}
@@ -28,12 +34,12 @@ void InitRepoDialog::on_okButton_clicked()
 	QString name = ui.repoNameInput->text();
 	QString path = ui.repoPathInput->text();
 
-	// Validate Name
-	if (name.trimmed().isEmpty()) {
-		QMessageBox::warning(this, "Invalid Name", "Repository name cannot be empty.");
-		ui.repoNameInput->clear();   // Reset the field
-		ui.repoNameInput->setFocus(); // Put the text cursor back in this box
-		return; // Stop execution here
+	// Validate Name using the attached Validator
+	if (!ui.repoNameInput->hasAcceptableInput()) {
+		QMessageBox::warning(this, "Invalid Name", "Repository name must be 1-40 alphanumeric characters.");
+		ui.repoNameInput->clear();
+		ui.repoNameInput->setFocus();
+		return;
 	}
 
 	// Validate Path

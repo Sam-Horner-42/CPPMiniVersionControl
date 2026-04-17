@@ -14,8 +14,8 @@
 using namespace std;
 
 void DiffEngine::computeDiff(const std::string& currentContent, const std::string& oldContent) {
-    if(currentContent.empty() || oldContent.empty()) return;
-
+    linesAdded   = 0;
+    linesRemoved = 0;
     // split both strings into lines
     auto splitLines = [](const std::string& str) {
         std::vector<std::string> lines;
@@ -35,7 +35,6 @@ void DiffEngine::computeDiff(const std::string& currentContent, const std::strin
 
     for(auto i = 0; i < minSize; i++) {
         if(currentLines[i] != oldLines[i]) {
-            linesModified++;
             result += "- " + oldLines[i] + "\n";
             result += "+ " + currentLines[i] + "\n";
         }
@@ -56,7 +55,7 @@ void DiffEngine::computeDiff(const std::string& currentContent, const std::strin
 
     result += "[+] Lines Added: " + to_string(linesAdded) + "\n";
     result += "[+] Lines Removed: " + to_string(linesRemoved) + "\n";
-    result += "[+] Lines Modified: " + to_string(linesModified) + "\n";
+    result += "[+] Lines Modified: " + to_string(linesAdded + linesRemoved) + "\n";
 
     this->diffString = result;
 }

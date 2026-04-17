@@ -28,4 +28,5 @@ public:
 	json saveFile(TrackedFile& file,std::string& repositoryName);
     void saveProjectInfo(std::string repositoryName, Repository& repo);
     bool checkProjectExist(std::string repositoryName);
+    void createCommitDirectory(const std::string& ident, std::map<std::string,std::string>& map, std::string repoPath);
 };

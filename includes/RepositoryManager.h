@@ -50,7 +50,7 @@ class RepositoryManager {
 	std::string getStatusAsString(const std::string fileName);
   void setStatusAsString(const std::string fileName, std::string newStatusString);
 
-  void restoreToParent(const std::string& commitId);
+  void restore(const std::string& commitId);
 
   std::vector<std::string> getCommitHistory();
     
@@ -61,12 +61,13 @@ class RepositoryManager {
 	std::vector<Project> getProjectInfo();
   void addNewTrackedFile(const std::string& filePath, const std::string& fileName); //function to initialize a new file into the tracked file vector, has the filepath and filename, has added status by default, and will have null for the others
 
-  std::unordered_map<std::string, std::string> callParentDifferentiation(const std::string& diffCommitId);
+  string callParentDifferentiation(const std::string& fileName);
   StandardCommit* getParentCommit(const std::string& commitId);
   void stageFile(const string& fileName); //wrapper for Repository::stageFile(), changes file status to staged when good
   //void addCommit(std::unique_ptr<StandardCommit> commit); //wrapper for Repository::addCommit(), takes the commit object from the below function and puts it into the commits vector
   void addCommit(std::string commitId, std::string parent, std::string commitMessage,
 	  std::string admin, std::string timeStamp);
   bool commitStagedFiles(std::string commitMessage); //wrapper for Repository::commitStagedFiles() using commit message and commit ID, works through repo object
-  std::vector<std::string> getAnalytics() const;//
+  std::vector<std::string> getAnalytics() const; //
+  std::vector<std::string> getAllCommitIds() const;
 };

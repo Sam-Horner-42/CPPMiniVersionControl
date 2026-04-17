@@ -3,6 +3,7 @@
  * Authors: 
  *  Jacob Dawes - 041169788
  *  Ethan Geary - 041032340
+ *	Sam Horner - 040935005
  */
 
 #include "../includes/Repository.h"
@@ -58,7 +59,6 @@ void Repository::buildJSONSnapshots(const string repoName, const string repoPath
 void Repository::initRepository(const string& repoName,const string& repoPath) {
   this->repoPath = repoPath;
   
-  
   // create snapshots , config folders
   // & create the initial config file.
 	if (!std::filesystem::create_directory(REPOWRAPPER)
@@ -90,10 +90,20 @@ vector<string> Repository::getCommitHistory() {
 			// one commit pushed to vector
 			commitHistoryVec.push_back(logCommit);
 		}
-		qDebug() << "A null commit is found.";
+		else {
+			qDebug() << "getCommitHistory(): A null commit is found.";
+		}
     }
     // holds full history
     return commitHistoryVec;
+}
+
+vector<string> Repository::getAllCommitIds() const {
+	vector<string> out;
+	for (const auto& commit : commits) {
+		out.push_back(commit.get()->getId());
+	}
+	return out;
 }
 
 TrackedFile* Repository::findFile(const std::string& filename) {
@@ -160,7 +170,41 @@ TrackedFile* Repository::getSingleTrackedFile(const string& fileName) {
 void Repository::addNewTrackedFile(TrackedFile& file) {
 	currentFiles.push_back(file);
 }
+void Repository::restore(std::string commitId){
+	qDebug() << "Repo path in restore(): " << repoPath;
+	qDebug() << "Restore has been called with commit ID: " << commitId;
+	auto current = findCommit(commitId);
+	qDebug() << "Before null";
+	if (current == nullptr) return;
+	qDebug() << "Current is not null";
 
+	for (auto& file : currentFiles) {
+		//if (file == nullptr) continue;
+		file.setStatus(TrackedFile::status::Committed);
+	}
+
+	auto& map = current->getFileSnapshot();
+
+	for (auto it = map.begin(); it != map.end(); ++it) {
+		qDebug() << "restore(): I have entered, the loop for the restore map.";
+		string path = repoPath + "/" + it->first;
+		qDebug() << "OUT PATH: " << path;
+		std::ofstream out_file(path);
+		if (!out_file) continue;
+		out_file << it->second;
+		out_file.close();
+	}
+	// find the restored pos
+	auto index = std::find_if(commits.begin(), commits.end(),
+		[&](const std::unique_ptr<Commit>& c) {
+			return c->getId() == current->getId();
+		}
+	);
+	// erase all commits after the restoration
+	if(index != commits.end())
+		commits.erase(index + 1);
+	else qDebug() << "DEBUG: index not found in restore()";
+}
 /* find commits within the repostiroy's commits vector. */
 StandardCommit* Repository::findCommit(const string& commitId) {
   if(commitId.empty()) return nullptr;
@@ -205,6 +249,11 @@ void Repository::addCommit(std::string commitId, std::string parent, std::string
 	//commits.push_back(std::move(commit)); 
 	qDebug() << "Add Commit Successfully called";
 	commits.emplace_back(std::make_unique<StandardCommit>(commitId, parent, commitMessage, admin, timeStamp));
+	if(!commits.back().get()) qDebug() << "addCommit() the commit created is null";
+	for (auto& trackedFile : currentFiles) {
+		auto& commit = dynamic_cast<StandardCommit&>(*commits.back().get());
+		commit.createSnapshot(trackedFile.getFileName(), trackedFile.getContent());
+	}
 	qDebug() << "Commits size: " << commits.size();
 }
 
@@ -228,6 +277,11 @@ bool Repository::commitStagedFiles(string commitMessage, string commitId) {
 			isStaged = true;
 			files[i].setStatus(TrackedFile::status::Committed);
 		}
+
+		std::ifstream inFile(files[i].getFilePath());
+		std::string content;
+		inFile >> content;
+		files[i].setContent(content);
 	}
 
 	if (isStaged == false) {

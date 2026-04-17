@@ -13,6 +13,11 @@
 #include <QTimer>
 #include <QFileSystemWatcher>
 #include <QDirIterator>
+#include <QPushButton>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QListWidgetItem>
+
 //#include "../includes/Repository.h"
 
 class MainWindow : public QMainWindow
@@ -23,11 +28,10 @@ public:
     MainWindow(RepositoryManager* repositoryManager, QWidget *parent = nullptr);
     ~MainWindow();
     
-	// mainWindow needs access to the Repository pointer
-	//void setRepoContext(Repository* repo, const QString& name, const QString& path);
 	void setRepoContext(const QString& name, const QString& path);
 	void refreshFileTable();
 	void refreshHistoryTab();
+	void refreshDiffTab();
 private slots:
 	// Push Buttons
 	void on_commitStaged_clicked();
@@ -56,6 +60,7 @@ private:
     Ui::MainWindow ui;
 	// History Tab Widgets
 	QListWidget* historyList;
+
 	RepositoryManager* m_repoManager;
 
 	// Diff Tab Widgets

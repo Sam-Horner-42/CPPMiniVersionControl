@@ -1,4 +1,4 @@
-#include "../includes/RepositoryManager.h"
+ #include "../includes/RepositoryManager.h"
 
 // do not touch, json work
 #include "../includes/nlohmann/json.hpp"
@@ -49,8 +49,9 @@ bool RepositoryManager::checkIfReal(std::string repoName){
 // return a fully filled repo object containing the repo contents
 bool RepositoryManager::loadRepository(std::string repoName) {
     repo.setRepoName(repoName);
+	//repo.setRepoPath();
     data.loadData(repoName, repo);
-
+    qDebug() << "repo path after loading: " << repo.getRepoPath();
     return true;
 }
 
@@ -64,29 +65,22 @@ void RepositoryManager::addNewTrackedFile(TrackedFile& file) {
 /* SAM: this function diffs all the files in both the parent and the current
    as long as it exists in both. It returns a map of all the diffs 
    KEY: filename VALUE: DiffString */
-std::unordered_map<string,string> RepositoryManager::callParentDifferentiation(const string& diffCommitId) {
-    std::unordered_map<string,string> diffMap;
-
-    auto base = repo.findCommit(diffCommitId);
-    Commit* baseParent = getParentCommit(base->getId());
-    auto parent = dynamic_cast<StandardCommit*>(baseParent);
-    auto parentFiles = parent->getTrackedFiles();
-
-    auto& da_map = parent->getFileSnapshot();
-
-    for (auto& file : base->getIncomingFiles()) {
-        if (!parent->hasFile(file.getFileName())) continue;
-
-        auto it = find_if(parentFiles.begin(), parentFiles.end(), [&](const auto& f) {
-            return f.getFileName() == file.getFileName();
-        });
-
-        if (it == parentFiles.end()) continue;
-
-        differ.computeDiff(da_map.at(file.getFileName()), da_map.at((*it).getFileName()));
-        diffMap.insert({file.getFileName(), differ.displayDiff()});
-    }
-    return diffMap;
+string RepositoryManager::callParentDifferentiation(const string& filename) {
+    auto* file = repo.findFile(filename);
+    string path = file->getFilePath();
+	qDebug() << "Diff file path: " << path;
+    ifstream inFile(path);
+    if(!inFile) return "__INVALID_DIFF__";
+    string currentContent;
+    inFile >> currentContent;
+	qDebug() << "Current file content: " << currentContent;
+	// get map, get content
+	if(repo.getRepoCommits().size() < 2) return "nothing to diff.";
+    auto* item = repo.getRepoCommits().back().get();
+	auto& map = dynamic_cast<StandardCommit&>(*item).getFileSnapshot();
+	
+    differ.computeDiff(currentContent,map.at(filename));    
+    return differ.displayDiff().size() > 1 ? differ.displayDiff() : "No changes Made.";
 }
 
 void RepositoryManager::updateFileStatus(std::string& fileName, TrackedFile::status newStatus) {
@@ -137,15 +131,8 @@ StandardCommit* RepositoryManager::getParentCommit(const string& commitId) {
 
 
 /* performs the restoration to the parent. */
-void RepositoryManager::restoreToParent(const string& commitId) {
-    auto parent = getParentCommit(commitId);
-    auto current = searchCommits(commitId);
-
-    if (parent == nullptr || current == nullptr) return;
-
-    for (const auto& file : parent->getIncomingFiles()) {
-        current->updateSnapshot(file.getFileName(),parent->getFileSnapshot().at(file.getFileName()));
-    }
+void RepositoryManager::restore(const string& commitId) {
+	repo.restore(commitId);
 }
 
 /* make a function that restores to the previous commit */
@@ -205,12 +192,17 @@ bool RepositoryManager::commitStagedFiles(std::string commitMessage) {
 std::vector<std::unique_ptr<Commit>>& RepositoryManager::getRepoCommits() {
 	return repo.getRepoCommits();
 }
+
+std::vector<std::string> RepositoryManager::getAllCommitIds() const {
+	return repo.getAllCommitIds();
+}
+
 //std::vector<std::string> RepositoryManager::getAnalytics() const{
-//    std::vector<std::string> finalRport;
+//    std::vector<std::string> finalReport;
 //    int totalCommits = analyzer.computeTotalCommits(repo);
-//    int totalTrackedFiles= analyzer.computeTotalTrackedFiles(repo);
+//    int totalTrackedFiles = analyzer.computeTrackedFilesCount(repo);
 //    finalReport.push_back("Total Commits: " +std::to_string(totalCommits));
-//    finalReport.puch_back("total Tracked files: " + std::to_string(totalTrackedFile)); 
+//    finalReport.push_back("total Tracked files: " + std::to_string(totalTrackedFiles)); 
 //    std::vector<std::string> mostEditedFiles=analyzer.computeMostModifiedFiles(repo);
 //    finalReport.insert(finalReport.end(), mostEditedFiles.begin(), mostEditedFiles.end());
 //    return finalReport; 

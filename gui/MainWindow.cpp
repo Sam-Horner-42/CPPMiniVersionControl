@@ -4,6 +4,12 @@
 namespace Ui {
     class MainWindow;
 }
+
+/*
+This is the main window that the applicaiton runs within
+Once a repository is created either by loading or initializing a new repo
+this window loads given the RepositoryManager object created main
+*/
 MainWindow::MainWindow(RepositoryManager* manager, QWidget *parent)
     : QMainWindow(parent)
 	, m_repoManager(manager)
@@ -23,8 +29,12 @@ MainWindow::MainWindow(RepositoryManager* manager, QWidget *parent)
 MainWindow::~MainWindow()
 {}
 
-
-//void MainWindow::setRepoContext(Repository* repo, const QString& name, const QString& path)
+/* 
+Defines the name and path for the current repository 
+This sets up the title for the window based on the name of the Repository
+It also adds the specified path for the repository to the file watcher so when files
+are updated in the directory the GUI is aware and updates correctly
+*/
 void MainWindow::setRepoContext(const QString& name, const QString& path)
 {
 	// Sets the window title to display the repository name
@@ -196,24 +206,88 @@ void MainWindow::refreshFileTable() {
 }
 
 void MainWindow::refreshHistoryTab() {
-//	auto& m_repoManager->getRepoCommits();
+	qDebug() << "Refresh history tab called.";
+	
+	//qDebug() << "Repo path in refresh history tab: " << path;
 	// Clear the UI list to prevent duplicates
 	historyList->clear();
 
-	// Fetch the vector from the backend
+	// Fetch the vectors from the backend
+	auto commitIds = m_repoManager->getAllCommitIds();
 	auto history = m_repoManager->getCommitHistory();
-	
 
-	 //Loop through the vector and add to the QListWidget
-	//for (auto& entry : history) {
-	//    qDebug() << "History value: " << entry;
-	//	QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(entry));
+	// Safety check: Ensure both vectors are the same size to prevent crashes
+	if (commitIds.size() != history.size()) {
+		qDebug() << "Error: Mismatch between number of commit IDs and history entries.";
+		return;
+	}
 
-	//	historyList->addItem(item);
-	//}
+	// Use an index-based loop to access both vectors simultaneously
+	for (size_t i = 0; i < history.size(); ++i) {
+		std::string currentEntry = history[i];
+		std::string currentId = commitIds[i];
+
+		qDebug() << "History value: " << QString::fromStdString(currentEntry);
+
+		// Create a blank QListWidgetItem
+		QListWidgetItem* item = new QListWidgetItem(historyList);
+
+		// Create the custom row widget and layout
+		QWidget* rowWidget = new QWidget();
+		QHBoxLayout* layout = new QHBoxLayout(rowWidget);
+		layout->setContentsMargins(5, 2, 5, 2); // Added a little horizontal padding
+
+		// Create a Label for the history text
+		QLabel* historyLabel = new QLabel(QString::fromStdString(currentEntry));
+
+		// Create the "Restore" button
+		QPushButton* restoreButton = new QPushButton("Restore");
+		restoreButton->setCursor(Qt::PointingHandCursor);
+
+		// CALL HERE
+		// Connect the button, passing the currentId to the lambda
+		connect(restoreButton, &QPushButton::clicked, this, [this, currentId]() {
+			qDebug() << "Restoring to commit ID:" << QString::fromStdString(currentId);
+
+			// Call your actual restore function here
+			// CALL HERE
+			m_repoManager->restore(currentId);
+			refreshHistoryTab();
+			});
+
+		// Add widgets to the layout
+		// The '1' adds a stretch factor to the label, pushing the button completely to the right
+		layout->addWidget(historyLabel, 1);
+		layout->addWidget(restoreButton);
+
+		rowWidget->setLayout(layout);
+
+		// Embed the row widget into the list
+		item->setSizeHint(rowWidget->sizeHint());
+		historyList->setItemWidget(item, rowWidget);
+	}
 
 	// Scroll to the bottom so the newest commit is visible
 	historyList->scrollToBottom();
+}
+
+
+// Calls differentiation on the currently selected file to display differences between them
+void MainWindow::refreshDiffTab()
+{
+	if(!m_repoManager) return;
+	// Clear the view if no file is selected or the manager is null
+	if (selectedFile.isEmpty()) {
+		diffView->clear();
+		return;
+	}
+
+	// Fetch the diff string from your repository manager.
+	// Note: Replace 'getFileDiff' with whatever your actual manager method is called!
+	std::string diffStr = m_repoManager->callParentDifferentiation(selectedFile.toStdString());
+
+	// Set the text in the diffView
+	diffView->setPlainText(QString::fromStdString(diffStr));
 }
 
 //void MainWindow::refreshAnayticsTab() {
@@ -243,6 +317,7 @@ void MainWindow::on_commitStaged_clicked()
 		qDebug() << "Commit Message: " << commit->getMessage();
 	}
 	refreshFileTable();
+	refreshHistoryTab();
 	//auto& std::vector<Commit> = m_repoManager->getCommits(); // Needs to get the vector of commits so I can display them and check if they exist
 	
 }
@@ -273,6 +348,7 @@ void MainWindow::on_fileTable_cellClicked(int row, int column)
 	QString fileName = ui.fileTable->item(row, 0)->text();
 	selectedFile = fileName; // set the currently selected file
 	qDebug() << "Selected File: " << selectedFile;
+	refreshDiffTab();
 }
 
 

@@ -49,6 +49,7 @@ public:
       }
   }
   
+  std::vector<std::string> getAllCommitIds() const;
   void updateFileStatus(const std::string& file, TrackedFile::status newStatus); //updating the status of a tracked file
   void updateFileContent(const std::string fileName, std::string newContent); //updating the content of a tracked file
   
@@ -58,6 +59,7 @@ public:
   void stageFile(const std::string& fileName); //stage a single file in the trackedfiles vector
   void initRepository(const std::string& repoName, const std::string& repoPath); //create a new repository
   void setRepoName(const std::string& repoName) { this->repoName = repoName; } //set the name of the repository
+  void setRepoPath(const std::string& repoPath) { this->repoPath = repoPath; }
   TrackedFile* getSingleTrackedFile(const std::string& fileName); //returns a pointer of a single tracked file
   
   std::vector<std::string> getCommitHistory();
@@ -86,4 +88,5 @@ public:
 	  std::string admin, std::string timeStamp);
   //void addCommit(std::unique_ptr<StandardCommit> commit); //adds a single commit object to the commits vector
   bool commitStagedFiles(std::string commitMessage, std::string commitId); //adds the file vector commit to the commit vector, takes in commit message and the commit ID
+  void restore(std::string commitId);
 };
