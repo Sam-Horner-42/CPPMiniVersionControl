@@ -290,11 +290,11 @@ void MainWindow::refreshDiffTab()
 	diffView->setPlainText(QString::fromStdString(diffStr));
 }
 
-//void MainWindow::refreshAnayticsTab() {
-//	if (m_repoManager) {
-//		m_repoManager->getAnalytics();
-//	}
-//}
+void MainWindow::refreshAnayticsTab() {
+	if (m_repoManager) {
+		m_repoManager->getAnalytics();
+	}
+}
 
 void MainWindow::on_commitStaged_clicked()
 {

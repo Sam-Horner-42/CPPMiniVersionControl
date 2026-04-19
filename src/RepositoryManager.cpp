@@ -197,13 +197,13 @@ std::vector<std::string> RepositoryManager::getAllCommitIds() const {
 	return repo.getAllCommitIds();
 }
 
-//std::vector<std::string> RepositoryManager::getAnalytics() const{
-//    std::vector<std::string> finalReport;
-//    int totalCommits = analyzer.computeTotalCommits(repo);
-//    int totalTrackedFiles = analyzer.computeTrackedFilesCount(repo);
-//    finalReport.push_back("Total Commits: " +std::to_string(totalCommits));
-//    finalReport.push_back("total Tracked files: " + std::to_string(totalTrackedFiles)); 
-//    std::vector<std::string> mostEditedFiles=analyzer.computeMostModifiedFiles(repo);
-//    finalReport.insert(finalReport.end(), mostEditedFiles.begin(), mostEditedFiles.end());
-//    return finalReport; 
-//}
+std::vector<std::string> RepositoryManager::getAnalytics() const{
+    std::vector<std::string> finalReport;
+    int totalCommits = analyzer.computeTotalCommits(repo);
+    int totalTrackedFiles = analyzer.computeTrackedFilesCount(repo);
+    finalReport.push_back("Total Commits: " +std::to_string(totalCommits));
+    finalReport.push_back("total Tracked files: " + std::to_string(totalTrackedFiles)); 
+    std::vector<std::string> mostEditedFiles=analyzer.computeMostModifiedFiles(repo);
+    finalReport.insert(finalReport.end(), mostEditedFiles.begin(), mostEditedFiles.end());
+    return finalReport; 
+}
