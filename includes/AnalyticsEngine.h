@@ -21,37 +21,37 @@ class AnalyticsEngine {
 
 
 public:
-    // 1. Compute Total Commits
-     // Accesses the commit vector from the Repository
+	// 1. Compute Total Commits
+	 // Accesses the commit vector from the Repository
 
-	
-    int computeTotalCommits(const T& repo) const {
-        return static_cast<int>(repo.getRepoCommits().size());
-    }
 
-    // 2. Compute Tracked Files Count
-    int computeTrackedFilesCount(const T& repo) const {
-        return static_cast<int>(repo.getCurrentFiles().size());
-    }
+	int computeTotalCommits(T& repo) const {
+		return static_cast<int>(repo.getRepoCommits().size());
+	}
 
-    // 3. Compute Most Modified Files
-    std::vector<std::string> computeMostModifiedFiles(const T& repo) const {
-        std::vector<TrackedFile> sortedFiles = repo.getCurrentFiles();
-        //used the built in sorting method jacob mentioned 
-        sort(sortedFiles.begin(), sortedFiles.end(), compareEdits);
-        int n = sortedFiles.size();
-        // Convert the sorted objects into a string vector for the GUI
-        std::vector<std::string> finalReport;
-        for (int i = 0; i < n; i++) {
-            std::string displayLine = sortedFiles[i].getFileName() +
-                " - Edits: " + std::to_string(sortedFiles[i].getEditCount());
-            finalReport.push_back(displayLine);
-        }
+	// 2. Compute Tracked Files Count
+	int computeTrackedFilesCount(T& repo) const {
+		return static_cast<int>(repo.getCurrentFiles().size());
+	}
 
-        return finalReport;
-    }
-    static bool compareEdits(const TrackedFile& a, const TrackedFile& b) {
-        return a.getEditCount() > b.getEditCount();
-    }
+	// 3. Compute Most Modified Files
+	std::vector<std::string> computeMostModifiedFiles(T& repo) const {
+		std::vector<TrackedFile> sortedFiles = repo.getCurrentFiles();
+		//used the built in sorting method jacob mentioned 
+		sort(sortedFiles.begin(), sortedFiles.end(), compareEdits);
+		int n = sortedFiles.size();
+		// Convert the sorted objects into a string vector for the GUI
+		std::vector<std::string> finalReport;
+		for (int i = 0; i < n; i++) {
+			std::string displayLine = sortedFiles[i].getFileName() +
+				" - Edits: " + std::to_string(sortedFiles[i].getEditCount());
+			finalReport.push_back(displayLine);
+		}
+
+		return finalReport;
+	}
+	static bool compareEdits(const TrackedFile& a, const TrackedFile& b) {
+		return a.getEditCount() > b.getEditCount();
+	}
 };
 #endif

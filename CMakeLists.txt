@@ -16,8 +16,6 @@ find_package(Qt${QT_VERSION_MAJOR}
 qt_standard_project_setup()
 
 set(PROJECT_SOURCES
-    src/MiniVersionControl.cpp
-    includes/MiniVersionControl.h
     src/main.cpp
     gui/MainWindow.ui
     gui/MainWindow.h

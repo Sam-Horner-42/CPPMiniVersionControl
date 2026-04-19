@@ -1,3 +1,6 @@
+// Header file for starting window
+// Author: Sam Horner 040935005
+
 #pragma once
 
 #include <QtWidgets/QDialog>

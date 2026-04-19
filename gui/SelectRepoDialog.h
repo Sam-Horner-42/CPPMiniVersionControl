@@ -1,3 +1,5 @@
+// This is the header file for the select repo dialog window
+// Author: Sam Horner 040935005
 #pragma once
 
 #include <QtWidgets/QDialog>
@@ -9,7 +11,6 @@
 #include "../includes/RepositoryManager.h"
 
 // Struct to bundle the repo data together
-
 struct RepoInfo {
 	QString name;
 	QString id;
@@ -34,7 +35,7 @@ private slots:
 private:
 	Ui::SelectRepoDialog ui;
 	RepositoryManager* m_repoManager;
-	QStandardItemModel* model; // 
+	QStandardItemModel* model; // This model is where the repository data is sent to for display 
 
 	// Map of repo names and file paths
 	QMap<QString, RepoInfo> repoMap;

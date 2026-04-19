@@ -1,3 +1,7 @@
+// This file serves as the header for the main application window
+// This defines all the slots for buttons and the different QObjects for displaying data
+// Author: Sam Horner 040935005
+
 #pragma once
 
 #include <QtWidgets/QMainWindow>
@@ -10,15 +14,12 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QFileInfo>
-#include <QTimer>
 #include <QFileSystemWatcher>
 #include <QDirIterator>
 #include <QPushButton>
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QListWidgetItem>
-
-//#include "../includes/Repository.h"
 
 class MainWindow : public QMainWindow
 {
@@ -32,25 +33,18 @@ public:
 	void refreshFileTable();
 	void refreshHistoryTab();
 	void refreshDiffTab();
+	void refreshAnalyticsTab();
 private slots:
 	// Push Buttons
 	void on_commitStaged_clicked();
 	void on_stageAll_clicked();
 	void on_stageSelected_clicked();
-	void on_restoreToCommit_clicked();
+
+	// Exit menu option
+	void on_actionExit_2_triggered();
 
 	// The Table Widget, files and their status
 	void on_fileTable_cellClicked(int row, int column);
-
-	// File menu actions
-	void on_actionSettings_3_triggered();
-	void on_actionExit_2_triggered();
-
-	// Repository menu action
-	void on_actionStage_Files_triggered();
-	void on_actionCommit_Staged_triggered(); 
-	void on_actionCompare_Files_triggered();
-	void on_actionRestore_to_Prior_Commit_triggered();
 
 	void onFileModified(const QString& path);
 

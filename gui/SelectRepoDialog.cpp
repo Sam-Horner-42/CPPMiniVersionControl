@@ -1,4 +1,8 @@
 // SelectRepoDialog.cpp
+// This file handles populating the repository information already preloaded in from the backend
+// It displays in an organized way all of the saved repositories in the user's system
+// Auhtor: Sam Horner 040935005
+
 #include "SelectRepoDialog.h"
 #include "MainWindow.h"
 #include "../includes/nlohmann/json.hpp"
@@ -8,7 +12,7 @@
 #include <filesystem>
 #include <sstream>
 #include <ctime>
-#include <QDebug> // Added missing QDebug include
+#include <QDebug>
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -58,7 +62,7 @@ QString SelectRepoDialog::getSelectedRepoName() const
 	if (!index.isValid()) return QString();
 
 	// If the user clicked a child, index.parent() will be valid.
-	// We want the text of the top-most parent.
+	// We want the text of the top-most parent, the repository name.
 	if (index.parent().isValid()) {
 		return index.parent().data(Qt::DisplayRole).toString();
 	}
@@ -82,6 +86,5 @@ void SelectRepoDialog::on_okButton_clicked()
 {
 	// Simply accept the dialog. 
 	// StartingWindow will see this, emit the signal, and close itself.
-	// Need to setup logic to refuse access if name is wrong
 	accept();
 }

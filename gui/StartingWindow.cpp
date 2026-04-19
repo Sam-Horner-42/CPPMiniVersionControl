@@ -1,3 +1,8 @@
+// This is the first window the user sees when the application runs
+// This handles constructing the dialog windows for selecting a repo and initializing a new one
+// The information is passed through here to the main.cpp so the MainWindow can populate its data correctly
+// Author: Sam Horner 040935005
+
 #include "MainWindow.h"
 #include "StartingWindow.h"
 #include "InitRepoDialog.h"
@@ -13,6 +18,7 @@ StartingWindow::StartingWindow(RepositoryManager* repoManager, QWidget* parent)
 StartingWindow::~StartingWindow(){}
 
 QRegularExpression reSpecChars("[^\\w]"); // This checks for special characters
+
 // called automatically — no connect() required
 void StartingWindow::on_initRepo_clicked()
 {
@@ -33,6 +39,7 @@ void StartingWindow::on_initRepo_clicked()
     
 }
 
+// This function handles opening the select window so the user can select a preexisting repository
 void StartingWindow::on_selectRepo_clicked()
 {
 	SelectRepoDialog selectDialog(m_repoManager, this);

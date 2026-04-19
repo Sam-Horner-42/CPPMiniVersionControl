@@ -1,6 +1,9 @@
-#include "MainWindow.h"
+// This file is the main application window for the mini version control application
+// The repository is routed here via starting window after being either loaded or initialized
+// 
 
 // Author: Sam Horner 040935005
+#include "MainWindow.h"
 namespace Ui {
     class MainWindow;
 }
@@ -15,8 +18,9 @@ MainWindow::MainWindow(RepositoryManager* manager, QWidget *parent)
 	, m_repoManager(manager)
 {
     ui.setupUi(this);
-	setupTabWidgets();
-	m_fileWatcher = new QFileSystemWatcher(this);
+
+	setupTabWidgets(); // Create the different widgets for displaying data from the backend
+	m_fileWatcher = new QFileSystemWatcher(this); // Watches the directory for changes to updated file status/remove files
 	// Watch for specific file modifications (saves, edits)
     connect(m_fileWatcher, &QFileSystemWatcher::fileChanged,
         this, &MainWindow::onFileModified);
@@ -43,19 +47,21 @@ void MainWindow::setRepoContext(const QString& name, const QString& path)
 	// Logs the repository path to the debug console for verification
 	qDebug() << "This is the repo path " << path;
 
+	
+
 	// Watches the root repo directory itself for top-level changes
 	m_fileWatcher->addPath(path);
 
 	// Creates a QDir object for the repo path (used for directory operations)
 	QDir repoDir(path);
 
-	// --- Directory Watcher Loop ---
+	// Directory watcher loop
 	// Iterates over all subdirectories recursively, including hidden ones
 	QDirIterator dirIt(path, QDir::Dirs | QDir::Hidden | QDir::NoDotAndDotDot,
 		QDirIterator::Subdirectories);
 	while (dirIt.hasNext()) {
 		QString dirPath = dirIt.next();
-		// Skips .vcm internals and metadata.json to avoid watching version control data
+		// Skips .vcm internals to avoid watching version control data
 		if (!dirPath.contains("/.vcm")) {
 			// Registers the directory so new files created inside it trigger a signal
 			m_fileWatcher->addPath(dirPath);
@@ -79,7 +85,36 @@ void MainWindow::setRepoContext(const QString& name, const QString& path)
 
 	// Clears the history panel ready to be repopulated
 	refreshHistoryTab();
+
+	// Refresh the analytics tab for this repo
+	refreshAnalyticsTab();
 	
+}
+
+void MainWindow::setupTabWidgets() {
+	// build history tab
+	QVBoxLayout* historyLayout = new QVBoxLayout(ui.history);
+	historyList = new QListWidget(ui.history);
+	historyLayout->addWidget(historyList);
+
+	// Build diff tab
+	QVBoxLayout* diffLayout = new QVBoxLayout(ui.diffTab);
+	diffView = new QTextEdit(ui.diffTab);
+
+	diffView->setReadOnly(true);
+
+	// Setting a mono font for code/diffs
+	QFont monoFont("Courier New", 10);
+	diffView->setFont(monoFont);
+	diffLayout->addWidget(diffView);
+
+	// Build Analytics tab
+	QVBoxLayout* analyticsLayout = new QVBoxLayout(ui.analytics);
+	statsLabel = new QLabel(ui.analytics);
+
+	statsLabel->setAlignment(Qt::AlignCenter);
+	analyticsLayout->addWidget(statsLabel);
+
 }
 
 void MainWindow::onFileModified(const QString& path) {
@@ -104,6 +139,7 @@ void MainWindow::onFileModified(const QString& path) {
 	}
 
 	refreshFileTable();
+	refreshAnalyticsTab();
 }
 
 void MainWindow::onDirectoryChanged(const QString& path) {
@@ -136,7 +172,7 @@ void MainWindow::onDirectoryChanged(const QString& path) {
 
 		// Register the file if it's new and currently exists on disk
 		if (!alreadyTracked && fileInfo.exists()) {
-			qDebug() << "Registering new file:" << fileName;
+			qDebug() << "Registering new file: " << fileName;
 
 			m_repoManager->addNewTrackedFile(absPathStr, fileName.toStdString());
 			m_fileWatcher->addPath(absPath);
@@ -144,35 +180,10 @@ void MainWindow::onDirectoryChanged(const QString& path) {
 	}
 
 	refreshFileTable();
+	refreshAnalyticsTab();
 }
 
-void MainWindow::setupTabWidgets() {
-	// build history tab
-	QVBoxLayout* historyLayout = new QVBoxLayout(ui.history);
-	historyList = new QListWidget(ui.history);
-	// Add mock commit history
-	historyLayout->addWidget(historyList);
-
-	// Build diff tab
-	QVBoxLayout* diffLayout = new QVBoxLayout(ui.diffTab);
-	diffView = new QTextEdit(ui.diffTab);
-	
-	diffView->setReadOnly(true);
-
-	// Setting a mono font for code/diffs
-	QFont monoFont("Courier New", 10);
-	diffView->setFont(monoFont);
-	diffLayout->addWidget(diffView);
-
-	// Build Analytics tab
-	QVBoxLayout* analyticsLayout = new QVBoxLayout(ui.analytics);
-	statsLabel = new QLabel(ui.analytics);
-
-	statsLabel->setAlignment(Qt::AlignCenter);
-	analyticsLayout->addWidget(statsLabel);
-	
-}
-
+// Refresh the file table with the currently tracked files, name | status
 void MainWindow::refreshFileTable() {
 	ui.fileTable->setRowCount(0); // Clear existing rows
 
@@ -205,10 +216,10 @@ void MainWindow::refreshFileTable() {
 	}
 }
 
+// Refresh the history tab with the commit history retrieved from Repository.cpp
 void MainWindow::refreshHistoryTab() {
 	qDebug() << "Refresh history tab called.";
 	
-	//qDebug() << "Repo path in refresh history tab: " << path;
 	// Clear the UI list to prevent duplicates
 	historyList->clear();
 
@@ -244,13 +255,11 @@ void MainWindow::refreshHistoryTab() {
 		QPushButton* restoreButton = new QPushButton("Restore");
 		restoreButton->setCursor(Qt::PointingHandCursor);
 
-		// CALL HERE
 		// Connect the button, passing the currentId to the lambda
 		connect(restoreButton, &QPushButton::clicked, this, [this, currentId]() {
 			qDebug() << "Restoring to commit ID:" << QString::fromStdString(currentId);
 
-			// Call your actual restore function here
-			// CALL HERE
+			// restore to the id passed in
 			m_repoManager->restore(currentId);
 			refreshHistoryTab();
 			});
@@ -276,38 +285,64 @@ void MainWindow::refreshHistoryTab() {
 void MainWindow::refreshDiffTab()
 {
 	if(!m_repoManager) return;
-	// Clear the view if no file is selected or the manager is null
+	// Clear the view if no file is selected
 	if (selectedFile.isEmpty()) {
 		diffView->clear();
 		return;
 	}
 
-	// Fetch the diff string from your repository manager.
-	// Note: Replace 'getFileDiff' with whatever your actual manager method is called!
+	// Fetch the diff string from the repository manager.
 	std::string diffStr = m_repoManager->callParentDifferentiation(selectedFile.toStdString());
 
 	// Set the text in the diffView
 	diffView->setPlainText(QString::fromStdString(diffStr));
 }
 
-void MainWindow::refreshAnayticsTab() {
-	if (m_repoManager) {
-		m_repoManager->getAnalytics();
+// Refresh the analytics tab with the newly computed analytics
+void MainWindow::refreshAnalyticsTab() {
+	if(!m_repoManager) return;
+	// Fetch the vector of strings from the backend
+	std::vector<std::string> analytics = m_repoManager->getAnalytics();
+
+	// Start building the HTML string with a header
+	QString displayText = "<h2>Repository Analytics</h2><br>";
+
+	// Loop through each string in the vector
+	for (const std::string& stat : analytics) {
+		// Convert to QString, add a line break, and append to the main text
+		displayText += QString::fromStdString(stat) + "<br>";
 	}
+
+	// Apply the formatted text to the label
+	statsLabel->setText(displayText);
 }
 
+// When the commit staged button is pressed
+// The backend handles checking for staged files and changing their status, and then creating a new commit and populating it
 void MainWindow::on_commitStaged_clicked()
 {
-	QString commitMessage = ui.commitInput->toPlainText();
+	// Get the commit message
+	QString commitMessage = ui.commitInput->toPlainText().trimmed();
 	qDebug() << "Commit Staged button clicked. Message:" << commitMessage;
-	if (!commitMessage.isEmpty()) {
+
+	// 1-200 characters, Alphanumeric only
+	QRegularExpression rx("^[A-Za-z0-9 ]{1,200}$"); // Added space ' ' to allowed chars
+	QRegularExpressionMatch match = rx.match(commitMessage);
+	// Commit message must have information and be aplahnumeric
+	if (match.hasMatch() && !commitMessage.isEmpty()) {
 		
 		if(!m_repoManager->commitStagedFiles(commitMessage.toStdString())){
 		QMessageBox::warning(this, "No Currently Staged Files", "You must stage at least one file to perform a commit."); 
 		}
-		ui.commitInput->clear();
+		else {
+			ui.commitInput->clear(); // clear the valid commit message
+		}
 		
-	} else { QMessageBox::warning(this, "Invalid Commit Message", "Please provide a valid, not empty commit message."); }
+		
+	} else { 
+		QMessageBox::warning(this, "Invalid Commit Message", "Commit messages can only containt alphanumeric values.\nPlease provide a valid, not empty commit message."); 
+		ui.commitInput->clear(); // clear the invalid message
+	}
 
 	auto& commits = m_repoManager->getRepoCommits();
 	for (auto& commit : commits) {
@@ -318,18 +353,17 @@ void MainWindow::on_commitStaged_clicked()
 	}
 	refreshFileTable();
 	refreshHistoryTab();
-	//auto& std::vector<Commit> = m_repoManager->getCommits(); // Needs to get the vector of commits so I can display them and check if they exist
-	
 }
 
 
-
+// Stages a file that has been selected by clicking on it in the file table
 void MainWindow::on_stageSelected_clicked() {
 	qDebug() << "Stage All button clicked.";
 	if(!selectedFile.isEmpty()) m_repoManager->stageFile(selectedFile.toStdString());
 	refreshFileTable();
 }
 
+// Stages all files, backend checks if the file needs to be staged first
 void MainWindow::on_stageAll_clicked()
 {
 	qDebug() << "Stage All button clicked.";
@@ -337,12 +371,9 @@ void MainWindow::on_stageAll_clicked()
 	refreshFileTable();
 }
 
-// 
-void MainWindow::on_restoreToCommit_clicked() {
-	
-}
 
-// The table of files
+// Trigged when a cell is clicked in the file table
+// Sets the global selectedFile to be the file name at the row clicked
 void MainWindow::on_fileTable_cellClicked(int row, int column)
 {
 	QString fileName = ui.fileTable->item(row, 0)->text();
@@ -351,42 +382,9 @@ void MainWindow::on_fileTable_cellClicked(int row, int column)
 	refreshDiffTab();
 }
 
-
-// File menu
-void MainWindow::on_actionSettings_3_triggered()
-{
-	qDebug() << "Settings menu action triggered.";
-}
-
+// Exit the program, clicking this or the x will save the program automatically because of the logic defined in main.cpp
 void MainWindow::on_actionExit_2_triggered()
 {
 	qDebug() << "Exit menu action triggered.";
-	close(); // Closes the MainWindow
+	this->close(); // This triggers the window's close event
 }
-
-// Repository menu
-void MainWindow::on_actionStage_Files_triggered()
-{
-	qDebug() << "Stage Files action triggered.";
-	on_stageAll_clicked();
-}
-
-void MainWindow::on_actionCommit_Staged_triggered()
-{
-	qDebug() << "Commit Staged action triggered from Menu.";
-	// Simple call to the button logic to avoid complicating things
-	on_commitStaged_clicked();
-}
-
-void MainWindow::on_actionCompare_Files_triggered()
-{
-	qDebug() << "Compare Files action triggered.";
-}
-
-void MainWindow::on_actionRestore_to_Prior_Commit_triggered()
-{
-	qDebug() << "Restore to Prior Commit action triggered.";
-
-	// May need a new window here to select commits
-}
-

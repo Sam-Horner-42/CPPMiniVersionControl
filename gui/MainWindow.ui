@@ -503,6 +503,7 @@ background-color: rgb(0, 85, 0);</string>
     </property>
    </widget>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -516,30 +517,11 @@ background-color: rgb(0, 85, 0);</string>
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionSettings_3"/>
     <addaction name="separator"/>
     <addaction name="actionExit_2"/>
    </widget>
-   <widget class="QMenu" name="menuRepository">
-    <property name="title">
-     <string>Repository</string>
-    </property>
-    <addaction name="separator"/>
-    <addaction name="actionStage_Files"/>
-    <addaction name="actionCommit_Staged"/>
-    <addaction name="actionCompare_Files"/>
-    <addaction name="actionRestore_to_Prior_Commit"/>
-   </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>Help</string>
-    </property>
-   </widget>
    <addaction name="actionSettings_2"/>
-   <addaction name="menuRepository"/>
-   <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSettings">
    <property name="text">
     <string>New Repository</string>

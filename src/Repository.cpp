@@ -38,6 +38,7 @@ void Repository::buildJSONMetaData(const string repoName, const string repoPath)
     std::cerr << "Failed to create metadata.json at: " << metadataPath << std::endl;
   }
 }
+
 void Repository::buildJSONSnapshots(const string repoName, const string repoPath){
   json jObj;
   jObj["commits"] = json::array();
@@ -85,8 +86,8 @@ vector<string> Repository::getCommitHistory() {
 		if (commit) {
 			qDebug() << "We got into the for loop.";
 			string logCommit = "Commit ID: " + commit->getId() +
-				"Date: " + commit->getTimestamp() +
-				"Message: " + commit->getMessage();
+				" Date: " + commit->getTimestamp() +
+				" Message: " + commit->getMessage();
 			// one commit pushed to vector
 			commitHistoryVec.push_back(logCommit);
 		}
@@ -194,6 +195,33 @@ void Repository::restore(std::string commitId){
 		out_file << it->second;
 		out_file.close();
 	}
+
+	// Every file at a commit is prefixed with ID + _, we store that here to strip it when comparing files for removal
+	std::string commitPrefix = current->getId() + "_";
+
+	// Remove files that don't exist in the restored commit's snapshot
+	currentFiles.erase(
+		std::remove_if(currentFiles.begin(), currentFiles.end(),
+			[&](const TrackedFile& file) {
+				std::string fileName = file.getFileName();
+
+				// Strip the exact commitId prefix
+				if (fileName.rfind(commitPrefix, 0) == 0) {
+					fileName = fileName.substr(commitPrefix.size());
+				}
+
+				if (map.find(fileName) == map.end()) {
+					if (std::remove(file.getFilePath().c_str()) != 0) {
+						qDebug() << "Warning: could not delete file: " << file.getFilePath();
+					}
+					return true;
+				}
+				return false;
+			}
+		),
+		currentFiles.end()
+	);
+
 	// find the restored pos
 	auto index = std::find_if(commits.begin(), commits.end(),
 		[&](const std::unique_ptr<Commit>& c) {
@@ -276,12 +304,16 @@ bool Repository::commitStagedFiles(string commitMessage, string commitId) {
 		if (files[i].getFileStatus() == TrackedFile::status::Staged) {
 			isStaged = true;
 			files[i].setStatus(TrackedFile::status::Committed);
+			
 		}
-
-		std::ifstream inFile(files[i].getFilePath());
-		std::string content;
-		inFile >> content;
-		files[i].setContent(content);
+		if (files[i].getFileStatus() == TrackedFile::status::Committed) {
+			std::ifstream inFile(files[i].getFilePath());
+			std::string content(
+				(std::istreambuf_iterator<char>(inFile)),
+				std::istreambuf_iterator<char>()
+			);
+			files[i].setContent(content);
+		}
 	}
 
 	if (isStaged == false) {

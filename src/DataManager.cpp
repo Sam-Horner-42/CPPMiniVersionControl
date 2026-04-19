@@ -245,9 +245,29 @@ bool DataManager::loadData(std::string& repositoryName, Repository& repo) {
             qDebug() << "Failed to open: " << filePathing;
             return false;
         }
+
+		// Check if the file is completely empty before trying to parse
+		if (snapsIn.peek() == std::ifstream::traits_type::eof()) {
+			qDebug() << "commits.json is completely empty. No commits to load.";
+			return false; // or return true, depending on what your function expects for a blank repo
+		}
         
         json snapshotsData;
-        snapsIn >> snapshotsData;
+		try {
+			snapsIn >> snapshotsData;
+		}
+		catch (const nlohmann::json::parse_error& e) {
+			// Catches malformed JSON so your app doesn't crash
+			qDebug() << "JSON parse error in commits.json: " << e.what();
+			return false;
+		}
+
+		// Check if the parsed JSON is just the literal "null" or an empty array/object
+		if (snapshotsData.is_null() || snapshotsData.empty()) {
+			qDebug() << "commits.json is null or empty. No commits to load.";
+			return false;
+		}
+
         snapsIn.close();
 		std::string commitId;
 
