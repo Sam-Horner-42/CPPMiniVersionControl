@@ -1,4 +1,5 @@
 // InitRepoDialog.cpp
+// Author: Sam Horner 040935005
 #pragma once
 #include "InitRepoDialog.h"
 #include "MainWindow.h"

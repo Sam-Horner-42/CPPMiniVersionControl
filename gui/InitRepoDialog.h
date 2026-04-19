@@ -1,4 +1,5 @@
 // InitRepoDialog.h
+// Author: Sam Horner 040935005
 #pragma once
 #include <QtWidgets/QDialog>
 #include <QFileDialog>

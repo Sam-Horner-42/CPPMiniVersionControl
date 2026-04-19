@@ -1,6 +1,5 @@
 // This file is the main application window for the mini version control application
 // The repository is routed here via starting window after being either loaded or initialized
-// 
 
 // Author: Sam Horner 040935005
 #include "MainWindow.h"
