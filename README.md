@@ -1,6 +1,11 @@
 # C++ Mini Version Control System (`CPPMiniVersionControl`)
 
 > **A lightweight, cross-platform Git-like version control engine and desktop GUI implemented in C++ using the Qt framework.**
+> 
+![Language](https://img.shields.io/badge/Language-C%2B%2B17-blue.svg)
+![Framework](https://img.shields.io/badge/Framework-Qt%206%20%2F%20Qt%205-green.svg)
+![Build](https://img.shields.io/badge/Build-CMake%20%7C%20qmake-brightgreen.svg)
+![License](https://img.shields.io/badge/License-MIT-orange.svg)
 
 ## 🌟 Overview
 
